@@ -39,7 +39,6 @@ import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
-import net.dv8tion.jda.api.hooks.EventListener;
 import net.dv8tion.jda.internal.utils.Checks;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -84,7 +83,7 @@ import java.util.stream.Collectors;
  *
  * @author John Grosh (jagrosh)
  */
-public class CommandClientImpl implements CommandClient, EventListener
+public class CommandClientImpl implements CommandClient
 {
     private static final Logger LOG = LoggerFactory.getLogger(CommandClient.class);
     private static final String DEFAULT_PREFIX = "@mention";

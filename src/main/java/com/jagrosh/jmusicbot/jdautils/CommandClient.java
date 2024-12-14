@@ -16,6 +16,7 @@
 package com.jagrosh.jmusicbot.jdautils;
 
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.hooks.EventListener;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -68,7 +69,7 @@ import java.util.function.Function;
  *                      net.dv8tion.jda.api.entities.Message)}. This will create errors and has no real purpose outside
  *                      of it's current usage.
  */
-public interface CommandClient
+public interface CommandClient extends EventListener
 {
     /**
      * Gets the Client's prefix.
