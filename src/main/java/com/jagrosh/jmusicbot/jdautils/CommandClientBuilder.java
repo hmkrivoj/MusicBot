@@ -27,9 +27,9 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 
 /**
- * A simple builder used to create a {@link com.jagrosh.jdautilities.command.impl.CommandClientImpl CommandClientImpl}.
+ * A simple builder used to create a {@link com.jagrosh.jmusicbot.jdautils.impl.CommandClientImpl CommandClientImpl}.
  * 
- * <p>Once built, add the {@link com.jagrosh.jdautilities.command.CommandClient CommandClient} as an EventListener to
+ * <p>Once built, add the {@link com.jagrosh.jmusicbot.jdautils.CommandClient CommandClient} as an EventListener to
  * {@link net.dv8tion.jda.api.JDA JDA} and it will automatically handle commands with ease!
  * 
  * @author John Grosh (jagrosh)
@@ -46,8 +46,6 @@ public class CommandClientBuilder
     private String success;
     private String warning;
     private String error;
-    private String carbonKey;
-    private String botsKey;
     private final LinkedList<Command> commands = new LinkedList<>();
     private CommandListener listener;
     private boolean useHelp = true;
@@ -60,17 +58,17 @@ public class CommandClientBuilder
     private GuildSettingsManager manager = null;
 
     /**
-     * Builds a {@link com.jagrosh.jdautilities.command.impl.CommandClientImpl CommandClientImpl}
+     * Builds a {@link com.jagrosh.jmusicbot.jdautils.impl.CommandClientImpl CommandClientImpl}
      * with the provided settings.
-     * <br>Once built, only the {@link com.jagrosh.jdautilities.command.CommandListener CommandListener},
-     * and {@link com.jagrosh.jdautilities.command.Command Command}s can be changed.
+     * <br>Once built, only the {@link com.jagrosh.jmusicbot.jdautils.CommandListener CommandListener},
+     * and {@link com.jagrosh.jmusicbot.jdautils.Command Command}s can be changed.
      * 
      * @return The CommandClient built.
      */
     public CommandClient build()
     {
         CommandClient client = new CommandClientImpl(ownerId, coOwnerIds, prefix, altprefix, activity, status, serverInvite,
-                                                     success, warning, error, carbonKey, botsKey, new ArrayList<>(commands), useHelp,
+                                                     success, warning, error, new ArrayList<>(commands), useHelp,
                                                      shutdownAutomatically, helpConsumer, helpWord, executor, linkedCacheSize, compiler, manager);
         if(listener!=null)
             client.setListener(listener);
@@ -140,12 +138,12 @@ public class CommandClientBuilder
     }
     
     /**
-     * Sets whether the {@link com.jagrosh.jdautilities.command.CommandClient CommandClient} will use
+     * Sets whether the {@link com.jagrosh.jmusicbot.jdautils.CommandClient CommandClient} will use
      * the builder to automatically create a help command or not.
      * 
      * @param  useHelp
      *         {@code false} to disable the help command builder, otherwise the CommandClient
-     *         will use either the default or one provided via {@link com.jagrosh.jdautilities.command.CommandClientBuilder#setHelpConsumer(Consumer)}}.
+     *         will use either the default or one provided via {@link com.jagrosh.jmusicbot.jdautils.CommandClientBuilder#setHelpConsumer(Consumer)}}.
      *         
      * @return This builder
      */
@@ -161,7 +159,7 @@ public class CommandClientBuilder
      * the default help builder.
      * 
      * @param  helpConsumer
-     *         A consumer to accept a {@link com.jagrosh.jdautilities.command.CommandEvent CommandEvent}
+     *         A consumer to accept a {@link com.jagrosh.jmusicbot.jdautils.CommandEvent CommandEvent}
      *         when a help command is called.
      *         
      * @return This builder
@@ -265,8 +263,8 @@ public class CommandClientBuilder
     }
     
     /**
-     * Adds a {@link com.jagrosh.jdautilities.command.Command Command} and registers it to the
-     * {@link com.jagrosh.jdautilities.command.impl.CommandClientImpl CommandClientImpl} for this session.
+     * Adds a {@link com.jagrosh.jmusicbot.jdautils.Command Command} and registers it to the
+     * {@link com.jagrosh.jmusicbot.jdautils.impl.CommandClientImpl CommandClientImpl} for this session.
      * 
      * @param  command
      *         The command to add
@@ -280,9 +278,9 @@ public class CommandClientBuilder
     }
     
     /**
-     * Adds and registers multiple {@link com.jagrosh.jdautilities.command.Command Command}s to the
-     * {@link com.jagrosh.jdautilities.command.impl.CommandClientImpl CommandClientImpl} for this session.
-     * <br>This is the same as calling {@link com.jagrosh.jdautilities.command.CommandClientBuilder#addCommand(Command)} multiple times.
+     * Adds and registers multiple {@link com.jagrosh.jmusicbot.jdautils.Command Command}s to the
+     * {@link com.jagrosh.jmusicbot.jdautils.impl.CommandClientImpl CommandClientImpl} for this session.
+     * <br>This is the same as calling {@link com.jagrosh.jmusicbot.jdautils.CommandClientBuilder#addCommand(Command)} multiple times.
      * 
      * @param  commands
      *         The Commands to add
@@ -298,10 +296,10 @@ public class CommandClientBuilder
 
     /**
      * Adds an annotated command module to the
-     * {@link com.jagrosh.jdautilities.command.impl.CommandClientImpl CommandClientImpl} for this session.
+     * {@link com.jagrosh.jmusicbot.jdautils.impl.CommandClientImpl CommandClientImpl} for this session.
      *
      * <p>For more information on annotated command modules, see
-     * {@link com.jagrosh.jdautilities.command.annotation the annotation package} documentation.
+     * {@link com.jagrosh.jmusicbot.jdautils.annotation the annotation package} documentation.
      *
      * @param  module
      *         The annotated command module to add
@@ -309,7 +307,7 @@ public class CommandClientBuilder
      * @return This builder
      *
      * @see    AnnotatedModuleCompiler
-     * @see    com.jagrosh.jdautilities.command.annotation.JDACommand
+     * @see    com.jagrosh.jmusicbot.jdautils.annotation.JDACommand
      */
     public CommandClientBuilder addAnnotatedModule(Object module)
     {
@@ -319,11 +317,11 @@ public class CommandClientBuilder
 
     /**
      * Adds multiple annotated command modules to the
-     * {@link com.jagrosh.jdautilities.command.impl.CommandClientImpl CommandClientImpl} for this session.
-     * <br>This is the same as calling {@link com.jagrosh.jdautilities.command.CommandClientBuilder#addAnnotatedModule(Object)} multiple times.
+     * {@link com.jagrosh.jmusicbot.jdautils.impl.CommandClientImpl CommandClientImpl} for this session.
+     * <br>This is the same as calling {@link com.jagrosh.jmusicbot.jdautils.CommandClientBuilder#addAnnotatedModule(Object)} multiple times.
      *
      * <p>For more information on annotated command modules, see
-     * {@link com.jagrosh.jdautilities.command.annotation the annotation package} documentation.
+     * {@link com.jagrosh.jmusicbot.jdautils.annotation the annotation package} documentation.
      *
      * @param  modules
      *         The annotated command modules to add
@@ -331,7 +329,7 @@ public class CommandClientBuilder
      * @return This builder
      *
      * @see    AnnotatedModuleCompiler
-     * @see    com.jagrosh.jdautilities.command.annotation.JDACommand
+     * @see    com.jagrosh.jmusicbot.jdautils.annotation.JDACommand
      */
     public CommandClientBuilder addAnnotatedModules(Object... modules)
     {
@@ -341,11 +339,11 @@ public class CommandClientBuilder
     }
 
     /**
-     * Sets the {@link com.jagrosh.jdautilities.command.AnnotatedModuleCompiler AnnotatedModuleCompiler}
+     * Sets the {@link com.jagrosh.jmusicbot.jdautils.AnnotatedModuleCompiler AnnotatedModuleCompiler}
      * for this CommandClientBuilder.
      *
      * <p>If not set this will be the default implementation found {@link
-     * com.jagrosh.jdautilities.command.impl.AnnotatedModuleCompilerImpl here}.
+     * com.jagrosh.jmusicbot.jdautils.impl.AnnotatedModuleCompilerImpl here}.
      *
      * @param  compiler
      *         The AnnotatedModuleCompiler to use
@@ -353,48 +351,11 @@ public class CommandClientBuilder
      * @return This builder
      *
      * @see    AnnotatedModuleCompiler
-     * @see    com.jagrosh.jdautilities.command.annotation.JDACommand
+     * @see    com.jagrosh.jmusicbot.jdautils.annotation.JDACommand
      */
     public CommandClientBuilder setAnnotatedCompiler(AnnotatedModuleCompiler compiler)
     {
         this.compiler = compiler;
-        return this;
-    }
-
-    /**
-     * Sets the <a href="https://www.carbonitex.net/discord/bots">Carbonitex</a> key for this bot's listing.
-     * 
-     * <p>When set, the {@link com.jagrosh.jdautilities.command.impl.CommandClientImpl CommandClientImpl}
-     * will automatically update it's Carbonitex listing with relevant information such as server count.
-     * 
-     * @param  key
-     *         A Carbonitex key
-     *         
-     * @return This builder
-     */
-    public CommandClientBuilder setCarbonitexKey(String key)
-    {
-        this.carbonKey = key;
-        return this;
-    }
-    
-    /**
-     * Sets the <a href="https://discord.bots.gg/">Discord Bots</a> API key for this bot's listing.
-     * 
-     * <p>When set, the {@link com.jagrosh.jdautilities.command.impl.CommandClientImpl CommandClientImpl}
-     * will automatically update it's Discord Bots listing with relevant information such as server count.
-     * 
-     * <p>This will also retrieve the bot's total guild count in the same request, which can be accessed
-     * via {@link com.jagrosh.jdautilities.command.CommandClient#getTotalGuilds()}.
-     * 
-     * @param  key
-     *         A Discord Bots API key
-     *         
-     * @return This builder
-     */
-    public CommandClientBuilder setDiscordBotsKey(String key)
-    {
-        this.botsKey = key;
         return this;
     }
     
@@ -416,8 +377,8 @@ public class CommandClientBuilder
     }
     
     /**
-     * Sets the {@link com.jagrosh.jdautilities.command.CommandListener CommandListener} for the
-     * {@link com.jagrosh.jdautilities.command.impl.CommandClientImpl CommandClientImpl}.
+     * Sets the {@link com.jagrosh.jmusicbot.jdautils.CommandListener CommandListener} for the
+     * {@link com.jagrosh.jmusicbot.jdautils.impl.CommandClientImpl CommandClientImpl}.
      * 
      * @param  listener
      *         The CommandListener for the CommandClientImpl
@@ -432,7 +393,7 @@ public class CommandClientBuilder
     
     /**
      * Sets the {@link java.util.concurrent.ScheduledExecutorService ScheduledExecutorService} for the
-     * {@link com.jagrosh.jdautilities.command.impl.CommandClientImpl CommandClientImpl}.
+     * {@link com.jagrosh.jmusicbot.jdautils.impl.CommandClientImpl CommandClientImpl}.
      * 
      * @param  executor
      *         The ScheduledExecutorService for the CommandClientImpl
@@ -460,7 +421,7 @@ public class CommandClientBuilder
     }
     
     /**
-     * Sets the internal size of the client's {@link com.jagrosh.jdautilities.commons.utils.FixedSizeCache FixedSizeCache}
+     * Sets the internal size of the client's {@link com.jagrosh.jmusicbot.jdautils.utils.FixedSizeCache FixedSizeCache}
      * used for caching and pairing the bot's response {@link net.dv8tion.jda.api.entities.Message Message}s with
      * the calling Message's ID.
      *
@@ -471,7 +432,7 @@ public class CommandClientBuilder
      *
      * @param  linkedCacheSize
      *         The maximum number of paired responses that can be cached, or {@code <1} if the
-     *         built {@link com.jagrosh.jdautilities.command.CommandClient CommandClient}
+     *         built {@link com.jagrosh.jmusicbot.jdautils.CommandClient CommandClient}
      *         will not use linked caching.
      *
      * @return This builder
@@ -483,7 +444,7 @@ public class CommandClientBuilder
     }
 
     /**
-     * Sets the {@link com.jagrosh.jdautilities.command.GuildSettingsManager GuildSettingsManager}
+     * Sets the {@link com.jagrosh.jmusicbot.jdautils.GuildSettingsManager GuildSettingsManager}
      * for the CommandClientImpl built using this builder.
      *
      * @param  manager

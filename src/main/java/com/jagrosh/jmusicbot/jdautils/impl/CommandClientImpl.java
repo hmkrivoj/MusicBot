@@ -24,7 +24,6 @@ import com.jagrosh.jmusicbot.jdautils.GuildSettingsManager;
 import com.jagrosh.jmusicbot.jdautils.GuildSettingsProvider;
 import com.jagrosh.jmusicbot.jdautils.utils.FixedSizeCache;
 import com.jagrosh.jmusicbot.jdautils.utils.SafeIdUtil;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
@@ -40,21 +39,9 @@ import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 import net.dv8tion.jda.internal.utils.Checks;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.FormBody;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -72,13 +59,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * An implementation of {@link com.jagrosh.jdautilities.command.CommandClient CommandClient} to be used by a bot.
+ * An implementation of {@link com.jagrosh.jmusicbot.jdautils.CommandClient CommandClient} to be used by a bot.
  *
  * <p>This is a listener usable with {@link net.dv8tion.jda.api.JDA JDA}, as it implements
  * {@link net.dv8tion.jda.api.hooks.EventListener EventListener} in order to catch and use different kinds of
  * {@link net.dv8tion.jda.api.events.Event Event}s. The primary usage of this is where the CommandClient implementation
  * takes {@link net.dv8tion.jda.api.events.message.MessageReceivedEvent MessageReceivedEvent}s, and automatically
- * processes arguments, and provide them to a {@link com.jagrosh.jdautilities.command.Command Command} for
+ * processes arguments, and provide them to a {@link com.jagrosh.jmusicbot.jdautils.Command Command} for
  * running and execution.
  *
  * @author John Grosh (jagrosh)
@@ -101,7 +88,6 @@ public class CommandClientImpl implements CommandClient
     private final String success;
     private final String warning;
     private final String error;
-    private final String botsKey, carbonKey;
     private final HashMap<String,OffsetDateTime> cooldowns;
     private final HashMap<String,Integer> uses;
     private final FixedSizeCache<Long, Set<Message>> linkMap;
@@ -115,10 +101,9 @@ public class CommandClientImpl implements CommandClient
 
     private String textPrefix;
     private CommandListener listener = null;
-    private int totalGuilds;
 
     public CommandClientImpl(String ownerId, String[] coOwnerIds, String prefix, String altprefix, Activity activity, OnlineStatus status, String serverInvite,
-                             String success, String warning, String error, String carbonKey, String botsKey, ArrayList<Command> commands,
+                             String success, String warning, String error, ArrayList<Command> commands,
                              boolean useHelp, boolean shutdownAutomatically, Consumer<CommandEvent> helpConsumer, String helpWord, ScheduledExecutorService executor,
                              int linkedCacheSize, AnnotatedModuleCompiler compiler, GuildSettingsManager manager)
     {
@@ -149,8 +134,6 @@ public class CommandClientImpl implements CommandClient
         this.success = success==null ? "": success;
         this.warning = warning==null ? "": warning;
         this.error = error==null ? "": error;
-        this.carbonKey = carbonKey;
-        this.botsKey = botsKey;
         this.commandIndex = new HashMap<>();
         this.commands = new ArrayList<>();
         this.cooldowns = new HashMap<>();
@@ -419,12 +402,6 @@ public class CommandClientImpl implements CommandClient
     }
 
     @Override
-    public int getTotalGuilds()
-    {
-        return totalGuilds;
-    }
-
-    @Override
     public String getHelpWord()
     {
         return helpWord;
@@ -471,15 +448,13 @@ public class CommandClientImpl implements CommandClient
 
         else if(event instanceof GuildJoinEvent)
         {
-            if(((GuildJoinEvent)event).getGuild().getSelfMember().getTimeJoined()
-                    .plusMinutes(10).isAfter(OffsetDateTime.now()))
-                sendStats(event.getJDA());
+            // do nothing
         }
-        else if(event instanceof GuildLeaveEvent)
-            sendStats(event.getJDA());
-        else if(event instanceof ReadyEvent)
+        else if(event instanceof GuildLeaveEvent) {
+            // do nothing
+        } else if(event instanceof ReadyEvent) {
             onReady((ReadyEvent)event);
-        else if(event instanceof ShutdownEvent)
+        } else if(event instanceof ShutdownEvent)
         {
             if(shutdownAutomatically)
                 shutdown();
@@ -502,8 +477,6 @@ public class CommandClientImpl implements CommandClient
         GuildSettingsManager<?> manager = getSettingsManager();
         if(manager != null)
             manager.init();
-
-        sendStats(event.getJDA());
     }
 
     private void onMessageReceived(MessageReceivedEvent event)
@@ -584,97 +557,6 @@ public class CommandClientImpl implements CommandClient
 
         if(listener != null)
             listener.onNonCommandMessage(event);
-    }
-
-    private void sendStats(JDA jda)
-    {
-        OkHttpClient client = jda.getHttpClient();
-
-        if(carbonKey != null)
-        {
-            FormBody.Builder bodyBuilder = new FormBody.Builder()
-                    .add("key", carbonKey)
-                    .add("servercount", Integer.toString(jda.getGuilds().size()));
-
-            if(jda.getShardInfo() != null)
-            {
-                bodyBuilder.add("shard_id", Integer.toString(jda.getShardInfo().getShardId()))
-                        .add("shard_count", Integer.toString(jda.getShardInfo().getShardTotal()));
-            }
-
-            Request.Builder builder = new Request.Builder()
-                    .post(bodyBuilder.build())
-                    .url("https://www.carbonitex.net/discord/data/botdata.php");
-
-            client.newCall(builder.build()).enqueue(new Callback()
-            {
-                @Override
-                public void onResponse(Call call, Response response)
-                {
-                    LOG.info("Successfully send information to carbonitex.net");
-                    response.close();
-                }
-
-                @Override
-                public void onFailure(Call call, IOException e)
-                {
-                    LOG.error("Failed to send information to carbonitex.net ", e);
-                }
-            });
-        }
-
-        if(botsKey != null)
-        {
-            JSONObject body = new JSONObject().put("guildCount", jda.getGuilds().size());
-            if(jda.getShardInfo() != null)
-            {
-                body.put("shardId", jda.getShardInfo().getShardId())
-                        .put("shardCount", jda.getShardInfo().getShardTotal());
-            }
-
-            Request.Builder builder = new Request.Builder()
-                    .post(RequestBody.create(MediaType.parse("application/json"), body.toString()))
-                    .url("https://discord.bots.gg/api/v1/bots/" + jda.getSelfUser().getId() + "/stats")
-                    .header("Authorization", botsKey)
-                    .header("Content-Type", "application/json");
-
-            client.newCall(builder.build()).enqueue(new Callback()
-            {
-                @Override
-                public void onResponse(Call call, Response response) throws IOException
-                {
-                    if(response.isSuccessful())
-                    {
-                        LOG.info("Successfully sent information to discord.bots.gg");
-                        try(Reader reader = response.body().charStream())
-                        {
-                            totalGuilds = new JSONObject(new JSONTokener(reader)).getInt("guildCount");
-                        }
-                        catch(Exception ex)
-                        {
-                            LOG.error("Failed to retrieve bot shard information from discord.bots.gg ", ex);
-                        }
-                    }
-                    else
-                        LOG.error("Failed to send information to discord.bots.gg: "+response.body().string());
-                    response.close();
-                }
-
-                @Override
-                public void onFailure(Call call, IOException e)
-                {
-                    LOG.error("Failed to send information to discord.bots.gg ", e);
-                }
-            });
-        }
-        else if (jda.getShardManager() != null)
-        {
-            totalGuilds = (int) jda.getShardManager().getGuildCache().size();
-        }
-        else
-        {
-            totalGuilds = (int) jda.getGuildCache().size();
-        }
     }
 
     private void onMessageDelete(GuildMessageDeleteEvent event)

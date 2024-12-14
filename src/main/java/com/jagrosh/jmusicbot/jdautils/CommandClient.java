@@ -386,32 +386,6 @@ public interface CommandClient extends EventListener
     String getServerInvite();
 
     /**
-     * Gets an a recently updated count of all the {@link net.dv8tion.jda.api.entities.Guild Guild}s
-     * the bot is connected to on all shards.
-     *
-     * <p><b>NOTE:</b> This may not always or should not be assumed accurate! Any time
-     * a shard joins or leaves a guild it will update the number retrieved by this method
-     * but will not update when other shards join or leave guilds. This means that shards
-     * will not always retrieve the same value. For instance:
-     * <ul>
-     *     <li>1) Shard A joins 10 Guilds</li>
-     *     <li>2) Shard B invokes this method</li>
-     *     <li>3) Shard A invokes this method</li>
-     * </ul>
-     * The number retrieved by Shard B will be that of the number retrieved by Shard A,
-     * minus 10 guilds because Shard B hasn't updated and accounted for those 10 guilds
-     * on Shard A.
-     *
-     * <p><b>This feature requires a Discord Bots API Key to be set!</b>
-     * <br>To set your Discord Bots API Key, you'll have to retrieve it from the
-     * <a href="http://bots.discord.pw/">Discord Bots</a> website.
-     *
-     * @return A recently updated count of all the Guilds the bot is connected to on
-     *         all shards.
-     */
-    int getTotalGuilds();
-
-    /**
      * Gets the word used to invoke a help DM.
      *
      * @return The help word
