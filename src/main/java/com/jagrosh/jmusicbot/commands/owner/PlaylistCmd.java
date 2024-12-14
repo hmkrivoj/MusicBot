@@ -17,10 +17,10 @@ package com.jagrosh.jmusicbot.commands.owner;
 
 import java.io.IOException;
 import java.util.List;
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.commands.OwnerCommand;
+import com.jagrosh.jmusicbot.jdautils.Command;
+import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.playlist.PlaylistLoader.Playlist;
 
 /**
@@ -48,7 +48,7 @@ public class PlaylistCmd extends OwnerCommand
     }
 
     @Override
-    public void execute(CommandEvent event) 
+    public void execute(CommandEvent event)
     {
         StringBuilder builder = new StringBuilder(event.getClient().getWarning()+" Playlist Management Commands:\n");
         for(Command cmd: this.children)

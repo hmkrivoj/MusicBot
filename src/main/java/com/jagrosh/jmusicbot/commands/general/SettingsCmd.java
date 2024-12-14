@@ -15,9 +15,9 @@
  */
 package com.jagrosh.jmusicbot.commands.general;
 
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jmusicbot.Bot;
+import com.jagrosh.jmusicbot.jdautils.Command;
+import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.settings.QueueType;
 import com.jagrosh.jmusicbot.settings.RepeatMode;
 import com.jagrosh.jmusicbot.settings.Settings;
@@ -32,7 +32,7 @@ import net.dv8tion.jda.api.entities.VoiceChannel;
  *
  * @author John Grosh <john.a.grosh@gmail.com>
  */
-public class SettingsCmd extends Command 
+public class SettingsCmd extends Command
 {
     private final static String EMOJI = "\uD83C\uDFA7"; // 🎧
     
@@ -45,7 +45,7 @@ public class SettingsCmd extends Command
     }
     
     @Override
-    protected void execute(CommandEvent event) 
+    protected void execute(CommandEvent event)
     {
         Settings s = event.getClient().getSettingsFor(event.getGuild());
         MessageBuilder builder = new MessageBuilder()

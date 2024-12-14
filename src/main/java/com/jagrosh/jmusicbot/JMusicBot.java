@@ -16,12 +16,6 @@
 package com.jagrosh.jmusicbot;
 
 import ch.qos.logback.classic.Level;
-import com.jagrosh.jdautilities.command.CommandClient;
-import com.jagrosh.jdautilities.command.CommandClientBuilder;
-import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
-import com.jagrosh.jdautilities.examples.command.AboutCommand;
-import com.jagrosh.jdautilities.examples.command.PingCommand;
-import com.jagrosh.jmusicbot.commands.admin.PrefixCmd;
 import com.jagrosh.jmusicbot.commands.admin.QueueTypeCmd;
 import com.jagrosh.jmusicbot.commands.admin.SetdjCmd;
 import com.jagrosh.jmusicbot.commands.admin.SettcCmd;
@@ -49,13 +43,10 @@ import com.jagrosh.jmusicbot.commands.music.ShuffleCmd;
 import com.jagrosh.jmusicbot.commands.music.SkipCmd;
 import com.jagrosh.jmusicbot.commands.owner.AutoplaylistCmd;
 import com.jagrosh.jmusicbot.commands.owner.DebugCmd;
-import com.jagrosh.jmusicbot.commands.owner.EvalCmd;
 import com.jagrosh.jmusicbot.commands.owner.PlaylistCmd;
-import com.jagrosh.jmusicbot.commands.owner.SetavatarCmd;
-import com.jagrosh.jmusicbot.commands.owner.SetgameCmd;
-import com.jagrosh.jmusicbot.commands.owner.SetnameCmd;
-import com.jagrosh.jmusicbot.commands.owner.SetstatusCmd;
-import com.jagrosh.jmusicbot.commands.owner.ShutdownCmd;
+import com.jagrosh.jmusicbot.jdautils.CommandClient;
+import com.jagrosh.jmusicbot.jdautils.CommandClientBuilder;
+import com.jagrosh.jmusicbot.jdautils.utils.EventWaiter;
 import com.jagrosh.jmusicbot.entities.Prompt;
 import com.jagrosh.jmusicbot.settings.SettingsManager;
 import com.jagrosh.jmusicbot.utils.OtherUtil;
@@ -71,7 +62,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
-import java.awt.*;
 import java.util.Arrays;
 
 /**
@@ -184,13 +174,6 @@ public class JMusicBot
     
     private static CommandClient createCommandClient(BotConfig config, SettingsManager settings, Bot bot)
     {
-        // instantiate about command
-        AboutCommand aboutCommand = new AboutCommand(Color.BLUE.brighter(),
-                                "a music bot that is [easy to host yourself!](https://github.com/jagrosh/MusicBot)",
-                                new String[]{"High-quality music playback", "FairQueue™ Technology", "Easy to host yourself"},
-                                RECOMMENDED_PERMS);
-        aboutCommand.setIsAuthor(false);
-        aboutCommand.setReplacementCharacter("\uD83C\uDFB6"); // 🎶
         
         // set up the command client
         CommandClientBuilder cb = new CommandClientBuilder()
@@ -201,8 +184,7 @@ public class JMusicBot
                 .setHelpWord(config.getHelp())
                 .setLinkedCacheSize(200)
                 .setGuildSettingsManager(settings)
-                .addCommands(aboutCommand,
-                        new PingCommand(),
+                .addCommands(
                         new SettingsCmd(bot),
 
                         new NowplayingCmd(bot),
@@ -225,8 +207,7 @@ public class JMusicBot
                         new SkiptoCmd(bot),
                         new StopCmd(bot),
                         new VolumeCmd(bot),
-                        
-                        new PrefixCmd(bot),
+
                         new QueueTypeCmd(bot),
                         new SetdjCmd(bot),
                         new SkipratioCmd(bot),
@@ -235,17 +216,12 @@ public class JMusicBot
 
                         new AutoplaylistCmd(bot),
                         new DebugCmd(bot),
-                        new PlaylistCmd(bot),
-                        new SetavatarCmd(bot),
-                        new SetgameCmd(bot),
-                        new SetnameCmd(bot),
-                        new SetstatusCmd(bot),
-                        new ShutdownCmd(bot)
+                        new PlaylistCmd(bot)
                 );
         
         // enable eval if applicable
         if(config.useEval())
-            cb.addCommand(new EvalCmd(bot));
+            throw new UnsupportedOperationException();
         
         // set status if set in config
         if(config.getStatus() != OnlineStatus.UNKNOWN)
