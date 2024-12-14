@@ -61,11 +61,6 @@
             <artifactId>common</artifactId>
             <version>1.11.1</version>
         </dependency>
-        <dependency>
-            <groupId>com.dunctebot</groupId>
-            <artifactId>sourcemanagers</artifactId>
-            <version>1.9.0</version>
-        </dependency>
 
         <!-- Misc Internal Dependencies -->
         <dependency>
