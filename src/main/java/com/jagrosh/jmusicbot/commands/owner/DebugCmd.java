@@ -69,9 +69,7 @@ public class DebugCmd extends OwnerCommand {
         .append("\n  SongInStatus = ")
         .append(bot.getConfig().getSongInStatus())
         .append("\n  StayInChannel = ")
-        .append(bot.getConfig().getStay())
-        .append("\n  UseEval = ")
-        .append(bot.getConfig().useEval());
+        .append(bot.getConfig().getStay());
     sb.append("\n\nDependency Information:")
         .append("\n  JDA Version = ")
         .append(JDAInfo.VERSION)

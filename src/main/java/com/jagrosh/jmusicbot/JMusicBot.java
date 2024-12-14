@@ -247,9 +247,6 @@ public class JMusicBot {
                 new DebugCmd(bot),
                 new PlaylistCmd(bot));
 
-    // enable eval if applicable
-    if (config.useEval()) throw new UnsupportedOperationException();
-
     // set status if set in config
     if (config.getStatus() != OnlineStatus.UNKNOWN) cb.setStatus(config.getStatus());
 

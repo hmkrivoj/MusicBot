@@ -48,9 +48,8 @@ public class BotConfig {
       warningEmoji,
       errorEmoji,
       loadingEmoji,
-      searchingEmoji,
-      evalEngine;
-  private boolean stayInChannel, songInGame, npImages, useEval, dbots;
+      searchingEmoji;
+  private boolean stayInChannel, songInGame, npImages;
   private long owner, maxSeconds, aloneTimeUntilStop;
   private int maxYTPlaylistPages;
   private double skipratio;
@@ -93,8 +92,6 @@ public class BotConfig {
       songInGame = config.getBoolean("songinstatus");
       npImages = config.getBoolean("npimages");
       logLevel = config.getString("loglevel");
-      useEval = config.getBoolean("eval");
-      evalEngine = config.getString("evalengine");
       maxSeconds = config.getLong("maxtime");
       maxYTPlaylistPages = config.getInt("maxytplaylistpages");
       aloneTimeUntilStop = config.getLong("alonetimeuntilstop");
@@ -102,7 +99,6 @@ public class BotConfig {
       aliases = config.getConfig("aliases");
       transforms = config.getConfig("transforms");
       skipratio = config.getDouble("skipratio");
-      dbots = owner == 113156185389092864L;
 
       // we may need to write a new config file
       boolean write = false;
@@ -302,20 +298,8 @@ public class BotConfig {
     return playlistsFolder;
   }
 
-  public boolean getDBots() {
-    return dbots;
-  }
-
   public String getLogLevel() {
     return logLevel;
-  }
-
-  public boolean useEval() {
-    return useEval;
-  }
-
-  public String getEvalEngine() {
-    return evalEngine;
   }
 
   public boolean useNPImages() {
