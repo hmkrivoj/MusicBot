@@ -21,7 +21,6 @@ import net.dv8tion.jda.api.hooks.EventListener;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.function.Function;
 
 /**
  * A Bot Client interface implemented on objects used to hold bot data.
