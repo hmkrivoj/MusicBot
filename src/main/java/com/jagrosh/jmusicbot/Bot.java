@@ -15,20 +15,20 @@
  */
 package com.jagrosh.jmusicbot;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jmusicbot.audio.AloneInVoiceHandler;
 import com.jagrosh.jmusicbot.audio.AudioHandler;
 import com.jagrosh.jmusicbot.audio.NowplayingHandler;
 import com.jagrosh.jmusicbot.audio.PlayerManager;
-import com.jagrosh.jmusicbot.gui.GUI;
 import com.jagrosh.jmusicbot.playlist.PlaylistLoader;
 import com.jagrosh.jmusicbot.settings.SettingsManager;
-import java.util.Objects;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
+
+import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  *
@@ -47,7 +47,6 @@ public class Bot
     
     private boolean shuttingDown = false;
     private JDA jda;
-    private GUI gui;
     
     public Bot(EventWaiter waiter, BotConfig config, SettingsManager settings)
     {
@@ -143,8 +142,6 @@ public class Bot
             });
             jda.shutdown();
         }
-        if(gui!=null)
-            gui.dispose();
         System.exit(0);
     }
 
@@ -152,9 +149,5 @@ public class Bot
     {
         this.jda = jda;
     }
-    
-    public void setGUI(GUI gui)
-    {
-        this.gui = gui;
-    }
+
 }
