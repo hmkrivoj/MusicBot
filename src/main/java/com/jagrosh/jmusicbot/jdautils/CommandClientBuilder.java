@@ -360,23 +360,6 @@ public class CommandClientBuilder
     }
     
     /**
-     * This method has been deprecated as the new(ish) ratelimit system is more complex than we'd like to
-     * implement in JDA-Utils. Considering using some other library which correctly handles the ratelimits
-     * for this service.
-     * 
-     * @param  key
-     *         A Discord Bot List API key
-     *         
-     * @return This builder
-     */
-    @Deprecated
-    public CommandClientBuilder setDiscordBotListKey(String key)
-    {
-        // this.botsOrgKey = key;
-        return this;
-    }
-    
-    /**
      * Sets the {@link com.jagrosh.jmusicbot.jdautils.CommandListener CommandListener} for the
      * {@link com.jagrosh.jmusicbot.jdautils.impl.CommandClientImpl CommandClientImpl}.
      * 
