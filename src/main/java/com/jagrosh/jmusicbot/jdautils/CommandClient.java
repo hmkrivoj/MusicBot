@@ -182,49 +182,6 @@ public interface CommandClient extends EventListener
     void removeCommand(String name);
 
     /**
-     * Compiles the provided {@link java.lang.Object Object} annotated with {@link
-     * com.jagrosh.jdautilities.command.annotation.JDACommand.Module JDACommand.Module} into a {@link java.util.List
-     * List} of {@link com.jagrosh.jdautilities.command.Command Command}s and adds them to this CommandClient in
-     * the order they are listed.
-     *
-     * <p>This is done through the {@link AnnotatedModuleCompiler
-     * AnnotatedModuleCompiler} provided when building this CommandClient.
-     *
-     * @param  module
-     *         An object annotated with JDACommand.Module to compile into commands to be added.
-     *
-     * @throws java.lang.IllegalArgumentException
-     *         If the Command provided has a name or alias that has already been registered
-     */
-    void addAnnotatedModule(Object module);
-
-    /**
-     * Compiles the provided {@link java.lang.Object Object} annotated with {@link
-     * com.jagrosh.jdautilities.command.annotation.JDACommand.Module JDACommand.Module} into a {@link java.util.List
-     * List} of {@link com.jagrosh.jdautilities.command.Command Command}s and adds them to this CommandClient via
-     * the {@link java.util.function.Function Function} provided.
-     *
-     * <p>This is done through the {@link AnnotatedModuleCompiler
-     * AnnotatedModuleCompiler} provided when building this CommandClient.
-     *
-     * <p>The Function will {@link java.util.function.Function#apply(Object) apply} each {@link
-     * Command Command} in the compiled list and request an {@code int} in return.
-     * <br>Using this {@code int}, the command provided will be applied to the CommandClient via {@link
-     * CommandClient#addCommand(Command, int) CommandClient#addCommand(Command, int)}.
-     *
-     * @param  module
-     *         An object annotated with JDACommand.Module to compile into commands to be added.
-     * @param  mapFunction
-     *         The Function to get indexes for each compiled Command with when adding them to the CommandClient.
-     *
-     * @throws java.lang.ArrayIndexOutOfBoundsException
-     *         If {@code index < 0} or {@code index > size()}
-     * @throws java.lang.IllegalArgumentException
-     *         If the Command provided has a name or alias that has already been registered to an index
-     */
-    void addAnnotatedModule(Object module, Function<Command, Integer> mapFunction);
-
-    /**
      * Sets the {@link com.jagrosh.jdautilities.command.CommandListener CommandListener} to catch
      * command-related events thrown by this {@link com.jagrosh.jdautilities.command.CommandClient CommandClient}.
      *

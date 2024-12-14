@@ -21,7 +21,6 @@ import java.util.function.Consumer;
 
 import java.util.concurrent.ScheduledExecutorService;
 
-import com.jagrosh.jmusicbot.jdautils.impl.AnnotatedModuleCompilerImpl;
 import com.jagrosh.jmusicbot.jdautils.impl.CommandClientImpl;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -54,7 +53,6 @@ public class CommandClientBuilder
     private String helpWord;
     private ScheduledExecutorService executor;
     private int linkedCacheSize = 0;
-    private AnnotatedModuleCompiler compiler = new AnnotatedModuleCompilerImpl();
     private GuildSettingsManager manager = null;
 
     /**
@@ -69,7 +67,7 @@ public class CommandClientBuilder
     {
         CommandClient client = new CommandClientImpl(ownerId, coOwnerIds, prefix, altprefix, activity, status, serverInvite,
                                                      success, warning, error, new ArrayList<>(commands), useHelp,
-                                                     shutdownAutomatically, helpConsumer, helpWord, executor, linkedCacheSize, compiler, manager);
+                                                     shutdownAutomatically, helpConsumer, helpWord, executor, linkedCacheSize, manager);
         if(listener!=null)
             client.setListener(listener);
         return client;
@@ -291,71 +289,6 @@ public class CommandClientBuilder
     {
         for(Command command: commands)
             this.addCommand(command);
-        return this;
-    }
-
-    /**
-     * Adds an annotated command module to the
-     * {@link com.jagrosh.jmusicbot.jdautils.impl.CommandClientImpl CommandClientImpl} for this session.
-     *
-     * <p>For more information on annotated command modules, see
-     * {@link com.jagrosh.jmusicbot.jdautils.annotation the annotation package} documentation.
-     *
-     * @param  module
-     *         The annotated command module to add
-     *
-     * @return This builder
-     *
-     * @see    AnnotatedModuleCompiler
-     * @see    com.jagrosh.jmusicbot.jdautils.annotation.JDACommand
-     */
-    public CommandClientBuilder addAnnotatedModule(Object module)
-    {
-        this.commands.addAll(compiler.compile(module));
-        return this;
-    }
-
-    /**
-     * Adds multiple annotated command modules to the
-     * {@link com.jagrosh.jmusicbot.jdautils.impl.CommandClientImpl CommandClientImpl} for this session.
-     * <br>This is the same as calling {@link com.jagrosh.jmusicbot.jdautils.CommandClientBuilder#addAnnotatedModule(Object)} multiple times.
-     *
-     * <p>For more information on annotated command modules, see
-     * {@link com.jagrosh.jmusicbot.jdautils.annotation the annotation package} documentation.
-     *
-     * @param  modules
-     *         The annotated command modules to add
-     *
-     * @return This builder
-     *
-     * @see    AnnotatedModuleCompiler
-     * @see    com.jagrosh.jmusicbot.jdautils.annotation.JDACommand
-     */
-    public CommandClientBuilder addAnnotatedModules(Object... modules)
-    {
-        for(Object command : modules)
-            addAnnotatedModule(command);
-        return this;
-    }
-
-    /**
-     * Sets the {@link com.jagrosh.jmusicbot.jdautils.AnnotatedModuleCompiler AnnotatedModuleCompiler}
-     * for this CommandClientBuilder.
-     *
-     * <p>If not set this will be the default implementation found {@link
-     * com.jagrosh.jmusicbot.jdautils.impl.AnnotatedModuleCompilerImpl here}.
-     *
-     * @param  compiler
-     *         The AnnotatedModuleCompiler to use
-     *
-     * @return This builder
-     *
-     * @see    AnnotatedModuleCompiler
-     * @see    com.jagrosh.jmusicbot.jdautils.annotation.JDACommand
-     */
-    public CommandClientBuilder setAnnotatedCompiler(AnnotatedModuleCompiler compiler)
-    {
-        this.compiler = compiler;
         return this;
     }
     

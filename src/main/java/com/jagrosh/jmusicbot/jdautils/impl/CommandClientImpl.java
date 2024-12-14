@@ -15,7 +15,6 @@
  */
 package com.jagrosh.jmusicbot.jdautils.impl;
 
-import com.jagrosh.jmusicbot.jdautils.AnnotatedModuleCompiler;
 import com.jagrosh.jmusicbot.jdautils.Command;
 import com.jagrosh.jmusicbot.jdautils.CommandClient;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
@@ -55,7 +54,6 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -96,7 +94,6 @@ public class CommandClientImpl implements CommandClient
     private final Consumer<CommandEvent> helpConsumer;
     private final String helpWord;
     private final ScheduledExecutorService executor;
-    private final AnnotatedModuleCompiler compiler;
     private final GuildSettingsManager manager;
 
     private String textPrefix;
@@ -105,7 +102,7 @@ public class CommandClientImpl implements CommandClient
     public CommandClientImpl(String ownerId, String[] coOwnerIds, String prefix, String altprefix, Activity activity, OnlineStatus status, String serverInvite,
                              String success, String warning, String error, ArrayList<Command> commands,
                              boolean useHelp, boolean shutdownAutomatically, Consumer<CommandEvent> helpConsumer, String helpWord, ScheduledExecutorService executor,
-                             int linkedCacheSize, AnnotatedModuleCompiler compiler, GuildSettingsManager manager)
+                             int linkedCacheSize, GuildSettingsManager manager)
     {
         Checks.check(ownerId != null, "Owner ID was set null or not set! Please provide an User ID to register as the owner!");
 
@@ -143,7 +140,6 @@ public class CommandClientImpl implements CommandClient
         this.shutdownAutomatically = shutdownAutomatically;
         this.helpWord = helpWord==null ? "help" : helpWord;
         this.executor = executor==null ? Executors.newSingleThreadScheduledExecutor() : executor;
-        this.compiler = compiler;
         this.manager = manager;
         this.helpConsumer = helpConsumer==null ? (event) -> {
             StringBuilder builder = new StringBuilder("**"+event.getSelfUser().getName()+"** commands:\n");
@@ -307,18 +303,6 @@ public class CommandClientImpl implements CommandClient
             commandIndex.entrySet().stream().filter(entry -> entry.getValue()>targetIndex).collect(Collectors.toList())
                     .forEach(entry -> commandIndex.put(entry.getKey(), entry.getValue()-1));
         }
-    }
-
-    @Override
-    public void addAnnotatedModule(Object module)
-    {
-        compiler.compile(module).forEach(this::addCommand);
-    }
-
-    @Override
-    public void addAnnotatedModule(Object module, Function<Command, Integer> mapFunction)
-    {
-        compiler.compile(module).forEach(command -> addCommand(command, mapFunction.apply(command)));
     }
 
     @Override
