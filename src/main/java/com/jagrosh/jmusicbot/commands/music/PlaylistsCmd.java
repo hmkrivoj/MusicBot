@@ -15,48 +15,48 @@
  */
 package com.jagrosh.jmusicbot.commands.music;
 
-import java.util.List;
 import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.commands.MusicCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
+import java.util.List;
 
 /**
- *
  * @author John Grosh <john.a.grosh@gmail.com>
  */
-public class PlaylistsCmd extends MusicCommand 
-{
-    public PlaylistsCmd(Bot bot)
-    {
-        super(bot);
-        this.name = "playlists";
-        this.help = "shows the available playlists";
-        this.aliases = bot.getConfig().getAliases(this.name);
-        this.guildOnly = true;
-        this.beListening = false;
+public class PlaylistsCmd extends MusicCommand {
+  public PlaylistsCmd(Bot bot) {
+    super(bot);
+    this.name = "playlists";
+    this.help = "shows the available playlists";
+    this.aliases = bot.getConfig().getAliases(this.name);
+    this.guildOnly = true;
+    this.beListening = false;
+  }
+
+  @Override
+  public void doCommand(CommandEvent event) {
+    if (!bot.getPlaylistLoader().folderExists()) bot.getPlaylistLoader().createFolder();
+    if (!bot.getPlaylistLoader().folderExists()) {
+      event.reply(
+          event.getClient().getWarning()
+              + " Playlists folder does not exist and could not be created!");
+      return;
     }
-    
-    @Override
-    public void doCommand(CommandEvent event)
-    {
-        if(!bot.getPlaylistLoader().folderExists())
-            bot.getPlaylistLoader().createFolder();
-        if(!bot.getPlaylistLoader().folderExists())
-        {
-            event.reply(event.getClient().getWarning()+" Playlists folder does not exist and could not be created!");
-            return;
-        }
-        List<String> list = bot.getPlaylistLoader().getPlaylistNames();
-        if(list==null)
-            event.reply(event.getClient().getError()+" Failed to load available playlists!");
-        else if(list.isEmpty())
-            event.reply(event.getClient().getWarning()+" There are no playlists in the Playlists folder!");
-        else
-        {
-            StringBuilder builder = new StringBuilder(event.getClient().getSuccess()+" Available playlists:\n");
-            list.forEach(str -> builder.append("`").append(str).append("` "));
-            builder.append("\nType `").append(event.getClient().getTextualPrefix()).append("play playlist <name>` to play a playlist");
-            event.reply(builder.toString());
-        }
+    List<String> list = bot.getPlaylistLoader().getPlaylistNames();
+    if (list == null)
+      event.reply(event.getClient().getError() + " Failed to load available playlists!");
+    else if (list.isEmpty())
+      event.reply(
+          event.getClient().getWarning() + " There are no playlists in the Playlists folder!");
+    else {
+      StringBuilder builder =
+          new StringBuilder(event.getClient().getSuccess() + " Available playlists:\n");
+      list.forEach(str -> builder.append("`").append(str).append("` "));
+      builder
+          .append("\nType `")
+          .append(event.getClient().getTextualPrefix())
+          .append("play playlist <name>` to play a playlist");
+      event.reply(builder.toString());
     }
+  }
 }

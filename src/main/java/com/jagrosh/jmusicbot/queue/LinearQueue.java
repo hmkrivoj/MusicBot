@@ -16,22 +16,17 @@
 package com.jagrosh.jmusicbot.queue;
 
 /**
- *
  * @author Wolfgang Schwendtbauer
  * @param <T>
  */
-public class LinearQueue<T extends Queueable> extends AbstractQueue<T>
-{
-    public LinearQueue(AbstractQueue<T> queue)
-    {
-        super(queue);
-    }
+public class LinearQueue<T extends Queueable> extends AbstractQueue<T> {
+  public LinearQueue(AbstractQueue<T> queue) {
+    super(queue);
+  }
 
-    @Override
-    public int add(T item)
-    {
-        list.add(item);
-        return list.size() - 1;
-    }
-
+  @Override
+  public int add(T item) {
+    list.add(item);
+    return list.size() - 1;
+  }
 }

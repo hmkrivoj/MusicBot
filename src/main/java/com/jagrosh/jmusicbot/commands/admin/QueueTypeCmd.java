@@ -23,53 +23,48 @@ import com.jagrosh.jmusicbot.settings.QueueType;
 import com.jagrosh.jmusicbot.settings.Settings;
 
 /**
- *
  * @author Wolfgang Schwendtbauer
  */
-public class QueueTypeCmd extends AdminCommand
-{
-    public QueueTypeCmd(Bot bot)
-    {
-        super();
-        this.name = "queuetype";
-        this.help = "changes the queue type";
-        this.arguments = "[" + String.join("|", QueueType.getNames()) + "]";
-        this.aliases = bot.getConfig().getAliases(this.name);
+public class QueueTypeCmd extends AdminCommand {
+  public QueueTypeCmd(Bot bot) {
+    super();
+    this.name = "queuetype";
+    this.help = "changes the queue type";
+    this.arguments = "[" + String.join("|", QueueType.getNames()) + "]";
+    this.aliases = bot.getConfig().getAliases(this.name);
+  }
+
+  @Override
+  protected void execute(CommandEvent event) {
+    String args = event.getArgs();
+    QueueType value;
+    Settings settings = event.getClient().getSettingsFor(event.getGuild());
+
+    if (args.isEmpty()) {
+      QueueType currentType = settings.getQueueType();
+      event.reply(
+          currentType.getEmoji()
+              + " Current queue type is: `"
+              + currentType.getUserFriendlyName()
+              + "`.");
+      return;
     }
 
-    @Override
-    protected void execute(CommandEvent event)
-    {
-        String args = event.getArgs();
-        QueueType value;
-        Settings settings = event.getClient().getSettingsFor(event.getGuild());
-
-        if (args.isEmpty())
-        {
-            QueueType currentType = settings.getQueueType();
-            event.reply(currentType.getEmoji() + " Current queue type is: `" + currentType.getUserFriendlyName() + "`.");
-            return;
-        }
-
-        try
-        {
-            value = QueueType.valueOf(args.toUpperCase());
-        }
-        catch (IllegalArgumentException e)
-        {
-            event.replyError("Invalid queue type. Valid types are: [" + String.join("|", QueueType.getNames()) + "]");
-            return;
-        }
-
-        if (settings.getQueueType() != value)
-        {
-            settings.setQueueType(value);
-
-            AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
-            if (handler != null)
-                handler.setQueueType(value);
-        }
-
-        event.reply(value.getEmoji() + " Queue type was set to `" + value.getUserFriendlyName() + "`.");
+    try {
+      value = QueueType.valueOf(args.toUpperCase());
+    } catch (IllegalArgumentException e) {
+      event.replyError(
+          "Invalid queue type. Valid types are: [" + String.join("|", QueueType.getNames()) + "]");
+      return;
     }
+
+    if (settings.getQueueType() != value) {
+      settings.setQueueType(value);
+
+      AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
+      if (handler != null) handler.setQueueType(value);
+    }
+
+    event.reply(value.getEmoji() + " Queue type was set to `" + value.getUserFriendlyName() + "`.");
+  }
 }

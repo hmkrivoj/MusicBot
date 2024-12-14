@@ -15,76 +15,63 @@
  */
 package com.jagrosh.jmusicbot.entities;
 
+import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Scanner;
-
 /**
- *
  * @author John Grosh (john.a.grosh@gmail.com)
  */
-public class Prompt
-{
-    private final String title;
+public class Prompt {
+  private final String title;
 
-    private boolean noprompt;
-    private Scanner scanner;
-    
-    public Prompt(String title)
-    {
-        this(title, "true".equalsIgnoreCase(System.getProperty("noprompt")));
+  private boolean noprompt;
+  private Scanner scanner;
+
+  public Prompt(String title) {
+    this(title, "true".equalsIgnoreCase(System.getProperty("noprompt")));
+  }
+
+  public Prompt(String title, boolean noprompt) {
+    this.title = title;
+    this.noprompt = noprompt;
+  }
+
+  public void alert(Level level, String context, String message) {
+    Logger log = LoggerFactory.getLogger(context);
+    switch (level) {
+      case INFO:
+        log.info(message);
+        break;
+      case WARNING:
+        log.warn(message);
+        break;
+      case ERROR:
+        log.error(message);
+        break;
+      default:
+        log.info(message);
+        break;
     }
-    
-    public Prompt(String title, boolean noprompt)
-    {
-        this.title = title;
-        this.noprompt = noprompt;
+  }
+
+  public String prompt(String content) {
+    if (noprompt) return null;
+    if (scanner == null) scanner = new Scanner(System.in);
+    try {
+      System.out.println(content);
+      if (scanner.hasNextLine()) return scanner.nextLine();
+      return null;
+    } catch (Exception e) {
+      alert(Level.ERROR, title, "Unable to read input from command line.");
+      e.printStackTrace();
+      return null;
     }
-    
-    public void alert(Level level, String context, String message)
-    {
-        Logger log = LoggerFactory.getLogger(context);
-        switch(level)
-        {
-            case INFO:
-                log.info(message);
-                break;
-            case WARNING:
-                log.warn(message);
-                break;
-            case ERROR:
-                log.error(message);
-                break;
-            default:
-                log.info(message);
-                break;
-        }
-    }
-    
-    public String prompt(String content)
-    {
-        if(noprompt)
-            return null;
-        if (scanner == null)
-            scanner = new Scanner(System.in);
-        try
-        {
-            System.out.println(content);
-            if(scanner.hasNextLine())
-                return scanner.nextLine();
-            return null;
-        }
-        catch(Exception e)
-        {
-            alert(Level.ERROR, title, "Unable to read input from command line.");
-            e.printStackTrace();
-            return null;
-        }
-    }
-    
-    public enum Level
-    {
-        INFO, WARNING, ERROR;
-    }
+  }
+
+  public enum Level {
+    INFO,
+    WARNING,
+    ERROR;
+  }
 }

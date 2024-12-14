@@ -23,27 +23,29 @@ import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.utils.FormatUtil;
 
 /**
- *
  * @author John Grosh <john.a.grosh@gmail.com>
  */
-public class ForceskipCmd extends DJCommand 
-{
-    public ForceskipCmd(Bot bot)
-    {
-        super(bot);
-        this.name = "forceskip";
-        this.help = "skips the current song";
-        this.aliases = bot.getConfig().getAliases(this.name);
-        this.bePlaying = true;
-    }
+public class ForceskipCmd extends DJCommand {
+  public ForceskipCmd(Bot bot) {
+    super(bot);
+    this.name = "forceskip";
+    this.help = "skips the current song";
+    this.aliases = bot.getConfig().getAliases(this.name);
+    this.bePlaying = true;
+  }
 
-    @Override
-    public void doCommand(CommandEvent event)
-    {
-        AudioHandler handler = (AudioHandler)event.getGuild().getAudioManager().getSendingHandler();
-        RequestMetadata rm = handler.getRequestMetadata();
-        event.reply(event.getClient().getSuccess()+" Skipped **"+handler.getPlayer().getPlayingTrack().getInfo().title
-                +"** "+(rm.getOwner() == 0L ? "(autoplay)" : "(requested by **" + FormatUtil.formatUsername(rm.user) + "**)"));
-        handler.getPlayer().stopTrack();
-    }
+  @Override
+  public void doCommand(CommandEvent event) {
+    AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
+    RequestMetadata rm = handler.getRequestMetadata();
+    event.reply(
+        event.getClient().getSuccess()
+            + " Skipped **"
+            + handler.getPlayer().getPlayingTrack().getInfo().title
+            + "** "
+            + (rm.getOwner() == 0L
+                ? "(autoplay)"
+                : "(requested by **" + FormatUtil.formatUsername(rm.user) + "**)"));
+    handler.getPlayer().stopTrack();
+  }
 }
