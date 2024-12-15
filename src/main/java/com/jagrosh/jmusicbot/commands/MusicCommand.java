@@ -57,7 +57,7 @@ public abstract class MusicCommand extends Command {
       return;
     }
     bot.getPlayerManager()
-        .setUpHandler(event.getGuild()); // no point constantly checking for this later
+        .getOrCreateAudioHandler(event.getGuild()); // no point constantly checking for this later
     if (bePlaying
         && !((AudioHandler) event.getGuild().getAudioManager().getSendingHandler())
             .isMusicPlaying(event.getJDA())) {

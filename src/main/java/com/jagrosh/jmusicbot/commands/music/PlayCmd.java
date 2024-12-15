@@ -25,6 +25,7 @@ import com.jagrosh.jmusicbot.jdautils.Command;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.jdautils.utils.ButtonMenu;
 import com.jagrosh.jmusicbot.playlist.PlaylistLoader.Playlist;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import com.jagrosh.jmusicbot.utils.FormatUtil;
 import com.jagrosh.jmusicbot.utils.TimeUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
@@ -47,14 +48,16 @@ public class PlayCmd extends MusicCommand {
   private static final String CANCEL = "\uD83D\uDEAB"; // 🚫
 
   private final String loadingEmoji;
+  private final AppConfiguration config;
 
-  public PlayCmd(Bot bot) {
+  public PlayCmd(Bot bot, AppConfiguration config) {
     super(bot);
-    this.loadingEmoji = bot.getConfig().getLoading();
+    this.config = config;
+    this.loadingEmoji = config.getLoading();
     this.name = "play";
     this.arguments = "<title|URL|subcommand>";
     this.help = "plays the provided song";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
     this.beListening = true;
     this.bePlaying = false;
     this.children = new Command[] {new PlaylistCmd(bot)};
@@ -123,7 +126,7 @@ public class PlayCmd extends MusicCommand {
     }
 
     private void loadSingle(AudioTrack track, AudioPlaylist playlist) {
-      if (bot.getConfig().calcIsTooLong(track)) {
+      if (config.calcIsTooLong(track)) {
         m.editMessage(
                 FormatUtil.filter(
                     event.getClient().getWarning()
@@ -132,7 +135,7 @@ public class PlayCmd extends MusicCommand {
                         + "**) is longer than the allowed maximum: `"
                         + TimeUtil.formatTime(track.getDuration())
                         + "` > `"
-                        + TimeUtil.formatTime(bot.getConfig().getMaxtime() * 1000)
+                        + TimeUtil.formatTime(config.getMaxtime() * 1000)
                         + "`"))
             .queue();
         return;
@@ -200,7 +203,7 @@ public class PlayCmd extends MusicCommand {
       playlist.getTracks().stream()
           .forEach(
               track -> {
-                if (!bot.getConfig().calcIsTooLong(track) && !track.equals(exclude)) {
+                if (!config.calcIsTooLong(track) && !track.equals(exclude)) {
                   AudioHandler handler =
                       (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
                   handler.addTrack(
@@ -244,7 +247,7 @@ public class PlayCmd extends MusicCommand {
                           + " All entries in this playlist "
                           + (playlist.getName() == null ? "" : "(**" + playlist.getName() + "**) ")
                           + "were longer than the allowed maximum (`"
-                          + bot.getConfig().getMaxtime()
+                          + config.getMaxtime()
                           + "`)"))
               .queue();
         } else {
@@ -262,7 +265,7 @@ public class PlayCmd extends MusicCommand {
                               ? "\n"
                                   + event.getClient().getWarning()
                                   + " Tracks longer than the allowed maximum (`"
-                                  + bot.getConfig().getMaxtime()
+                                  + config.getMaxtime()
                                   + "`) have been omitted."
                               : "")))
               .queue();
@@ -299,7 +302,7 @@ public class PlayCmd extends MusicCommand {
     public PlaylistCmd(Bot bot) {
       super(bot);
       this.name = "playlist";
-      this.aliases = bot.getConfig().getAliases().get(this.name);
+      this.aliases = config.getAliases().get(this.name);
       this.arguments = "<name>";
       this.help = "plays the provided playlist";
       this.beListening = true;

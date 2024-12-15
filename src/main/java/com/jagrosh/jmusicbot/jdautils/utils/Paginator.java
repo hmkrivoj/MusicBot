@@ -37,8 +37,8 @@ import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.internal.utils.Checks;
 
 /**
- * A {@link com.jagrosh.jmusicbot.jdautils.utils.Menu Menu} implementation that paginates a set of one or
- * more text items across one or more pages.
+ * A {@link com.jagrosh.jmusicbot.jdautils.utils.Menu Menu} implementation that paginates a set of
+ * one or more text items across one or more pages.
  *
  * <p>When displayed, a Paginator will add three reactions in the following order:
  *
@@ -391,7 +391,8 @@ public class Paginator extends Menu {
     private final List<String> strings = new LinkedList<>();
 
     /**
-     * Builds the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator} with this Builder.
+     * Builds the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator} with this
+     * Builder.
      *
      * @return The Paginator built from this Builder.
      * @throws java.lang.IllegalArgumentException If one of the following is violated:
@@ -548,9 +549,9 @@ public class Paginator extends Menu {
     }
 
     /**
-     * Sets whether the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator} will instantly
-     * timeout, and possibly run a provided {@link java.lang.Runnable Runnable}, if only a single
-     * slide is available to display.
+     * Sets whether the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator} will
+     * instantly timeout, and possibly run a provided {@link java.lang.Runnable Runnable}, if only a
+     * single slide is available to display.
      *
      * @param wait {@code true} if the Paginator will still generate
      * @return This builder
@@ -595,8 +596,8 @@ public class Paginator extends Menu {
     }
 
     /**
-     * Sets the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator}'s bulk-skip function to
-     * skip multiple pages using alternate forward and backwards
+     * Sets the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator}'s bulk-skip
+     * function to skip multiple pages using alternate forward and backwards
      *
      * @param bulkSkipNumber The number of pages to skip when the bulk-skip reactions are used.
      * @return This builder
@@ -607,8 +608,8 @@ public class Paginator extends Menu {
     }
 
     /**
-     * Sets the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator} to wrap from the last page
-     * to the first when traversing right and visa versa from the left.
+     * Sets the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator} to wrap from the
+     * last page to the first when traversing right and visa versa from the left.
      *
      * @param wrapPageEnds {@code true} to enable wrapping.
      * @return This builder
@@ -619,8 +620,8 @@ public class Paginator extends Menu {
     }
 
     /**
-     * Sets the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator} to allow a page number to
-     * be specified by a user via text.
+     * Sets the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator} to allow a page
+     * number to be specified by a user via text.
      *
      * <p>Note that setting this doesn't mean that left and right text inputs provided via {@link
      * Paginator.Builder#setLeftRightText(String, String)} will be invalidated if they were set
@@ -636,8 +637,8 @@ public class Paginator extends Menu {
     }
 
     /**
-     * Sets the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator} to traverse left or right
-     * when a provided text input is sent in the form of a Message to the {@link
+     * Sets the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator} to traverse left or
+     * right when a provided text input is sent in the form of a Message to the {@link
      * net.dv8tion.jda.api.entities.GuildChannel GuildChannel} the menu is displayed in.
      *
      * <p>If one or both these parameters are provided {@code null} this resets both of them and

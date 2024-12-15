@@ -16,6 +16,7 @@
 package com.jagrosh.jmusicbot.audio;
 
 import com.jagrosh.jmusicbot.Bot;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import com.sedmelluq.discord.lavaplayer.container.MediaContainerRegistry;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -31,27 +32,30 @@ import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import dev.lavalink.youtube.clients.Web;
 import net.dv8tion.jda.api.entities.Guild;
+import org.springframework.stereotype.Component;
 
 /**
  * @author John Grosh (john.a.grosh@gmail.com)
  */
+@Component
 public class PlayerManager extends DefaultAudioPlayerManager {
   private final Bot bot;
+  private final AppConfiguration config;
 
-  public PlayerManager(Bot bot) {
+  public PlayerManager(Bot bot, AppConfiguration config) {
     this.bot = bot;
-  }
+    this.bot.setPlayers(this);
+    this.config = config;
 
-  public void init() {
-    TransformativeAudioSourceManager.createTransforms(bot.getConfig().getTransforms())
+    TransformativeAudioSourceManager.createTransforms(config.getTransforms())
         .forEach(t -> registerSourceManager(t));
 
-    if (bot.getConfig().getPoToken() != null && bot.getConfig().getVisitorData() != null) {
-      Web.setPoTokenAndVisitorData(bot.getConfig().getPoToken(), bot.getConfig().getVisitorData());
+    if (config.getPoToken() != null && config.getVisitorData() != null) {
+      Web.setPoTokenAndVisitorData(config.getPoToken(), config.getVisitorData());
     }
 
     YoutubeAudioSourceManager yt = new YoutubeAudioSourceManager(true);
-    yt.setPlaylistPageCount(bot.getConfig().getMaxytplaylistpages());
+    yt.setPlaylistPageCount(config.getMaxytplaylistpages());
     registerSourceManager(yt);
 
     registerSourceManager(SoundCloudAudioSourceManager.createDefault());
@@ -74,12 +78,12 @@ public class PlayerManager extends DefaultAudioPlayerManager {
     return guild.getAudioManager().getSendingHandler() != null;
   }
 
-  public AudioHandler setUpHandler(Guild guild) {
+  public AudioHandler getOrCreateAudioHandler(Guild guild) {
     AudioHandler handler;
     if (guild.getAudioManager().getSendingHandler() == null) {
       AudioPlayer player = createPlayer();
       player.setVolume(bot.getSettingsManager().getSettings(guild).getVolume());
-      handler = new AudioHandler(this, guild, player);
+      handler = new AudioHandler(this, guild, player, config);
       player.addListener(handler);
       guild.getAudioManager().setSendingHandler(handler);
     } else handler = (AudioHandler) guild.getAudioManager().getSendingHandler();

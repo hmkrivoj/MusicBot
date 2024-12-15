@@ -15,12 +15,12 @@
  */
 package com.jagrosh.jmusicbot.commands.general;
 
-import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.jdautils.Command;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.settings.QueueType;
 import com.jagrosh.jmusicbot.settings.RepeatMode;
 import com.jagrosh.jmusicbot.settings.Settings;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import com.jagrosh.jmusicbot.utils.FormatUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
@@ -36,10 +36,10 @@ import org.springframework.stereotype.Component;
 public class SettingsCmd extends Command {
   private static final String EMOJI = "\uD83C\uDFA7"; // 🎧
 
-  public SettingsCmd(Bot bot) {
+  public SettingsCmd(AppConfiguration config) {
     this.name = "settings";
     this.help = "shows the bots settings";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
     this.guildOnly = true;
   }
 

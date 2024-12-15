@@ -18,6 +18,7 @@ package com.jagrosh.jmusicbot.commands.music;
 import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.commands.MusicCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
@@ -26,11 +27,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class PlaylistsCmd extends MusicCommand {
-  public PlaylistsCmd(Bot bot) {
+  public PlaylistsCmd(Bot bot, AppConfiguration config) {
     super(bot);
     this.name = "playlists";
     this.help = "shows the available playlists";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
     this.guildOnly = true;
     this.beListening = false;
   }

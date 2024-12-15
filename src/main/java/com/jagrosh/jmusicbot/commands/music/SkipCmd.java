@@ -20,6 +20,7 @@ import com.jagrosh.jmusicbot.audio.AudioHandler;
 import com.jagrosh.jmusicbot.audio.RequestMetadata;
 import com.jagrosh.jmusicbot.commands.MusicCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import com.jagrosh.jmusicbot.utils.FormatUtil;
 import org.springframework.stereotype.Component;
 
@@ -28,11 +29,14 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SkipCmd extends MusicCommand {
-  public SkipCmd(Bot bot) {
+  private final AppConfiguration config;
+
+  public SkipCmd(Bot bot, AppConfiguration config) {
     super(bot);
+    this.config = config;
     this.name = "skip";
     this.help = "votes to skip the current song";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
     this.beListening = true;
     this.bePlaying = true;
   }
@@ -43,7 +47,7 @@ public class SkipCmd extends MusicCommand {
     RequestMetadata rm = handler.getRequestMetadata();
     double skipRatio = bot.getSettingsManager().getSettings(event.getGuild()).getSkipRatio();
     if (skipRatio == -1) {
-      skipRatio = bot.getConfig().getSkipratio();
+      skipRatio = config.getSkipratio();
     }
     if (event.getAuthor().getIdLong() == rm.getOwner() || skipRatio == 0) {
       event.reply(

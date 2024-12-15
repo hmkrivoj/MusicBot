@@ -19,6 +19,7 @@ import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.commands.OwnerCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.settings.Settings;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,13 +29,13 @@ import org.springframework.stereotype.Component;
 public class AutoplaylistCmd extends OwnerCommand {
   private final Bot bot;
 
-  public AutoplaylistCmd(Bot bot) {
+  public AutoplaylistCmd(Bot bot, AppConfiguration config) {
     this.bot = bot;
     this.guildOnly = true;
     this.name = "autoplaylist";
     this.arguments = "<name|NONE>";
     this.help = "sets the default playlist for the server";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
   }
 
   @Override

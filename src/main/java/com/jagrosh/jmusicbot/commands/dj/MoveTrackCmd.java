@@ -6,18 +6,19 @@ import com.jagrosh.jmusicbot.audio.QueuedTrack;
 import com.jagrosh.jmusicbot.commands.DJCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.queue.AbstractQueue;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import org.springframework.stereotype.Component;
 
 /** Command that provides users the ability to move a track in the playlist. */
 @Component
 public class MoveTrackCmd extends DJCommand {
 
-  public MoveTrackCmd(Bot bot) {
+  public MoveTrackCmd(Bot bot, AppConfiguration config) {
     super(bot);
     this.name = "movetrack";
     this.help = "move a track in the current queue to a different position";
     this.arguments = "<from> <to>";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
     this.bePlaying = true;
   }
 

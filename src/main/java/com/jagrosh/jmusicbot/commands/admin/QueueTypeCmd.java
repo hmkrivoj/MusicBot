@@ -15,12 +15,12 @@
  */
 package com.jagrosh.jmusicbot.commands.admin;
 
-import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.audio.AudioHandler;
 import com.jagrosh.jmusicbot.commands.AdminCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.settings.QueueType;
 import com.jagrosh.jmusicbot.settings.Settings;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,12 +28,12 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class QueueTypeCmd extends AdminCommand {
-  public QueueTypeCmd(Bot bot) {
+  public QueueTypeCmd(AppConfiguration config) {
     super();
     this.name = "queuetype";
     this.help = "changes the queue type";
     this.arguments = "[" + String.join("|", QueueType.getNames()) + "]";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
   }
 
   @Override

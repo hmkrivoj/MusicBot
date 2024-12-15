@@ -15,10 +15,10 @@
  */
 package com.jagrosh.jmusicbot.commands.owner;
 
-import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.commands.OwnerCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.jdautils.utils.JDAUtilitiesInfo;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import com.sedmelluq.discord.lavaplayer.tools.PlayerLibrary;
 import net.dv8tion.jda.api.JDAInfo;
 import net.dv8tion.jda.api.Permission;
@@ -41,13 +41,13 @@ public class DebugCmd extends OwnerCommand {
     "os.name"
   };
 
-  private final Bot bot;
+  private final AppConfiguration config;
 
-  public DebugCmd(Bot bot) {
-    this.bot = bot;
+  public DebugCmd(AppConfiguration config) {
+    this.config = config;
     this.name = "debug";
     this.help = "shows debug info";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
     this.guildOnly = false;
   }
 
@@ -59,19 +59,19 @@ public class DebugCmd extends OwnerCommand {
       sb.append("\n  ").append(key).append(" = ").append(System.getProperty(key));
     sb.append("\n\nJMusicBot Information:")
         .append("\n  Owner = ")
-        .append(bot.getConfig().getOwner())
+        .append(config.getOwner())
         .append("\n  Prefix = ")
-        .append(bot.getConfig().getPrefix())
+        .append(config.getPrefix())
         .append("\n  AltPrefix = ")
-        .append(bot.getConfig().parseAltPrefix())
+        .append(config.parseAltPrefix())
         .append("\n  MaxSeconds = ")
-        .append(bot.getConfig().getMaxtime())
+        .append(config.getMaxtime())
         .append("\n  NPImages = ")
-        .append(bot.getConfig().isNpimages())
+        .append(config.isNpimages())
         .append("\n  SongInStatus = ")
-        .append(bot.getConfig().isSonginstatus())
+        .append(config.isSonginstatus())
         .append("\n  StayInChannel = ")
-        .append(bot.getConfig().isStayinchannel());
+        .append(config.isStayinchannel());
     sb.append("\n\nDependency Information:")
         .append("\n  JDA Version = ")
         .append(JDAInfo.VERSION)

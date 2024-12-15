@@ -15,10 +15,10 @@
  */
 package com.jagrosh.jmusicbot.commands.admin;
 
-import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.commands.AdminCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.settings.Settings;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import org.springframework.stereotype.Component;
 
 /**
@@ -26,11 +26,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SkipratioCmd extends AdminCommand {
-  public SkipratioCmd(Bot bot) {
+  public SkipratioCmd(AppConfiguration config) {
     this.name = "setskip";
     this.help = "sets a server-specific skip percentage";
     this.arguments = "<0 - 100>";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
   }
 
   @Override

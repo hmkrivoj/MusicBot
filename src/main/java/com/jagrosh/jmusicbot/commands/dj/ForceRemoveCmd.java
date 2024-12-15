@@ -21,6 +21,7 @@ import com.jagrosh.jmusicbot.commands.DJCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.jdautils.utils.FinderUtil;
 import com.jagrosh.jmusicbot.jdautils.utils.OrderedMenu;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import com.jagrosh.jmusicbot.utils.FormatUtil;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -34,12 +35,12 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ForceRemoveCmd extends DJCommand {
-  public ForceRemoveCmd(Bot bot) {
+  public ForceRemoveCmd(Bot bot, AppConfiguration config) {
     super(bot);
     this.name = "forceremove";
     this.help = "removes all entries by a user from the queue";
     this.arguments = "<user>";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
     this.beListening = false;
     this.bePlaying = true;
     this.botPermissions = new Permission[] {Permission.MESSAGE_EMBED_LINKS};

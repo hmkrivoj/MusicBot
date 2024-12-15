@@ -20,6 +20,7 @@ import com.jagrosh.jmusicbot.queue.AbstractQueue;
 import com.jagrosh.jmusicbot.settings.QueueType;
 import com.jagrosh.jmusicbot.settings.RepeatMode;
 import com.jagrosh.jmusicbot.settings.Settings;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import com.jagrosh.jmusicbot.utils.FormatUtil;
 import com.jagrosh.jmusicbot.utils.TimeUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
@@ -56,13 +57,16 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
 
   private final PlayerManager manager;
   private final AudioPlayer audioPlayer;
+  private final AppConfiguration config;
   private final long guildId;
 
   private AudioFrame lastFrame;
   private AbstractQueue<QueuedTrack> queue;
 
-  protected AudioHandler(PlayerManager manager, Guild guild, AudioPlayer player) {
+  protected AudioHandler(
+      PlayerManager manager, Guild guild, AudioPlayer player, AppConfiguration config) {
     this.manager = manager;
+    this.config = config;
     this.audioPlayer = player;
     this.guildId = guild.getIdLong();
 
@@ -136,7 +140,7 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
           else defaultQueue.add(at);
         },
         () -> {
-          if (pl.getTracks().isEmpty() && !manager.getBot().getConfig().isStayinchannel())
+          if (pl.getTracks().isEmpty() && !config.isStayinchannel())
             manager.getBot().closeAudioConnection(guildId);
         });
     return true;
@@ -158,8 +162,7 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
     if (queue.isEmpty()) {
       if (!playFromDefault()) {
         manager.getBot().getNowplayingHandler().onTrackUpdate(null);
-        if (!manager.getBot().getConfig().isStayinchannel())
-          manager.getBot().closeAudioConnection(guildId);
+        if (!config.isStayinchannel()) manager.getBot().closeAudioConnection(guildId);
         // unpause, in the case when the player was paused and the track has been skipped.
         // this is to prevent the player being paused next time it's being used.
         player.setPaused(false);
@@ -190,7 +193,7 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
       MessageBuilder mb = new MessageBuilder();
       mb.append(
           FormatUtil.filter(
-              manager.getBot().getConfig().getSuccess()
+              config.getSuccess()
                   + " **Now Playing in "
                   + guild.getSelfMember().getVoiceState().getChannel().getAsMention()
                   + "...**"));
@@ -212,7 +215,7 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
         eb.setTitle(track.getInfo().title);
       }
 
-      if (track instanceof YoutubeAudioTrack && manager.getBot().getConfig().isNpimages()) {
+      if (track instanceof YoutubeAudioTrack && config.isNpimages()) {
         eb.setThumbnail("https://img.youtube.com/vi/" + track.getIdentifier() + "/mqdefault.jpg");
       }
 
@@ -240,8 +243,7 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
   public Message getNoMusicPlaying(JDA jda) {
     Guild guild = guild(jda);
     return new MessageBuilder()
-        .setContent(
-            FormatUtil.filter(manager.getBot().getConfig().getSuccess() + " **Now Playing...**"))
+        .setContent(FormatUtil.filter(config.getSuccess() + " **Now Playing...**"))
         .setEmbeds(
             new EmbedBuilder()
                 .setTitle("No music playing")

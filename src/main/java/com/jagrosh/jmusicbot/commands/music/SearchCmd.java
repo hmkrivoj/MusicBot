@@ -22,6 +22,7 @@ import com.jagrosh.jmusicbot.audio.RequestMetadata;
 import com.jagrosh.jmusicbot.commands.MusicCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.jdautils.utils.OrderedMenu;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import com.jagrosh.jmusicbot.utils.FormatUtil;
 import com.jagrosh.jmusicbot.utils.TimeUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
@@ -42,12 +43,14 @@ public class SearchCmd extends MusicCommand {
   protected String searchPrefix = "ytsearch:";
   private final OrderedMenu.Builder builder;
   private final String searchingEmoji;
+  private final AppConfiguration config;
 
-  public SearchCmd(Bot bot) {
+  public SearchCmd(Bot bot, AppConfiguration config) {
     super(bot);
-    this.searchingEmoji = bot.getConfig().getSearching();
+    this.config = config;
+    this.searchingEmoji = config.getSearching();
     this.name = "search";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
     this.arguments = "<query>";
     this.help = "searches Youtube for a provided query";
     this.beListening = true;
@@ -87,7 +90,7 @@ public class SearchCmd extends MusicCommand {
 
     @Override
     public void trackLoaded(AudioTrack track) {
-      if (bot.getConfig().calcIsTooLong(track)) {
+      if (config.calcIsTooLong(track)) {
         m.editMessage(
                 FormatUtil.filter(
                     event.getClient().getWarning()
@@ -96,7 +99,7 @@ public class SearchCmd extends MusicCommand {
                         + "**) is longer than the allowed maximum: `"
                         + TimeUtil.formatTime(track.getDuration())
                         + "` > `"
-                        + bot.getConfig().getMaxtime()
+                        + config.getMaxtime()
                         + "`"))
             .queue();
         return;
@@ -131,14 +134,14 @@ public class SearchCmd extends MusicCommand {
           .setSelection(
               (msg, i) -> {
                 AudioTrack track = playlist.getTracks().get(i - 1);
-                if (bot.getConfig().calcIsTooLong(track)) {
+                if (config.calcIsTooLong(track)) {
                   event.replyWarning(
                       "This track (**"
                           + track.getInfo().title
                           + "**) is longer than the allowed maximum: `"
                           + TimeUtil.formatTime(track.getDuration())
                           + "` > `"
-                          + bot.getConfig().getMaxtime()
+                          + config.getMaxtime()
                           + "`");
                   return;
                 }

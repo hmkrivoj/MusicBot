@@ -16,6 +16,7 @@
 package com.jagrosh.jmusicbot.audio;
 
 import com.jagrosh.jmusicbot.Bot;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -24,23 +25,24 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Michaili K (mysteriouscursor+git@protonmail.com)
  */
+@Component
 public class AloneInVoiceHandler {
   private final Bot bot;
   private final HashMap<Long, Instant> aloneSince = new HashMap<>();
   private long aloneTimeUntilStop = 0;
 
-  public AloneInVoiceHandler(Bot bot) {
+  public AloneInVoiceHandler(Bot bot, AppConfiguration config) {
     this.bot = bot;
-  }
-
-  public void init() {
-    aloneTimeUntilStop = bot.getConfig().getAlonetimeuntilstop();
-    if (aloneTimeUntilStop > 0)
+    this.bot.setAloneInVoiceHandler(this);
+    aloneTimeUntilStop = config.getAlonetimeuntilstop();
+    if (aloneTimeUntilStop > 0) {
       bot.getThreadpool().scheduleWithFixedDelay(this::check, 0, 5, TimeUnit.SECONDS);
+    }
   }
 
   private void check() {

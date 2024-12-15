@@ -21,6 +21,7 @@ import com.jagrosh.jmusicbot.audio.QueuedTrack;
 import com.jagrosh.jmusicbot.audio.RequestMetadata;
 import com.jagrosh.jmusicbot.commands.DJCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import com.jagrosh.jmusicbot.utils.FormatUtil;
 import com.jagrosh.jmusicbot.utils.TimeUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
@@ -36,14 +37,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class PlaynextCmd extends DJCommand {
   private final String loadingEmoji;
+  private final AppConfiguration config;
 
-  public PlaynextCmd(Bot bot) {
+  public PlaynextCmd(Bot bot, AppConfiguration config) {
     super(bot);
-    this.loadingEmoji = bot.getConfig().getLoading();
+    this.config = config;
+    this.loadingEmoji = this.config.getLoading();
     this.name = "playnext";
     this.arguments = "<title|URL>";
     this.help = "plays a single song next";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = this.config.getAliases().get(this.name);
     this.beListening = true;
     this.bePlaying = false;
   }
@@ -79,7 +82,7 @@ public class PlaynextCmd extends DJCommand {
     }
 
     private void loadSingle(AudioTrack track) {
-      if (bot.getConfig().calcIsTooLong(track)) {
+      if (config.calcIsTooLong(track)) {
         m.editMessage(
                 FormatUtil.filter(
                     event.getClient().getWarning()
@@ -88,7 +91,7 @@ public class PlaynextCmd extends DJCommand {
                         + "**) is longer than the allowed maximum: `"
                         + TimeUtil.formatTime(track.getDuration())
                         + "` > `"
-                        + TimeUtil.formatTime(bot.getConfig().getMaxtime() * 1000)
+                        + TimeUtil.formatTime(config.getMaxtime() * 1000)
                         + "`"))
             .queue();
         return;

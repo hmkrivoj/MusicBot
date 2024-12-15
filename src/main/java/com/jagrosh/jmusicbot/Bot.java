@@ -27,9 +27,20 @@ import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import lombok.Getter;
+import lombok.Setter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.events.ShutdownEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,15 +48,15 @@ import org.springframework.stereotype.Component;
  * @author John Grosh <john.a.grosh@gmail.com>
  */
 @Component
-public class Bot {
+public class Bot extends ListenerAdapter {
   @Getter private final EventWaiter waiter;
   @Getter private final ScheduledExecutorService threadpool;
-  @Getter private final AppConfiguration config;
+  private final AppConfiguration config;
   private final SettingsManager settings;
-  private final PlayerManager players;
+  @Setter private PlayerManager players;
   private final PlaylistLoader playlists;
-  private final NowplayingHandler nowplaying;
-  @Getter private final AloneInVoiceHandler aloneInVoiceHandler;
+  @Setter private NowplayingHandler nowplaying;
+  @Getter @Setter private AloneInVoiceHandler aloneInVoiceHandler;
 
   private boolean shuttingDown = false;
   private JDA jda;
@@ -57,12 +68,6 @@ public class Bot {
     this.settings = settings;
     this.playlists = new PlaylistLoader(config);
     this.threadpool = Executors.newSingleThreadScheduledExecutor();
-    this.players = new PlayerManager(this);
-    this.players.init();
-    this.nowplaying = new NowplayingHandler(this);
-    this.nowplaying.init();
-    this.aloneInVoiceHandler = new AloneInVoiceHandler(this);
-    this.aloneInVoiceHandler.init();
   }
 
   public SettingsManager getSettingsManager() {
@@ -120,5 +125,52 @@ public class Bot {
 
   public void setJDA(JDA jda) {
     this.jda = jda;
+  }
+
+  @Override
+  public void onReady(ReadyEvent event) {
+    if (event.getJDA().getGuildCache().isEmpty()) {
+      Logger log = LoggerFactory.getLogger("MusicBot");
+      log.warn(
+          "This bot is not on any guilds! Use the following link to add the bot to your guilds!\n{}",
+          event.getJDA().getInviteUrl(JMusicBot.RECOMMENDED_PERMS));
+    }
+    event
+        .getJDA()
+        .getGuilds()
+        .forEach(
+            guild -> {
+              try {
+                String defpl = getSettingsManager().getSettings(guild).getDefaultPlaylist();
+                VoiceChannel vc = getSettingsManager().getSettings(guild).getVoiceChannel(guild);
+                if (defpl != null
+                    && vc != null
+                    && getPlayerManager().getOrCreateAudioHandler(guild).playFromDefault()) {
+                  guild.getAudioManager().openAudioConnection(vc);
+                }
+              } catch (Exception ignore) {
+                // do nothing
+              }
+            });
+    User owner = getJDA().retrieveUserById(config.getOwner()).complete();
+    if (owner != null) {
+      final var msg = "JMusicBot is running";
+      owner.openPrivateChannel().queue(pc -> pc.sendMessage(msg).queue());
+    }
+  }
+
+  @Override
+  public void onGuildMessageDelete(GuildMessageDeleteEvent event) {
+    getNowplayingHandler().onMessageDelete(event.getGuild(), event.getMessageIdLong());
+  }
+
+  @Override
+  public void onGuildVoiceUpdate(@NotNull GuildVoiceUpdateEvent event) {
+    getAloneInVoiceHandler().onVoiceUpdate(event);
+  }
+
+  @Override
+  public void onShutdown(ShutdownEvent event) {
+    shutdown();
   }
 }

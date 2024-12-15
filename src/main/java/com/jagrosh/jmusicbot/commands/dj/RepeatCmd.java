@@ -20,6 +20,7 @@ import com.jagrosh.jmusicbot.commands.DJCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.settings.RepeatMode;
 import com.jagrosh.jmusicbot.settings.Settings;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import org.springframework.stereotype.Component;
 
 /**
@@ -27,12 +28,12 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class RepeatCmd extends DJCommand {
-  public RepeatCmd(Bot bot) {
+  public RepeatCmd(Bot bot, AppConfiguration config) {
     super(bot);
     this.name = "repeat";
     this.help = "re-adds music to the queue when finished";
     this.arguments = "[off|all|single]";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
     this.guildOnly = true;
   }
 

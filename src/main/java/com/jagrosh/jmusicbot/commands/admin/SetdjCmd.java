@@ -15,11 +15,11 @@
  */
 package com.jagrosh.jmusicbot.commands.admin;
 
-import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.commands.AdminCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.jdautils.utils.FinderUtil;
 import com.jagrosh.jmusicbot.settings.Settings;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import com.jagrosh.jmusicbot.utils.FormatUtil;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Role;
@@ -30,11 +30,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SetdjCmd extends AdminCommand {
-  public SetdjCmd(Bot bot) {
+  public SetdjCmd(AppConfiguration config) {
     this.name = "setdj";
     this.help = "sets the DJ role for certain music commands";
     this.arguments = "<rolename|NONE>";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
   }
 
   @Override

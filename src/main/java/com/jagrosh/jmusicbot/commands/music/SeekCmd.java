@@ -21,6 +21,7 @@ import com.jagrosh.jmusicbot.audio.RequestMetadata;
 import com.jagrosh.jmusicbot.commands.DJCommand;
 import com.jagrosh.jmusicbot.commands.MusicCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import com.jagrosh.jmusicbot.utils.TimeUtil;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import org.slf4j.Logger;
@@ -34,12 +35,12 @@ import org.springframework.stereotype.Component;
 public class SeekCmd extends MusicCommand {
   private static final Logger LOG = LoggerFactory.getLogger("Seeking");
 
-  public SeekCmd(Bot bot) {
+  public SeekCmd(Bot bot, AppConfiguration config) {
     super(bot);
     this.name = "seek";
     this.help = "seeks the current song";
     this.arguments = "[+ | -] <HH:MM:SS | MM:SS | SS>|<0h0m0s | 0m0s | 0s>";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
     this.beListening = true;
     this.bePlaying = true;
   }

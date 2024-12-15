@@ -20,6 +20,7 @@ import com.jagrosh.jmusicbot.audio.AudioHandler;
 import com.jagrosh.jmusicbot.commands.DJCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.settings.Settings;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import com.jagrosh.jmusicbot.utils.FormatUtil;
 import org.springframework.stereotype.Component;
 
@@ -28,10 +29,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class VolumeCmd extends DJCommand {
-  public VolumeCmd(Bot bot) {
+  public VolumeCmd(Bot bot, AppConfiguration config) {
     super(bot);
     this.name = "volume";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
     this.help = "sets or shows volume";
     this.arguments = "[0-150]";
   }

@@ -39,8 +39,8 @@ import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.internal.utils.Checks;
 
 /**
- * A {@link com.jagrosh.jmusicbot.jdautils.utils.Menu Menu} of ordered buttons signified by numbers or
- * letters, each with a reaction linked to it for users to click.
+ * A {@link com.jagrosh.jmusicbot.jdautils.utils.Menu Menu} of ordered buttons signified by numbers
+ * or letters, each with a reaction linked to it for users to click.
  *
  * <p>Up to ten text choices can be set in the {@link OrderedMenu.Builder}, and additional methods
  * for handling the resulting choice made by a user using the menu may also be attached via the
@@ -371,12 +371,13 @@ public class OrderedMenu extends Menu {
     private boolean addCancel = false;
 
     /**
-     * Builds the {@link com.jagrosh.jmusicbot.jdautils.utils.OrderedMenu OrderedMenu} with this Builder.
+     * Builds the {@link com.jagrosh.jmusicbot.jdautils.utils.OrderedMenu OrderedMenu} with this
+     * Builder.
      *
      * @return The OrderedMenu built from this Builder.
      * @throws java.lang.IllegalArgumentException If one of the following is violated:
      *     <ul>
-     *       <li>No {@link com.jagrosh.jdautilities.commons.waiter.EventWaiter EventWaiter} was set.
+     *       <li>No {@link com.jagrosh.jmusicbot.jdautils.utils.EventWaiter EventWaiter} was set.
      *       <li>No choices were set.
      *       <li>More than ten choices were set.
      *       <li>No action {@link java.util.function.Consumer Consumer} was set.
@@ -420,8 +421,8 @@ public class OrderedMenu extends Menu {
     }
 
     /**
-     * Sets the builder to build an {@link com.jagrosh.jmusicbot.jdautils.utils.OrderedMenu OrderedMenu}
-     * using letters for ordering and reactions (IE: A, B, C, etc.). <br>
+     * Sets the builder to build an {@link com.jagrosh.jmusicbot.jdautils.utils.OrderedMenu
+     * OrderedMenu} using letters for ordering and reactions (IE: A, B, C, etc.). <br>
      * As a note - by default the builder will use <b>numbers</b> not letters.
      *
      * @return This builder
@@ -432,8 +433,8 @@ public class OrderedMenu extends Menu {
     }
 
     /**
-     * Sets the builder to build an {@link com.jagrosh.jmusicbot.jdautils.utils.OrderedMenu OrderedMenu}
-     * using numbers for ordering and reactions (IE: 1, 2, 3, etc.).
+     * Sets the builder to build an {@link com.jagrosh.jmusicbot.jdautils.utils.OrderedMenu
+     * OrderedMenu} using numbers for ordering and reactions (IE: 1, 2, 3, etc.).
      *
      * @return This builder
      */

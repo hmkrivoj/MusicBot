@@ -20,6 +20,7 @@ import com.jagrosh.jmusicbot.commands.OwnerCommand;
 import com.jagrosh.jmusicbot.jdautils.Command;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.playlist.PlaylistLoader.Playlist;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import java.io.IOException;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -30,14 +31,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class PlaylistCmd extends OwnerCommand {
   private final Bot bot;
+  private final AppConfiguration config;
 
-  public PlaylistCmd(Bot bot) {
+  public PlaylistCmd(Bot bot, AppConfiguration config) {
+    this.config = config;
     this.bot = bot;
     this.guildOnly = false;
     this.name = "playlist";
     this.arguments = "<append|delete|make|setdefault>";
     this.help = "playlist management";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
     this.children =
         new OwnerCommand[] {
           new ListCmd(),
@@ -69,7 +72,7 @@ public class PlaylistCmd extends OwnerCommand {
   public class MakelistCmd extends OwnerCommand {
     public MakelistCmd() {
       this.name = "make";
-      this.aliases = bot.getConfig().getAliases().get(this.name);
+      this.aliases = config.getAliases().get(this.name);
       this.help = "makes a new playlist";
       this.arguments = "<name>";
       this.guildOnly = false;
@@ -100,7 +103,7 @@ public class PlaylistCmd extends OwnerCommand {
   public class DeletelistCmd extends OwnerCommand {
     public DeletelistCmd() {
       this.name = "delete";
-      this.aliases = bot.getConfig().getAliases().get(this.name);
+      this.aliases = config.getAliases().get(this.name);
       this.help = "deletes an existing playlist";
       this.arguments = "<name>";
       this.guildOnly = false;
@@ -129,7 +132,7 @@ public class PlaylistCmd extends OwnerCommand {
   public class AppendlistCmd extends OwnerCommand {
     public AppendlistCmd() {
       this.name = "append";
-      this.aliases = bot.getConfig().getAliases().get(this.name);
+      this.aliases = config.getAliases().get(this.name);
       this.help = "appends songs to an existing playlist";
       this.arguments = "<name> <URL> | <URL> | ...";
       this.guildOnly = false;
@@ -177,9 +180,9 @@ public class PlaylistCmd extends OwnerCommand {
 
   public class DefaultlistCmd extends AutoplaylistCmd {
     public DefaultlistCmd(Bot bot) {
-      super(bot);
+      super(bot, config);
       this.name = "setdefault";
-      this.aliases = bot.getConfig().getAliases().get(this.name);
+      this.aliases = config.getAliases().get(this.name);
       this.arguments = "<playlistname|NONE>";
       this.guildOnly = true;
     }
@@ -188,7 +191,7 @@ public class PlaylistCmd extends OwnerCommand {
   public class ListCmd extends OwnerCommand {
     public ListCmd() {
       this.name = "all";
-      this.aliases = bot.getConfig().getAliases().get(this.name);
+      this.aliases = config.getAliases().get(this.name);
       this.help = "lists all available playlists";
       this.guildOnly = true;
     }

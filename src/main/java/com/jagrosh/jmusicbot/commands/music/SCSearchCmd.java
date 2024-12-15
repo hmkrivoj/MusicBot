@@ -16,6 +16,7 @@
 package com.jagrosh.jmusicbot.commands.music;
 
 import com.jagrosh.jmusicbot.Bot;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import org.springframework.stereotype.Component;
 
 /**
@@ -23,11 +24,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SCSearchCmd extends SearchCmd {
-  public SCSearchCmd(Bot bot) {
-    super(bot);
+  public SCSearchCmd(Bot bot, AppConfiguration config) {
+    super(bot, config);
     this.searchPrefix = "scsearch:";
     this.name = "scsearch";
     this.help = "searches Soundcloud for a provided query";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
   }
 }

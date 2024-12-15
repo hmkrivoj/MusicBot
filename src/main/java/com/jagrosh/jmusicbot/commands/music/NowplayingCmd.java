@@ -19,6 +19,7 @@ import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.audio.AudioHandler;
 import com.jagrosh.jmusicbot.commands.MusicCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import org.springframework.stereotype.Component;
@@ -28,11 +29,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class NowplayingCmd extends MusicCommand {
-  public NowplayingCmd(Bot bot) {
+  public NowplayingCmd(Bot bot, AppConfiguration config) {
     super(bot);
     this.name = "nowplaying";
     this.help = "shows the song that is currently playing";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
     this.botPermissions = new Permission[] {Permission.MESSAGE_EMBED_LINKS};
   }
 

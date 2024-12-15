@@ -19,8 +19,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 /**
  * An implementable "Listener" that can be added to a {@link
- * com.jagrosh.jmusicbot.jdautils.CommandClient CommandClient} and used to handle events relating
- * to {@link com.jagrosh.jmusicbot.jdautils.Command Command}s.
+ * com.jagrosh.jmusicbot.jdautils.CommandClient CommandClient} and used to handle events relating to
+ * {@link com.jagrosh.jmusicbot.jdautils.Command Command}s.
  *
  * @author John Grosh (jagrosh)
  */
@@ -50,8 +50,7 @@ public interface CommandListener {
 
   /**
    * Called when a {@link com.jagrosh.jmusicbot.jdautils.Command Command} is triggered by a {@link
-   * com.jagrosh.jmusicbot.jdautils.CommandEvent CommandEvent} but is terminated before
-   * completion.
+   * com.jagrosh.jmusicbot.jdautils.CommandEvent CommandEvent} but is terminated before completion.
    *
    * @param event The CommandEvent that triggered the Command
    * @param command The Command that was triggered

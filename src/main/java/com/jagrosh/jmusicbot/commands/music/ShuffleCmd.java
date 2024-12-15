@@ -19,6 +19,7 @@ import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.audio.AudioHandler;
 import com.jagrosh.jmusicbot.commands.MusicCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import org.springframework.stereotype.Component;
 
 /**
@@ -26,11 +27,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ShuffleCmd extends MusicCommand {
-  public ShuffleCmd(Bot bot) {
+  public ShuffleCmd(Bot bot, AppConfiguration config) {
     super(bot);
     this.name = "shuffle";
     this.help = "shuffles songs you have added";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
     this.beListening = true;
     this.bePlaying = true;
   }

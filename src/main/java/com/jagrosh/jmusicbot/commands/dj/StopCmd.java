@@ -19,6 +19,7 @@ import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.audio.AudioHandler;
 import com.jagrosh.jmusicbot.commands.DJCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import org.springframework.stereotype.Component;
 
 /**
@@ -26,11 +27,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class StopCmd extends DJCommand {
-  public StopCmd(Bot bot) {
+  public StopCmd(Bot bot, AppConfiguration config) {
     super(bot);
     this.name = "stop";
     this.help = "stops the current song and clears the queue";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
     this.bePlaying = false;
   }
 

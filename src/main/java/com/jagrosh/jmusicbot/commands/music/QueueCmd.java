@@ -24,6 +24,7 @@ import com.jagrosh.jmusicbot.jdautils.utils.Paginator;
 import com.jagrosh.jmusicbot.settings.QueueType;
 import com.jagrosh.jmusicbot.settings.RepeatMode;
 import com.jagrosh.jmusicbot.settings.Settings;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import com.jagrosh.jmusicbot.utils.FormatUtil;
 import com.jagrosh.jmusicbot.utils.TimeUtil;
 import java.util.List;
@@ -41,12 +42,12 @@ import org.springframework.stereotype.Component;
 public class QueueCmd extends MusicCommand {
   private final Paginator.Builder builder;
 
-  public QueueCmd(Bot bot) {
+  public QueueCmd(Bot bot, AppConfiguration config) {
     super(bot);
     this.name = "queue";
     this.help = "shows the current queue";
     this.arguments = "[pagenum]";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
     this.bePlaying = true;
     this.botPermissions =
         new Permission[] {Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EMBED_LINKS};

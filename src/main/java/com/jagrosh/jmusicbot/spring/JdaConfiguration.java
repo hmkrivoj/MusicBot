@@ -1,7 +1,6 @@
 package com.jagrosh.jmusicbot.spring;
 
 import com.jagrosh.jmusicbot.Bot;
-import com.jagrosh.jmusicbot.Listener;
 import com.jagrosh.jmusicbot.jdautils.CommandClient;
 import com.jagrosh.jmusicbot.jdautils.utils.EventWaiter;
 import com.jagrosh.jmusicbot.spring.exceptions.ConnectErrorException;
@@ -50,7 +49,7 @@ public class JdaConfiguration {
                           || config.parseStatus() == OnlineStatus.OFFLINE
                       ? OnlineStatus.INVISIBLE
                       : OnlineStatus.DO_NOT_DISTURB)
-              .addEventListeners(client, waiter, new Listener(bot))
+              .addEventListeners(client, waiter, bot)
               .setBulkDeleteSplittingEnabled(true)
               .build();
       bot.setJDA(jda);

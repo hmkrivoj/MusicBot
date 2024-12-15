@@ -17,6 +17,7 @@ package com.jagrosh.jmusicbot.audio;
 
 import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.entities.Pair;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,22 +27,25 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
+import org.springframework.stereotype.Component;
 
 /**
  * @author John Grosh (john.a.grosh@gmail.com)
  */
+@Component
 public class NowplayingHandler {
   private final Bot bot;
+  private final AppConfiguration config;
   private final HashMap<Long, Pair<Long, Long>> lastNP; // guild -> channel,message
 
-  public NowplayingHandler(Bot bot) {
+  public NowplayingHandler(Bot bot, AppConfiguration config) {
     this.bot = bot;
+    this.config = config;
+    this.bot.setNowplaying(this);
     this.lastNP = new HashMap<>();
-  }
-
-  public void init() {
-    if (!bot.getConfig().isNpimages())
+    if (!config.isNpimages()) {
       bot.getThreadpool().scheduleWithFixedDelay(this::updateAll, 0, 5, TimeUnit.SECONDS);
+    }
   }
 
   public void setLastNPMessage(Message m) {
@@ -89,7 +93,7 @@ public class NowplayingHandler {
   // "event"-based methods
   public void onTrackUpdate(AudioTrack track) {
     // update bot status if applicable
-    if (bot.getConfig().isSonginstatus()) {
+    if (config.isSonginstatus()) {
       if (track != null
           && bot.getJDA().getGuilds().stream()
                   .filter(g -> g.getSelfMember().getVoiceState().inVoiceChannel())

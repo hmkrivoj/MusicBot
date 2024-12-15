@@ -15,11 +15,11 @@
  */
 package com.jagrosh.jmusicbot.commands.admin;
 
-import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.commands.AdminCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.jdautils.utils.FinderUtil;
 import com.jagrosh.jmusicbot.settings.Settings;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import com.jagrosh.jmusicbot.utils.FormatUtil;
 import java.util.List;
 import net.dv8tion.jda.api.entities.VoiceChannel;
@@ -30,11 +30,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SetvcCmd extends AdminCommand {
-  public SetvcCmd(Bot bot) {
+  public SetvcCmd(AppConfiguration config) {
     this.name = "setvc";
     this.help = "sets the voice channel for playing music";
     this.arguments = "<channel|NONE>";
-    this.aliases = bot.getConfig().getAliases().get(this.name);
+    this.aliases = config.getAliases().get(this.name);
   }
 
   @Override
