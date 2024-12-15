@@ -223,18 +223,18 @@ public abstract class Command {
     }
 
     // required role check
-    if (requiredRole != null)
-      if (!event.isFromType(ChannelType.TEXT)
-          || event.getMember().getRoles().stream()
-              .noneMatch(r -> r.getName().equalsIgnoreCase(requiredRole))) {
-        terminate(
-            event,
-            event.getClient().getError()
-                + " You must have a role called `"
-                + requiredRole
-                + "` to use that!");
-        return;
-      }
+    if (requiredRole != null
+        && (!event.isFromType(ChannelType.TEXT)
+            || event.getMember().getRoles().stream()
+                .noneMatch(r -> r.getName().equalsIgnoreCase(requiredRole)))) {
+      terminate(
+          event,
+          event.getClient().getError()
+              + " You must have a role called `"
+              + requiredRole
+              + "` to use that!");
+      return;
+    }
 
     // availability check
     if (event.getChannelType() == ChannelType.TEXT) {
@@ -310,13 +310,13 @@ public abstract class Command {
     // run
     try {
       execute(event);
-    } catch (Throwable t) {
+    } catch (Exception e) {
       if (event.getClient().getListener() != null) {
-        event.getClient().getListener().onCommandException(event, this, t);
+        event.getClient().getListener().onCommandException(event, this, e);
         return;
       }
       // otherwise we rethrow
-      throw t;
+      throw e;
     }
 
     if (event.getClient().getListener() != null)

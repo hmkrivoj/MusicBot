@@ -98,7 +98,6 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
     queue.clear();
     defaultQueue.clear();
     audioPlayer.stopTrack();
-    // current = null;
   }
 
   public boolean isMusicPlaying(JDA jda) {
@@ -132,7 +131,7 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
     if (pl == null || pl.getItems().isEmpty()) return false;
     pl.loadTracks(
         manager,
-        (at) -> {
+        at -> {
           if (audioPlayer.getPlayingTrack() == null) audioPlayer.playTrack(at);
           else defaultQueue.add(at);
         },
@@ -159,7 +158,8 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
     if (queue.isEmpty()) {
       if (!playFromDefault()) {
         manager.getBot().getNowplayingHandler().onTrackUpdate(null);
-        if (!manager.getBot().getConfig().isStayinchannel()) manager.getBot().closeAudioConnection(guildId);
+        if (!manager.getBot().getConfig().isStayinchannel())
+          manager.getBot().closeAudioConnection(guildId);
         // unpause, in the case when the player was paused and the track has been skipped.
         // this is to prevent the player being paused next time it's being used.
         player.setPaused(false);
@@ -199,8 +199,11 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
       RequestMetadata rm = getRequestMetadata();
       if (rm.getOwner() != 0L) {
         User u = guild.getJDA().getUserById(rm.user.id);
-        if (u == null) eb.setAuthor(FormatUtil.formatUsername(rm.user), null, rm.user.avatar);
-        else eb.setAuthor(FormatUtil.formatUsername(u), null, u.getEffectiveAvatarUrl());
+        if (u == null) {
+          eb.setAuthor(FormatUtil.formatUsername(rm.user), null, rm.user.avatar);
+        } else {
+          eb.setAuthor(FormatUtil.formatUsername(u), null, u.getEffectiveAvatarUrl());
+        }
       }
 
       try {
@@ -213,8 +216,9 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
         eb.setThumbnail("https://img.youtube.com/vi/" + track.getIdentifier() + "/mqdefault.jpg");
       }
 
-      if (track.getInfo().author != null && !track.getInfo().author.isEmpty())
+      if (track.getInfo().author != null && !track.getInfo().author.isEmpty()) {
         eb.setFooter("Source: " + track.getInfo().author, null);
+      }
 
       double progress = (double) audioPlayer.getPlayingTrack().getPosition() / track.getDuration();
       eb.setDescription(
@@ -229,7 +233,8 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
               + FormatUtil.volumeIcon(audioPlayer.getVolume()));
 
       return mb.setEmbeds(eb.build()).build();
-    } else return null;
+    }
+    return null;
   }
 
   public Message getNoMusicPlaying(JDA jda) {
@@ -254,28 +259,6 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
   public String getStatusEmoji() {
     return audioPlayer.isPaused() ? PAUSE_EMOJI : PLAY_EMOJI;
   }
-
-  // Audio Send Handler methods
-  /*@Override
-  public boolean canProvide()
-  {
-      if (lastFrame == null)
-          lastFrame = audioPlayer.provide();
-
-      return lastFrame != null;
-  }
-
-  @Override
-  public byte[] provide20MsAudio()
-  {
-      if (lastFrame == null)
-          lastFrame = audioPlayer.provide();
-
-      byte[] data = lastFrame != null ? lastFrame.getData() : null;
-      lastFrame = null;
-
-      return data;
-  }*/
 
   @Override
   public boolean canProvide() {

@@ -39,7 +39,7 @@ import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.internal.utils.Checks;
 
 /**
- * A {@link com.jagrosh.jdautilities.menu.Menu Menu} of ordered buttons signified by numbers or
+ * A {@link com.jagrosh.jmusicbot.jdautils.utils.Menu Menu} of ordered buttons signified by numbers or
  * letters, each with a reaction linked to it for users to click.
  *
  * <p>Up to ten text choices can be set in the {@link OrderedMenu.Builder}, and additional methods
@@ -229,18 +229,19 @@ public class OrderedMenu extends Menu {
         GenericMessageEvent.class,
         e -> {
           // If we're dealing with a message reaction being added we return whether it's valid
-          if (e instanceof MessageReactionAddEvent)
-            return isValidReaction(m, (MessageReactionAddEvent) e);
+          if (e instanceof MessageReactionAddEvent messageReactionAddEvent)
+            return isValidReaction(m, messageReactionAddEvent);
           // If we're dealing with a received message being added we return whether it's valid
-          if (e instanceof MessageReceivedEvent) return isValidMessage(m, (MessageReceivedEvent) e);
+          if (e instanceof MessageReceivedEvent messageReceivedEvent)
+            return isValidMessage(m, messageReceivedEvent);
           // Otherwise return false
           return false;
         },
         e -> {
           m.delete().queue();
           // If it's a valid MessageReactionAddEvent
-          if (e instanceof MessageReactionAddEvent) {
-            MessageReactionAddEvent event = (MessageReactionAddEvent) e;
+          if (e instanceof MessageReactionAddEvent messageReactionAddEvent) {
+            MessageReactionAddEvent event = messageReactionAddEvent;
             // Process which reaction it is
             if (event.getReaction().getReactionEmote().getName().equals(CANCEL)) cancel.accept(m);
             else
@@ -252,8 +253,8 @@ public class OrderedMenu extends Menu {
               action.accept(m, getNumber(event.getReaction().getReactionEmote().getName()));
           }
           // If it's a valid MessageReceivedEvent
-          else if (e instanceof MessageReceivedEvent) {
-            MessageReceivedEvent event = (MessageReceivedEvent) e;
+          else if (e instanceof MessageReceivedEvent messageReceivedEvent) {
+            MessageReceivedEvent event = messageReceivedEvent;
             // Get the number in the message and process
             int num = getMessageNumber(event.getMessage().getContentRaw());
             if (num < 0 || num > choices.size()) cancel.accept(m);
@@ -270,9 +271,7 @@ public class OrderedMenu extends Menu {
     // This one is only for reactions
     waiter.waitForEvent(
         MessageReactionAddEvent.class,
-        e -> {
-          return isValidReaction(m, e);
-        },
+        e -> isValidReaction(m, e),
         e -> {
           m.delete().queue();
           if (e.getReaction().getReactionEmote().getName().equals(CANCEL)) cancel.accept(m);
@@ -295,7 +294,7 @@ public class OrderedMenu extends Menu {
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < choices.size(); i++)
       sb.append("\n").append(getEmoji(i)).append(" ").append(choices.get(i));
-    mbuilder.setEmbed(
+    mbuilder.setEmbeds(
         new EmbedBuilder()
             .setColor(color)
             .setDescription(description == null ? sb.toString() : description + sb.toString())
@@ -352,8 +351,8 @@ public class OrderedMenu extends Menu {
   }
 
   /**
-   * The {@link com.jagrosh.jdautilities.menu.Menu.Builder Menu.Builder} for an {@link
-   * com.jagrosh.jdautilities.menu.OrderedMenu OrderedMenu}.
+   * The {@link com.jagrosh.jmusicbot.jdautils.utils.Menu.Builder Menu.Builder} for an {@link
+   * com.jagrosh.jmusicbot.jdautils.utils.OrderedMenu OrderedMenu}.
    *
    * @author John Grosh
    */
@@ -363,13 +362,16 @@ public class OrderedMenu extends Menu {
     private String description;
     private final List<String> choices = new LinkedList<>();
     private BiConsumer<Message, Integer> selection;
-    private Consumer<Message> cancel = (m) -> {};
+    private Consumer<Message> cancel =
+        m -> {
+          // do nothing
+        };
     private boolean useLetters = false;
     private boolean allowTypedInput = true;
     private boolean addCancel = false;
 
     /**
-     * Builds the {@link com.jagrosh.jdautilities.menu.OrderedMenu OrderedMenu} with this Builder.
+     * Builds the {@link com.jagrosh.jmusicbot.jdautils.utils.OrderedMenu OrderedMenu} with this Builder.
      *
      * @return The OrderedMenu built from this Builder.
      * @throws java.lang.IllegalArgumentException If one of the following is violated:
@@ -418,7 +420,7 @@ public class OrderedMenu extends Menu {
     }
 
     /**
-     * Sets the builder to build an {@link com.jagrosh.jdautilities.menu.OrderedMenu OrderedMenu}
+     * Sets the builder to build an {@link com.jagrosh.jmusicbot.jdautils.utils.OrderedMenu OrderedMenu}
      * using letters for ordering and reactions (IE: A, B, C, etc.). <br>
      * As a note - by default the builder will use <b>numbers</b> not letters.
      *
@@ -430,7 +432,7 @@ public class OrderedMenu extends Menu {
     }
 
     /**
-     * Sets the builder to build an {@link com.jagrosh.jdautilities.menu.OrderedMenu OrderedMenu}
+     * Sets the builder to build an {@link com.jagrosh.jmusicbot.jdautils.utils.OrderedMenu OrderedMenu}
      * using numbers for ordering and reactions (IE: 1, 2, 3, etc.).
      *
      * @return This builder
@@ -465,7 +467,7 @@ public class OrderedMenu extends Menu {
 
     /**
      * Sets the text of the {@link net.dv8tion.jda.api.entities.Message Message} to be displayed
-     * when the {@link com.jagrosh.jdautilities.menu.OrderedMenu OrderedMenu} is built.
+     * when the {@link com.jagrosh.jmusicbot.jdautils.utils.OrderedMenu OrderedMenu} is built.
      *
      * <p>This is displayed directly above the embed.
      *
@@ -504,7 +506,7 @@ public class OrderedMenu extends Menu {
 
     /**
      * Sets the {@link java.util.function.Consumer Consumer} to perform if the {@link
-     * com.jagrosh.jdautilities.menu.OrderedMenu OrderedMenu} is cancelled.
+     * com.jagrosh.jmusicbot.jdautils.utils.OrderedMenu OrderedMenu} is cancelled.
      *
      * @param cancel The Consumer action to perform if the ButtonMenu is cancelled
      * @return This builder

@@ -37,7 +37,7 @@ import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.internal.utils.Checks;
 
 /**
- * A {@link com.jagrosh.jdautilities.menu.Menu Menu} implementation that paginates a set of one or
+ * A {@link com.jagrosh.jmusicbot.jdautils.utils.Menu Menu} implementation that paginates a set of one or
  * more text items across one or more pages.
  *
  * <p>When displayed, a Paginator will add three reactions in the following order:
@@ -205,10 +205,10 @@ public class Paginator extends Menu {
     waiter.waitForEvent(
         GenericMessageEvent.class,
         event -> {
-          if (event instanceof MessageReactionAddEvent)
-            return checkReaction((MessageReactionAddEvent) event, message.getIdLong());
-          else if (event instanceof MessageReceivedEvent) {
-            MessageReceivedEvent mre = (MessageReceivedEvent) event;
+          if (event instanceof MessageReactionAddEvent messageReactionAddEvent)
+            return checkReaction(messageReactionAddEvent, message.getIdLong());
+          else if (event instanceof MessageReceivedEvent messageReceivedEvent) {
+            MessageReceivedEvent mre = messageReceivedEvent;
             // Wrong channel
             if (!mre.getChannel().equals(message.getChannel())) return false;
             String rawContent = mre.getMessage().getContentRaw().trim();
@@ -231,8 +231,8 @@ public class Paginator extends Menu {
           return false;
         },
         event -> {
-          if (event instanceof MessageReactionAddEvent) {
-            handleMessageReactionAddAction((MessageReactionAddEvent) event, message, pageNum);
+          if (event instanceof MessageReactionAddEvent messageReactionAddEvent) {
+            handleMessageReactionAddAction(messageReactionAddEvent, message, pageNum);
           } else {
             MessageReceivedEvent mre = ((MessageReceivedEvent) event);
             String rawContent = mre.getMessage().getContentRaw().trim();
@@ -280,21 +280,17 @@ public class Paginator extends Menu {
   // Private method that checks MessageReactionAddEvents
   private boolean checkReaction(MessageReactionAddEvent event, long messageId) {
     if (event.getMessageIdLong() != messageId) return false;
-    switch (event.getReactionEmote().getName()) {
+    return switch (event.getReactionEmote().getName()) {
         // LEFT, STOP, RIGHT, BIG_LEFT, BIG_RIGHT all fall-through to
         // return if the User is valid or not. If none trip, this defaults
         // and returns false.
-      case LEFT:
-      case STOP:
-      case RIGHT:
-        return isValidUser(event.getUser(), event.isFromGuild() ? event.getGuild() : null);
-      case BIG_LEFT:
-      case BIG_RIGHT:
-        return bulkSkipNumber > 1
-            && isValidUser(event.getUser(), event.isFromGuild() ? event.getGuild() : null);
-      default:
-        return false;
-    }
+      case LEFT, STOP, RIGHT ->
+          isValidUser(event.getUser(), event.isFromGuild() ? event.getGuild() : null);
+      case BIG_LEFT, BIG_RIGHT ->
+          bulkSkipNumber > 1
+              && isValidUser(event.getUser(), event.isFromGuild() ? event.getGuild() : null);
+      default -> false;
+    };
   }
 
   // Private method that handles MessageReactionAddEvents
@@ -334,6 +330,7 @@ public class Paginator extends Menu {
     try {
       event.getReaction().removeReaction(event.getUser()).queue();
     } catch (PermissionException ignored) {
+      // do nothing
     }
 
     int n = newPageNum;
@@ -365,20 +362,20 @@ public class Paginator extends Menu {
 
     ebuilder.setColor(color.apply(pageNum, pages));
     if (showPageNumbers) ebuilder.setFooter("Page " + pageNum + "/" + pages, null);
-    mbuilder.setEmbed(ebuilder.build());
+    mbuilder.setEmbeds(ebuilder.build());
     if (text != null) mbuilder.append(text.apply(pageNum, pages));
     return mbuilder.build();
   }
 
   /**
-   * The {@link com.jagrosh.jdautilities.menu.Menu.Builder Menu.Builder} for a {@link
-   * com.jagrosh.jdautilities.menu.Paginator Paginator}.
+   * The {@link com.jagrosh.jmusicbot.jdautils.utils.Menu.Builder Menu.Builder} for a {@link
+   * com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator}.
    *
    * @author John Grosh
    */
   public static class Builder extends Menu.Builder<Builder, Paginator> {
-    private BiFunction<Integer, Integer, Color> color = (page, pages) -> null;
-    private BiFunction<Integer, Integer, String> text = (page, pages) -> null;
+    private BiFunction<Integer, Integer, Color> color = (page, p) -> null;
+    private BiFunction<Integer, Integer, String> text = (page, p) -> null;
     private Consumer<Message> finalAction = m -> m.delete().queue();
     private int columns = 1;
     private int itemsPerPage = 12;
@@ -394,12 +391,12 @@ public class Paginator extends Menu {
     private final List<String> strings = new LinkedList<>();
 
     /**
-     * Builds the {@link com.jagrosh.jdautilities.menu.Paginator Paginator} with this Builder.
+     * Builds the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator} with this Builder.
      *
      * @return The Paginator built from this Builder.
      * @throws java.lang.IllegalArgumentException If one of the following is violated:
      *     <ul>
-     *       <li>No {@link com.jagrosh.jdautilities.commons.waiter.EventWaiter EventWaiter} was set.
+     *       <li>No {@link com.jagrosh.jmusicbot.jdautils.utils.EventWaiter EventWaiter} was set.
      *       <li>No items were set to paginate.
      *     </ul>
      */
@@ -460,7 +457,7 @@ public class Paginator extends Menu {
 
     /**
      * Sets the text of the {@link net.dv8tion.jda.api.entities.Message Message} to be displayed
-     * when the {@link com.jagrosh.jdautilities.menu.Paginator Paginator} is built.
+     * when the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator} is built.
      *
      * <p>This is displayed directly above the embed.
      *
@@ -491,7 +488,7 @@ public class Paginator extends Menu {
 
     /**
      * Sets the {@link java.util.function.Consumer Consumer} to perform if the {@link
-     * com.jagrosh.jdautilities.menu.Paginator Paginator} times out.
+     * com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator} times out.
      *
      * @param finalAction The Consumer action to perform if the Paginator times out
      * @return This builder
@@ -551,7 +548,7 @@ public class Paginator extends Menu {
     }
 
     /**
-     * Sets whether the {@link com.jagrosh.jdautilities.menu.Paginator Paginator} will instantly
+     * Sets whether the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator} will instantly
      * timeout, and possibly run a provided {@link java.lang.Runnable Runnable}, if only a single
      * slide is available to display.
      *
@@ -598,7 +595,7 @@ public class Paginator extends Menu {
     }
 
     /**
-     * Sets the {@link com.jagrosh.jdautilities.menu.Paginator Paginator}'s bulk-skip function to
+     * Sets the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator}'s bulk-skip function to
      * skip multiple pages using alternate forward and backwards
      *
      * @param bulkSkipNumber The number of pages to skip when the bulk-skip reactions are used.
@@ -610,7 +607,7 @@ public class Paginator extends Menu {
     }
 
     /**
-     * Sets the {@link com.jagrosh.jdautilities.menu.Paginator Paginator} to wrap from the last page
+     * Sets the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator} to wrap from the last page
      * to the first when traversing right and visa versa from the left.
      *
      * @param wrapPageEnds {@code true} to enable wrapping.
@@ -622,7 +619,7 @@ public class Paginator extends Menu {
     }
 
     /**
-     * Sets the {@link com.jagrosh.jdautilities.menu.Paginator Paginator} to allow a page number to
+     * Sets the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator} to allow a page number to
      * be specified by a user via text.
      *
      * <p>Note that setting this doesn't mean that left and right text inputs provided via {@link
@@ -639,7 +636,7 @@ public class Paginator extends Menu {
     }
 
     /**
-     * Sets the {@link com.jagrosh.jdautilities.menu.Paginator Paginator} to traverse left or right
+     * Sets the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator} to traverse left or right
      * when a provided text input is sent in the form of a Message to the {@link
      * net.dv8tion.jda.api.entities.GuildChannel GuildChannel} the menu is displayed in.
      *

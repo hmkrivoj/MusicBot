@@ -41,14 +41,14 @@ public class Listener extends ListenerAdapter {
     if (event.getJDA().getGuildCache().isEmpty()) {
       Logger log = LoggerFactory.getLogger("MusicBot");
       log.warn(
-          "This bot is not on any guilds! Use the following link to add the bot to your guilds!");
-      log.warn(event.getJDA().getInviteUrl(JMusicBot.RECOMMENDED_PERMS));
+          "This bot is not on any guilds! Use the following link to add the bot to your guilds!\n{}",
+          event.getJDA().getInviteUrl(JMusicBot.RECOMMENDED_PERMS));
     }
     event
         .getJDA()
         .getGuilds()
         .forEach(
-            (guild) -> {
+            guild -> {
               try {
                 String defpl = bot.getSettingsManager().getSettings(guild).getDefaultPlaylist();
                 VoiceChannel vc =
@@ -59,6 +59,7 @@ public class Listener extends ListenerAdapter {
                   guild.getAudioManager().openAudioConnection(vc);
                 }
               } catch (Exception ignore) {
+                // do nothing
               }
             });
     User owner = bot.getJDA().retrieveUserById(bot.getConfig().getOwner()).complete();

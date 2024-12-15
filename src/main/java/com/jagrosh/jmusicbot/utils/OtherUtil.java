@@ -58,6 +58,7 @@ public class OtherUtil {
                     + File.separator
                     + path);
       } catch (URISyntaxException ignored) {
+        // do nothing
       }
     }
     return result;
@@ -116,5 +117,9 @@ public class OtherUtil {
               + "You may also need to disable all Installation Contexts at https://discord.com/developers/applications/"
               + jda.getSelfUser().getId()
               + "/installation .");
+  }
+
+  private OtherUtil() {
+    // hidden default constructor
   }
 }

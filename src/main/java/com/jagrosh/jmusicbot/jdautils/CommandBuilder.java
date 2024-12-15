@@ -177,7 +177,7 @@ public class CommandBuilder {
    */
   public CommandBuilder setUserPermissions(Collection<Permission> userPermissions) {
     if (userPermissions == null) this.userPermissions = new Permission[0];
-    else this.userPermissions = (Permission[]) userPermissions.toArray();
+    else this.userPermissions = userPermissions.toArray(new Permission[userPermissions.size()]);
     return this;
   }
 
@@ -205,7 +205,7 @@ public class CommandBuilder {
    */
   public CommandBuilder setBotPermissions(Collection<Permission> botPermissions) {
     if (botPermissions == null) this.botPermissions = new Permission[0];
-    else this.botPermissions = (Permission[]) botPermissions.toArray();
+    else this.botPermissions = botPermissions.toArray(new Permission[botPermissions.size()]);
     return this;
   }
 

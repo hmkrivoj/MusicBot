@@ -72,8 +72,8 @@ public class EventWaiter implements EventListener {
    * java.util.concurrent.ScheduledExecutorService Executor} as it's threadpool.
    *
    * <p>A developer might choose to use this constructor over the {@link
-   * com.jagrosh.jmusicbot.jdautils.utils.EventWaiter#EventWaiter() default}, for using a
-   * alternate form of threadpool, as opposed to a {@link
+   * com.jagrosh.jmusicbot.jdautils.utils.EventWaiter#EventWaiter() default}, for using a alternate
+   * form of threadpool, as opposed to a {@link
    * java.util.concurrent.Executors#newSingleThreadExecutor() single thread executor}. <br>
    * A developer might also favor this over the default as they use the same waiter for multiple
    * shards, and thus shutdown must be handled externally if a special shutdown sequence is being
@@ -106,7 +106,7 @@ public class EventWaiter implements EventListener {
    *     java.util.concurrent.ScheduledExecutorService#isShutdown() is shutdown}
    * @see com.jagrosh.jmusicbot.jdautils.utils.EventWaiter#shutdown() EventWaiter#shutdown()
    */
-  public EventWaiter(ScheduledExecutorService threadpool, boolean shutdownAutomatically) {
+  private EventWaiter(ScheduledExecutorService threadpool, boolean shutdownAutomatically) {
     Checks.notNull(threadpool, "ScheduledExecutorService");
     Checks.check(
         !threadpool.isShutdown(),

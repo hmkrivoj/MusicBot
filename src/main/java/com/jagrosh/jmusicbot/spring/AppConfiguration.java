@@ -2,6 +2,9 @@ package com.jagrosh.jmusicbot.spring;
 
 import com.jagrosh.jmusicbot.utils.OtherUtil;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,10 +12,6 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Configuration
 @ConfigurationProperties(prefix = "app")
@@ -106,13 +105,16 @@ public class AppConfiguration {
   // It is recommended to leave this at info. Debug log levels might help with troubleshooting,
   // but can contain sensitive data.
   private String loglevel;
-  // Transforms are used to modify specific play inputs and convert them to different kinds of inputs
+  // Transforms are used to modify specific play inputs and convert them to different kinds of
+  // inputs
   // These are quite complicated to use, and have limited use-cases, but in theory allow for rough
-  // whitelists or blacklists, roundabout loading from some sources, and customization of how things are
+  // whitelists or blacklists, roundabout loading from some sources, and customization of how things
+  // are
   // requested.
   //
   // These are NOT EASY to set up, so if you want to use these, you'll need to look through the code
-  // for how they work and what fields are needed. Also, it's possible this feature might get entirely
+  // for how they work and what fields are needed. Also, it's possible this feature might get
+  // entirely
   // removed in the future if I find a better way to do this.
   private Map<String, TransformativeAudioSourceManagerConfig> transforms = new HashMap<>();
 
@@ -140,7 +142,6 @@ public class AppConfiguration {
     if (maxtime <= 0) return false;
     return Math.round(track.getDuration() / 1000.0) > maxtime;
   }
-
 
   @Data
   public static class TransformativeAudioSourceManagerConfig {

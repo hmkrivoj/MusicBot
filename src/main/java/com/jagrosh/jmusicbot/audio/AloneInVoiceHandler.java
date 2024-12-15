@@ -17,10 +17,10 @@ package com.jagrosh.jmusicbot.audio;
 
 import com.jagrosh.jmusicbot.Bot;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
@@ -40,28 +40,25 @@ public class AloneInVoiceHandler {
   public void init() {
     aloneTimeUntilStop = bot.getConfig().getAlonetimeuntilstop();
     if (aloneTimeUntilStop > 0)
-      bot.getThreadpool().scheduleWithFixedDelay(() -> check(), 0, 5, TimeUnit.SECONDS);
+      bot.getThreadpool().scheduleWithFixedDelay(this::check, 0, 5, TimeUnit.SECONDS);
   }
 
   private void check() {
-    Set<Long> toRemove = new HashSet<>();
-    for (Map.Entry<Long, Instant> entrySet : aloneSince.entrySet()) {
-      if (entrySet.getValue().getEpochSecond()
-          > Instant.now().getEpochSecond() - aloneTimeUntilStop) continue;
+    final var toRemove = new HashSet<Long>();
+    for (Map.Entry<Long, Instant> entry : aloneSince.entrySet()) {
+      final var aloneSecondsSince = entry.getValue().until(Instant.now(), ChronoUnit.SECONDS);
+      if (aloneSecondsSince > aloneTimeUntilStop) {
+        final var guild = bot.getJDA().getGuildById(entry.getKey());
 
-      Guild guild = bot.getJDA().getGuildById(entrySet.getKey());
-
-      if (guild == null) {
-        toRemove.add(entrySet.getKey());
-        continue;
+        if (guild != null
+            && guild.getAudioManager().getSendingHandler() instanceof AudioHandler audioHandler) {
+          audioHandler.stopAndClear();
+          guild.getAudioManager().closeAudioConnection();
+        }
+        toRemove.add(entry.getKey());
       }
-
-      ((AudioHandler) guild.getAudioManager().getSendingHandler()).stopAndClear();
-      guild.getAudioManager().closeAudioConnection();
-
-      toRemove.add(entrySet.getKey());
     }
-    toRemove.forEach(id -> aloneSince.remove(id));
+    toRemove.forEach(aloneSince::remove);
   }
 
   public void onVoiceUpdate(GuildVoiceUpdateEvent event) {
@@ -78,7 +75,9 @@ public class AloneInVoiceHandler {
   }
 
   private boolean isAlone(Guild guild) {
-    if (guild.getAudioManager().getConnectedChannel() == null) return false;
+    if (guild.getAudioManager().getConnectedChannel() == null) {
+      return false;
+    }
     return guild.getAudioManager().getConnectedChannel().getMembers().stream()
         .noneMatch(x -> !x.getVoiceState().isDeafened() && !x.getUser().isBot());
   }

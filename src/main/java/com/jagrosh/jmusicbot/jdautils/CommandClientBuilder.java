@@ -84,7 +84,9 @@ public class CommandClientBuilder {
             executor,
             linkedCacheSize,
             manager);
-    if (listener != null) client.setListener(listener);
+    if (listener != null) {
+      client.setListener(listener);
+    }
     return client;
   }
 

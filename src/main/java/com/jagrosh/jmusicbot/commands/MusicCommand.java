@@ -33,7 +33,7 @@ public abstract class MusicCommand extends Command {
   protected boolean bePlaying;
   protected boolean beListening;
 
-  public MusicCommand(Bot bot) {
+  protected MusicCommand(Bot bot) {
     this.bot = bot;
     this.guildOnly = true;
     this.category = new Category("Music");
@@ -47,6 +47,7 @@ public abstract class MusicCommand extends Command {
       try {
         event.getMessage().delete().queue();
       } catch (PermissionException ignore) {
+        // do nothing
       }
       event.replyInDm(
           event.getClient().getError()

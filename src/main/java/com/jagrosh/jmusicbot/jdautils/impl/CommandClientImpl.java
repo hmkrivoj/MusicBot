@@ -36,7 +36,6 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
@@ -69,7 +68,7 @@ import org.slf4j.LoggerFactory;
  * @author John Grosh (jagrosh)
  */
 public class CommandClientImpl implements CommandClient {
-  private static final Logger LOG = LoggerFactory.getLogger(CommandClient.class);
+  private static final Logger LOG = LoggerFactory.getLogger(CommandClientImpl.class);
   private static final String DEFAULT_PREFIX = "@mention";
 
   private final OffsetDateTime start;
@@ -109,7 +108,7 @@ public class CommandClientImpl implements CommandClient {
       String success,
       String warning,
       String error,
-      ArrayList<Command> commands,
+      List<Command> commands,
       boolean useHelp,
       boolean shutdownAutomatically,
       Consumer<CommandEvent> helpConsumer,
@@ -121,19 +120,19 @@ public class CommandClientImpl implements CommandClient {
         ownerId != null,
         "Owner ID was set null or not set! Please provide an User ID to register as the owner!");
 
-    if (!SafeIdUtil.checkId(ownerId))
+    if (!SafeIdUtil.checkId(ownerId)) {
       LOG.warn(
-          String.format(
-              "The provided Owner ID (%s) was found unsafe! Make sure ID is a non-negative long!",
-              ownerId));
+          "The provided Owner ID ({}) was found unsafe! Make sure ID is a non-negative long!",
+          ownerId);
+    }
 
     if (coOwnerIds != null) {
       for (String coOwnerId : coOwnerIds) {
-        if (!SafeIdUtil.checkId(coOwnerId))
+        if (!SafeIdUtil.checkId(coOwnerId)) {
           LOG.warn(
-              String.format(
-                  "The provided CoOwner ID (%s) was found unsafe! Make sure ID is a non-negative long!",
-                  coOwnerId));
+              "The provided CoOwner ID ({}) was found unsafe! Make sure ID is a non-negative long!",
+              coOwnerId);
+        }
       }
     }
 
@@ -162,7 +161,7 @@ public class CommandClientImpl implements CommandClient {
     this.manager = manager;
     this.helpConsumer =
         helpConsumer == null
-            ? (event) -> {
+            ? event -> {
               StringBuilder builder =
                   new StringBuilder("**" + event.getSelfUser().getName() + "** commands:\n");
               Command.Category category = null;
@@ -261,8 +260,7 @@ public class CommandClientImpl implements CommandClient {
   public void cleanCooldowns() {
     OffsetDateTime now = OffsetDateTime.now();
     cooldowns.keySet().stream()
-        .filter((str) -> (cooldowns.get(str).isBefore(now)))
-        .collect(Collectors.toList())
+        .filter(str -> (cooldowns.get(str).isBefore(now)))
         .forEach(cooldowns::remove);
   }
 
@@ -303,7 +301,6 @@ public class CommandClientImpl implements CommandClient {
       if (index < commands.size()) {
         commandIndex.entrySet().stream()
             .filter(entry -> entry.getValue() >= index)
-            .collect(Collectors.toList())
             .forEach(entry -> commandIndex.put(entry.getKey(), entry.getValue() + 1));
       }
       // add
@@ -325,7 +322,6 @@ public class CommandClientImpl implements CommandClient {
       }
       commandIndex.entrySet().stream()
           .filter(entry -> entry.getValue() > targetIndex)
-          .collect(Collectors.toList())
           .forEach(entry -> commandIndex.put(entry.getKey(), entry.getValue() - 1));
     }
   }
@@ -350,7 +346,7 @@ public class CommandClientImpl implements CommandClient {
     // Thought about using java.util.Arrays#setAll(T[], IntFunction<T>)
     // here, but as it turns out it's actually the same thing as this but
     // it throws an error if null. Go figure.
-    if (coOwnerIds == null) return null;
+    if (coOwnerIds == null) return new long[0];
     long[] ids = new long[coOwnerIds.length];
     for (int i = 0; i < ids.length; i++) ids[i] = Long.parseLong(coOwnerIds[i]);
     return ids;
@@ -428,17 +424,18 @@ public class CommandClientImpl implements CommandClient {
 
   @Override
   public void onEvent(GenericEvent event) {
-    if (event instanceof MessageReceivedEvent) onMessageReceived((MessageReceivedEvent) event);
-    else if (event instanceof GuildMessageDeleteEvent && usesLinkedDeletion())
-      onMessageDelete((GuildMessageDeleteEvent) event);
+    if (event instanceof MessageReceivedEvent messageReceivedEvent)
+      onMessageReceived(messageReceivedEvent);
+    else if (event instanceof GuildMessageDeleteEvent guildMessageDeleteEvent
+        && usesLinkedDeletion()) onMessageDelete(guildMessageDeleteEvent);
     else if (event instanceof GuildJoinEvent) {
       // do nothing
     } else if (event instanceof GuildLeaveEvent) {
       // do nothing
-    } else if (event instanceof ReadyEvent) {
-      onReady((ReadyEvent) event);
-    } else if (event instanceof ShutdownEvent) {
-      if (shutdownAutomatically) shutdown();
+    } else if (event instanceof ReadyEvent readyEvent) {
+      onReady(readyEvent);
+    } else if (event instanceof ShutdownEvent && shutdownAutomatically) {
+      shutdown();
     }
   }
 
@@ -462,8 +459,8 @@ public class CommandClientImpl implements CommandClient {
                     : activity);
 
     // Start SettingsManager if necessary
-    GuildSettingsManager<?> manager = getSettingsManager();
-    if (manager != null) manager.init();
+    GuildSettingsManager<?> m = getSettingsManager();
+    if (m != null) m.init();
   }
 
   private void onMessageReceived(MessageReceivedEvent event) {
@@ -477,11 +474,10 @@ public class CommandClientImpl implements CommandClient {
         event.isFromType(ChannelType.TEXT) ? provideSettings(event.getGuild()) : null;
 
     // Check for prefix or alternate prefix (@mention cases)
-    if (prefix.equals(DEFAULT_PREFIX) || (altprefix != null && altprefix.equals(DEFAULT_PREFIX))) {
-      if (rawContent.startsWith("<@" + event.getJDA().getSelfUser().getId() + ">")
-          || rawContent.startsWith("<@!" + event.getJDA().getSelfUser().getId() + ">")) {
-        parts = splitOnPrefixLength(rawContent, rawContent.indexOf(">") + 1);
-      }
+    if ((prefix.equals(DEFAULT_PREFIX) || (altprefix != null && altprefix.equals(DEFAULT_PREFIX)))
+        && (rawContent.startsWith("<@" + event.getJDA().getSelfUser().getId() + ">")
+            || rawContent.startsWith("<@!" + event.getJDA().getSelfUser().getId() + ">"))) {
+      parts = splitOnPrefixLength(rawContent, rawContent.indexOf(">") + 1);
     }
     // Check for prefix
     if (parts == null && rawContent.toLowerCase().startsWith(prefix.toLowerCase()))
@@ -495,9 +491,10 @@ public class CommandClientImpl implements CommandClient {
     if (parts == null && settings != null) {
       Collection<String> prefixes = settings.getPrefixes();
       if (prefixes != null) {
-        for (String prefix : prefixes) {
-          if (parts == null && rawContent.toLowerCase().startsWith(prefix.toLowerCase()))
-            parts = splitOnPrefixLength(rawContent, prefix.length());
+        for (String p : prefixes) {
+          if (parts == null && rawContent.toLowerCase().startsWith(p.toLowerCase())) {
+            parts = splitOnPrefixLength(rawContent, p.length());
+          }
         }
       }
     }
@@ -545,7 +542,7 @@ public class CommandClientImpl implements CommandClient {
                 .getSelfMember()
                 .hasPermission(event.getChannel(), Permission.MESSAGE_MANAGE))
           event.getChannel().deleteMessages(messages).queue(unused -> {}, ignored -> {});
-        else if (messages.size() > 0)
+        else if (!messages.isEmpty())
           messages.forEach(m -> m.delete().queue(unused -> {}, ignored -> {}));
       }
     }
@@ -553,9 +550,10 @@ public class CommandClientImpl implements CommandClient {
 
   private GuildSettingsProvider provideSettings(Guild guild) {
     Object settings = getSettingsFor(guild);
-    if (settings != null && settings instanceof GuildSettingsProvider)
-      return (GuildSettingsProvider) settings;
-    else return null;
+    if (settings instanceof GuildSettingsProvider guildSettingsProvider) {
+      return guildSettingsProvider;
+    }
+    return null;
   }
 
   private static String[] splitOnPrefixLength(String rawContent, int length) {

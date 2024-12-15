@@ -18,9 +18,19 @@ package com.jagrosh.jmusicbot.jdautils;
 import com.jagrosh.jmusicbot.jdautils.impl.CommandClientImpl;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.PrivateChannel;
+import net.dv8tion.jda.api.entities.SelfUser;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.internal.utils.Checks;
@@ -45,7 +55,7 @@ import net.dv8tion.jda.internal.utils.Checks;
  * @author John Grosh (jagrosh)
  */
 public class CommandEvent {
-  public static int MAX_MESSAGES = 2;
+  public static final int MAX_MESSAGES = 2;
 
   private final MessageReceivedEvent event;
   private String args;
@@ -195,7 +205,7 @@ public class CommandEvent {
   public void reply(MessageEmbed embed) {
     event
         .getChannel()
-        .sendMessage(embed)
+        .sendMessageEmbeds(embed)
         .queue(
             m -> {
               if (event.isFromType(ChannelType.TEXT)) linkId(m);
@@ -217,7 +227,7 @@ public class CommandEvent {
   public void reply(MessageEmbed embed, Consumer<Message> success) {
     event
         .getChannel()
-        .sendMessage(embed)
+        .sendMessageEmbeds(embed)
         .queue(
             m -> {
               if (event.isFromType(ChannelType.TEXT)) linkId(m);
@@ -241,7 +251,7 @@ public class CommandEvent {
   public void reply(MessageEmbed embed, Consumer<Message> success, Consumer<Throwable> failure) {
     event
         .getChannel()
-        .sendMessage(embed)
+        .sendMessageEmbeds(embed)
         .queue(
             m -> {
               if (event.isFromType(ChannelType.TEXT)) linkId(m);
@@ -391,7 +401,7 @@ public class CommandEvent {
    */
   public void replyOrAlternate(MessageEmbed embed, String alternateMessage) {
     try {
-      event.getChannel().sendMessage(embed).queue();
+      event.getChannel().sendMessageEmbeds(embed).queue();
     } catch (PermissionException e) {
       reply(alternateMessage);
     }
@@ -530,7 +540,7 @@ public class CommandEvent {
   public void replyInDm(MessageEmbed embed) {
     if (event.isFromType(ChannelType.PRIVATE)) reply(embed);
     else {
-      event.getAuthor().openPrivateChannel().queue(pc -> pc.sendMessage(embed).queue());
+      event.getAuthor().openPrivateChannel().queue(pc -> pc.sendMessageEmbeds(embed).queue());
     }
   }
 
@@ -552,9 +562,12 @@ public class CommandEvent {
    */
   public void replyInDm(MessageEmbed embed, Consumer<Message> success) {
     if (event.isFromType(ChannelType.PRIVATE))
-      getPrivateChannel().sendMessage(embed).queue(success);
+      getPrivateChannel().sendMessageEmbeds(embed).queue(success);
     else {
-      event.getAuthor().openPrivateChannel().queue(pc -> pc.sendMessage(embed).queue(success));
+      event
+          .getAuthor()
+          .openPrivateChannel()
+          .queue(pc -> pc.sendMessageEmbeds(embed).queue(success));
     }
   }
 
@@ -578,12 +591,12 @@ public class CommandEvent {
   public void replyInDm(
       MessageEmbed embed, Consumer<Message> success, Consumer<Throwable> failure) {
     if (event.isFromType(ChannelType.PRIVATE))
-      getPrivateChannel().sendMessage(embed).queue(success, failure);
+      getPrivateChannel().sendMessageEmbeds(embed).queue(success, failure);
     else {
       event
           .getAuthor()
           .openPrivateChannel()
-          .queue(pc -> pc.sendMessage(embed).queue(success, failure), failure);
+          .queue(pc -> pc.sendMessageEmbeds(embed).queue(success, failure), failure);
     }
   }
 
@@ -838,11 +851,12 @@ public class CommandEvent {
     try {
       event.getMessage().addReaction(reaction.replaceAll("<a?:(.+):(\\d+)>", "$1:$2")).queue();
     } catch (PermissionException ignored) {
+      // do nothing
     }
   }
 
   private void sendMessage(MessageChannel chan, String message) {
-    ArrayList<String> messages = splitMessage(message);
+    List<String> messages = splitMessage(message);
     for (int i = 0; i < MAX_MESSAGES && i < messages.size(); i++) {
       chan.sendMessage(messages.get(i))
           .queue(
@@ -853,7 +867,7 @@ public class CommandEvent {
   }
 
   private void sendMessage(MessageChannel chan, String message, Consumer<Message> success) {
-    ArrayList<String> messages = splitMessage(message);
+    List<String> messages = splitMessage(message);
     for (int i = 0; i < MAX_MESSAGES && i < messages.size(); i++) {
       if (i + 1 == MAX_MESSAGES || i + 1 == messages.size()) {
         chan.sendMessage(messages.get(i))
@@ -874,7 +888,7 @@ public class CommandEvent {
 
   private void sendMessage(
       MessageChannel chan, String message, Consumer<Message> success, Consumer<Throwable> failure) {
-    ArrayList<String> messages = splitMessage(message);
+    List<String> messages = splitMessage(message);
     for (int i = 0; i < MAX_MESSAGES && i < messages.size(); i++) {
       if (i + 1 == MAX_MESSAGES || i + 1 == messages.size()) {
         chan.sendMessage(messages.get(i))
@@ -906,7 +920,7 @@ public class CommandEvent {
    *     occurrences of {@code @here} and {@code @everyone}, and that do not exceed 2000 characters
    *     in length
    */
-  public static ArrayList<String> splitMessage(String stringtoSend) {
+  public static List<String> splitMessage(String stringtoSend) {
     ArrayList<String> msgs = new ArrayList<>();
     if (stringtoSend != null) {
       stringtoSend =

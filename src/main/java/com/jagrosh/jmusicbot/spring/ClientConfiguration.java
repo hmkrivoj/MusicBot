@@ -5,16 +5,16 @@ import com.jagrosh.jmusicbot.jdautils.CommandClient;
 import com.jagrosh.jmusicbot.jdautils.CommandClientBuilder;
 import com.jagrosh.jmusicbot.settings.SettingsManager;
 import com.jagrosh.jmusicbot.spring.exceptions.IllegalClientConfigurationException;
+import java.util.List;
 import net.dv8tion.jda.api.OnlineStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
-
 @Configuration
 public class ClientConfiguration {
   @Bean
-  public CommandClient commandClient(List<Command> commands, AppConfiguration config, SettingsManager settings)
+  public CommandClient commandClient(
+      List<Command> commands, AppConfiguration config, SettingsManager settings)
       throws IllegalClientConfigurationException {
     try {
       // set up the command client
@@ -40,9 +40,7 @@ public class ClientConfiguration {
       return cb.build();
     } catch (IllegalArgumentException ex) {
       throw new IllegalClientConfigurationException(
-          "Some aspect of the configuration is "
-              + "invalid: "
-              + ex);
+          "Some aspect of the configuration is " + "invalid: " + ex);
     }
   }
 }

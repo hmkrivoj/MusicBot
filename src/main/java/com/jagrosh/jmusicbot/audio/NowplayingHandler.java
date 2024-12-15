@@ -41,7 +41,7 @@ public class NowplayingHandler {
 
   public void init() {
     if (!bot.getConfig().isNpimages())
-      bot.getThreadpool().scheduleWithFixedDelay(() -> updateAll(), 0, 5, TimeUnit.SECONDS);
+      bot.getThreadpool().scheduleWithFixedDelay(this::updateAll, 0, 5, TimeUnit.SECONDS);
   }
 
   public void setLastNPMessage(Message m) {
@@ -58,27 +58,32 @@ public class NowplayingHandler {
       Guild guild = bot.getJDA().getGuildById(guildId);
       if (guild == null) {
         toRemove.add(guildId);
-        continue;
-      }
-      Pair<Long, Long> pair = lastNP.get(guildId);
-      TextChannel tc = guild.getTextChannelById(pair.getKey());
-      if (tc == null) {
-        toRemove.add(guildId);
-        continue;
-      }
-      AudioHandler handler = (AudioHandler) guild.getAudioManager().getSendingHandler();
-      Message msg = handler.getNowPlaying(bot.getJDA());
-      if (msg == null) {
-        msg = handler.getNoMusicPlaying(bot.getJDA());
-        toRemove.add(guildId);
-      }
-      try {
-        tc.editMessageById(pair.getValue(), msg).queue(m -> {}, t -> lastNP.remove(guildId));
-      } catch (Exception e) {
-        toRemove.add(guildId);
+      } else {
+        Pair<Long, Long> pair = lastNP.get(guildId);
+        TextChannel tc = guild.getTextChannelById(pair.getKey());
+        if (tc == null) {
+          toRemove.add(guildId);
+        } else {
+          AudioHandler handler = (AudioHandler) guild.getAudioManager().getSendingHandler();
+          Message msg = handler.getNowPlaying(bot.getJDA());
+          if (msg == null) {
+            msg = handler.getNoMusicPlaying(bot.getJDA());
+            toRemove.add(guildId);
+          }
+          try {
+            tc.editMessageById(pair.getValue(), msg)
+                .queue(
+                    m -> {
+                      // do nothing
+                    },
+                    t -> lastNP.remove(guildId));
+          } catch (Exception e) {
+            toRemove.add(guildId);
+          }
+        }
       }
     }
-    toRemove.forEach(id -> lastNP.remove(id));
+    toRemove.forEach(lastNP::remove);
   }
 
   // "event"-based methods

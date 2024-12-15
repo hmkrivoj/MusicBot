@@ -19,15 +19,15 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 /**
  * An implementable "Listener" that can be added to a {@link
- * com.jagrosh.jdautilities.command.CommandClient CommandClient} and used to handle events relating
- * to {@link com.jagrosh.jdautilities.command.Command Command}s.
+ * com.jagrosh.jmusicbot.jdautils.CommandClient CommandClient} and used to handle events relating
+ * to {@link com.jagrosh.jmusicbot.jdautils.Command Command}s.
  *
  * @author John Grosh (jagrosh)
  */
 public interface CommandListener {
   /**
-   * Called when a {@link com.jagrosh.jdautilities.command.Command Command} is triggered by a {@link
-   * com.jagrosh.jdautilities.command.CommandEvent CommandEvent}.
+   * Called when a {@link com.jagrosh.jmusicbot.jdautils.Command Command} is triggered by a {@link
+   * com.jagrosh.jmusicbot.jdautils.CommandEvent CommandEvent}.
    *
    * @param event The CommandEvent that triggered the Command
    * @param command The Command that was triggered
@@ -35,12 +35,12 @@ public interface CommandListener {
   default void onCommand(CommandEvent event, Command command) {}
 
   /**
-   * Called when a {@link com.jagrosh.jdautilities.command.Command Command} is triggered by a {@link
-   * com.jagrosh.jdautilities.command.CommandEvent CommandEvent} after it's completed successfully.
+   * Called when a {@link com.jagrosh.jmusicbot.jdautils.Command Command} is triggered by a {@link
+   * com.jagrosh.jmusicbot.jdautils.CommandEvent CommandEvent} after it's completed successfully.
    *
    * <p>Note that a <i>successfully</i> completed command is one that has not encountered an error
    * or exception. Calls that do face errors should be handled by {@link
-   * CommandListener#onCommandException(CommandEvent, Command, Throwable)
+   * CommandListener#onCommandException(CommandEvent, Command, Exception)
    * CommandListener#onCommandException}
    *
    * @param event The CommandEvent that triggered the Command
@@ -49,8 +49,8 @@ public interface CommandListener {
   default void onCompletedCommand(CommandEvent event, Command command) {}
 
   /**
-   * Called when a {@link com.jagrosh.jdautilities.command.Command Command} is triggered by a {@link
-   * com.jagrosh.jdautilities.command.CommandEvent CommandEvent} but is terminated before
+   * Called when a {@link com.jagrosh.jmusicbot.jdautils.Command Command} is triggered by a {@link
+   * com.jagrosh.jmusicbot.jdautils.CommandEvent CommandEvent} but is terminated before
    * completion.
    *
    * @param event The CommandEvent that triggered the Command
@@ -61,7 +61,7 @@ public interface CommandListener {
   /**
    * Called when a {@link net.dv8tion.jda.api.events.message.MessageReceivedEvent
    * MessageReceivedEvent} is caught by the Client Listener's but doesn't correspond to a {@link
-   * com.jagrosh.jdautilities.command.Command Command}.
+   * com.jagrosh.jmusicbot.jdautils.Command Command}.
    *
    * <p>In other words, this catches all <b>non-command</b> MessageReceivedEvents allowing you to
    * handle them without implementation of another listener.
@@ -71,14 +71,14 @@ public interface CommandListener {
   default void onNonCommandMessage(MessageReceivedEvent event) {}
 
   /**
-   * Called when a {@link com.jagrosh.jdautilities.command.Command Command} catches a {@link
+   * Called when a {@link com.jagrosh.jmusicbot.jdautils.Command Command} catches a {@link
    * java.lang.Throwable Throwable} <b>during execution</b>.
    *
    * <p>This doesn't account for exceptions thrown during other pre-checks, and should not be
    * treated as such!
    *
    * <p>An example of this misconception is via a {@link
-   * com.jagrosh.jdautilities.command.Command.Category Category} test:
+   * com.jagrosh.jmusicbot.jdautils.Command.Category Category} test:
    *
    * <pre><code> public class BadCommand extends Command {
    *
@@ -97,17 +97,17 @@ public interface CommandListener {
    *
    * }</code></pre>
    *
-   * The {@link java.lang.NullPointerException NullPointerException} thrown will not be caught by
+   * <p>The {@link java.lang.NullPointerException NullPointerException} thrown will not be caught by
    * this method!
    *
    * @param event The CommandEvent that triggered the Command
    * @param command The Command that was triggered
-   * @param throwable The Throwable thrown during Command execution
+   * @param exception The Throwable thrown during Command execution
    */
-  default void onCommandException(CommandEvent event, Command command, Throwable throwable) {
+  default void onCommandException(CommandEvent event, Command command, Exception exception) {
     // Default rethrow as a runtime exception.
-    throw throwable instanceof RuntimeException
-        ? (RuntimeException) throwable
-        : new RuntimeException(throwable);
+    throw exception instanceof RuntimeException runtimeException
+        ? runtimeException
+        : new RuntimeException(exception);
   }
 }

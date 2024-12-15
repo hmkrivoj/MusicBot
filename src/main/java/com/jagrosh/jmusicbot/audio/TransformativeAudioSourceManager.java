@@ -20,17 +20,15 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioItem;
 import com.sedmelluq.discord.lavaplayer.track.AudioReference;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.PatternSyntaxException;
-import java.util.stream.Collectors;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author John Grosh (john.a.grosh@gmail.com)
@@ -44,25 +42,13 @@ public class TransformativeAudioSourceManager extends YoutubeAudioSourceManager 
   private final String format;
 
   public TransformativeAudioSourceManager(
-      String name,
-      AppConfiguration.TransformativeAudioSourceManagerConfig object
-  ) {
+      String name, AppConfiguration.TransformativeAudioSourceManagerConfig object) {
     this(
-        name,
-        object.getRegex(),
-        object.getReplacement(),
-        object.getSelector(),
-        object.getFormat()
-    );
+        name, object.getRegex(), object.getReplacement(), object.getSelector(), object.getFormat());
   }
 
   public TransformativeAudioSourceManager(
-      String name,
-      String regex,
-      String replacement,
-      String selector,
-      String format
-  ) {
+      String name, String regex, String replacement, String selector, String format) {
     this.name = name;
     this.regex = regex;
     this.replacement = replacement;
@@ -94,14 +80,12 @@ public class TransformativeAudioSourceManager extends YoutubeAudioSourceManager 
     return null;
   }
 
-  public static List<TransformativeAudioSourceManager> createTransforms(Map<String, AppConfiguration.TransformativeAudioSourceManagerConfig> transforms) {
+  public static List<TransformativeAudioSourceManager> createTransforms(
+      Map<String, AppConfiguration.TransformativeAudioSourceManagerConfig> transforms) {
     try {
       return transforms.entrySet().stream()
-          .map(
-              e ->
-                  new TransformativeAudioSourceManager(
-                      e.getKey(), e.getValue()))
-          .collect(Collectors.toList());
+          .map(e -> new TransformativeAudioSourceManager(e.getKey(), e.getValue()))
+          .toList();
     } catch (Exception ex) {
       log.warn("Invalid transform ", ex);
       return Collections.emptyList();

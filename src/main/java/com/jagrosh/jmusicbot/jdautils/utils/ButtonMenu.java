@@ -115,42 +115,41 @@ public class ButtonMenu extends Menu {
             else {
               // This is the last reaction added.
               r.queue(
-                  v -> {
-                    waiter.waitForEvent(
-                        MessageReactionAddEvent.class,
-                        event -> {
-                          // If the message is not the same as the ButtonMenu
-                          // currently being displayed.
-                          if (!event.getMessageId().equals(m.getId())) return false;
+                  v ->
+                      waiter.waitForEvent(
+                          MessageReactionAddEvent.class,
+                          event -> {
+                            // If the message is not the same as the ButtonMenu
+                            // currently being displayed.
+                            if (!event.getMessageId().equals(m.getId())) return false;
 
-                          // If the reaction is an Emote we get the Snowflake,
-                          // otherwise we get the unicode value.
-                          String re =
-                              event.getReaction().getReactionEmote().isEmote()
-                                  ? event.getReaction().getReactionEmote().getId()
-                                  : event.getReaction().getReactionEmote().getName();
+                            // If the reaction is an Emote we get the Snowflake,
+                            // otherwise we get the unicode value.
+                            String re =
+                                event.getReaction().getReactionEmote().isEmote()
+                                    ? event.getReaction().getReactionEmote().getId()
+                                    : event.getReaction().getReactionEmote().getName();
 
-                          // If the value we got is not registered as a button to
-                          // the ButtonMenu being displayed we return false.
-                          if (!choices.contains(re)) return false;
+                            // If the value we got is not registered as a button to
+                            // the ButtonMenu being displayed we return false.
+                            if (!choices.contains(re)) return false;
 
-                          // Last check is that the person who added the reaction
-                          // is a valid user.
-                          return isValidUser(
-                              event.getUser(), event.isFromGuild() ? event.getGuild() : null);
-                        },
-                        (MessageReactionAddEvent event) -> {
-                          // What happens next is after a valid event
-                          // is fired and processed above.
+                            // Last check is that the person who added the reaction
+                            // is a valid user.
+                            return isValidUser(
+                                event.getUser(), event.isFromGuild() ? event.getGuild() : null);
+                          },
+                          (MessageReactionAddEvent event) -> {
+                            // What happens next is after a valid event
+                            // is fired and processed above.
 
-                          // Preform the specified action with the ReactionEmote
-                          action.accept(event.getReaction().getReactionEmote());
-                          finalAction.accept(m);
-                        },
-                        timeout,
-                        unit,
-                        () -> finalAction.accept(m));
-                  });
+                            // Preform the specified action with the ReactionEmote
+                            action.accept(event.getReaction().getReactionEmote());
+                            finalAction.accept(m);
+                          },
+                          timeout,
+                          unit,
+                          () -> finalAction.accept(m)));
             }
           }
         });
@@ -161,7 +160,7 @@ public class ButtonMenu extends Menu {
     MessageBuilder mbuilder = new MessageBuilder();
     if (text != null) mbuilder.append(text);
     if (description != null)
-      mbuilder.setEmbed(new EmbedBuilder().setColor(color).setDescription(description).build());
+      mbuilder.setEmbeds(new EmbedBuilder().setColor(color).setDescription(description).build());
     return mbuilder.build();
   }
 
@@ -177,7 +176,7 @@ public class ButtonMenu extends Menu {
     private String description;
     private final List<String> choices = new LinkedList<>();
     private Consumer<ReactionEmote> action;
-    private Consumer<Message> finalAction = (m) -> {};
+    private Consumer<Message> finalAction = m -> {};
 
     /**
      * Builds the {@link com.jagrosh.jdautilities.menu.ButtonMenu ButtonMenu} with this Builder.

@@ -18,11 +18,12 @@ package com.jagrosh.jmusicbot.jdautils.utils;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import net.dv8tion.jda.api.utils.cache.SnowflakeCacheView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A series of query based utilities for finding entities, either globally across all accessible
@@ -78,6 +79,7 @@ public final class FinderUtil {
   public static final Pattern CHANNEL_MENTION = Pattern.compile("<#(\\d{17,20})>"); // $1 -> ID
   public static final Pattern ROLE_MENTION = Pattern.compile("<@&(\\d{17,20})>"); // $1 -> ID
   public static final Pattern EMOTE_MENTION = Pattern.compile("<:(.{2,32}):(\\d{17,20})>");
+  private static final Logger log = LoggerFactory.getLogger(FinderUtil.class);
 
   /**
    * Queries a provided instance of {@link net.dv8tion.jda.api.JDA JDA} for {@link
@@ -153,7 +155,7 @@ public final class FinderUtil {
                       user ->
                           user.getName().toLowerCase().equals(lowerName)
                               && user.getDiscriminator().equals(discrim))
-                  .collect(Collectors.toList());
+                  .toList();
       if (!users.isEmpty()) return users;
     } else if (DISCORD_ID.matcher(query).matches()) {
       User user = (manager != null ? manager.getUserById(query) : jda.getUserById(query));
@@ -223,47 +225,68 @@ public final class FinderUtil {
   public static List<User> findBannedUsers(String query, Guild guild) {
     List<User> bans;
     try {
-      bans =
-          guild.retrieveBanList().complete().stream()
-              .map(Guild.Ban::getUser)
-              .collect(Collectors.toList());
+      bans = guild.retrieveBanList().complete().stream().map(Guild.Ban::getUser).toList();
     } catch (Exception e) {
-      return null;
+      log.error(e.getMessage(), e);
+      return Collections.emptyList();
     }
     String discrim = null;
     Matcher userMention = USER_MENTION.matcher(query);
     if (userMention.matches()) {
       String id = userMention.group(1);
       User user = guild.getJDA().getUserById(id);
-      if (user != null && bans.contains(user)) return Collections.singletonList(user);
-      for (User u : bans) if (u.getId().equals(id)) return Collections.singletonList(u);
+      if (user != null && bans.contains(user)) {
+        return Collections.singletonList(user);
+      }
+      for (User u : bans) {
+        if (u.getId().equals(id)) {
+          return Collections.singletonList(u);
+        }
+      }
     } else if (FULL_USER_REF.matcher(query).matches()) {
       discrim = query.substring(query.length() - 4);
       query = query.substring(0, query.length() - 5).trim();
     } else if (DISCORD_ID.matcher(query).matches()) {
       User user = guild.getJDA().getUserById(query);
-      if (user != null && bans.contains(user)) return Collections.singletonList(user);
-      for (User u : bans) if (u.getId().equals(query)) return Collections.singletonList(u);
+      if (user != null && bans.contains(user)) {
+        return Collections.singletonList(user);
+      }
+      for (User u : bans) {
+        if (u.getId().equals(query)) {
+          return Collections.singletonList(u);
+        }
+      }
     }
-    ArrayList<User> exact = new ArrayList<>();
-    ArrayList<User> wrongcase = new ArrayList<>();
-    ArrayList<User> startswith = new ArrayList<>();
-    ArrayList<User> contains = new ArrayList<>();
+    List<User> exact = new ArrayList<>();
+    List<User> wrongcase = new ArrayList<>();
+    List<User> startswith = new ArrayList<>();
+    List<User> contains = new ArrayList<>();
     String lowerQuery = query.toLowerCase();
     for (User u : bans) {
       // If a discrim is specified then we skip all users without it.
-      if (discrim != null && !u.getDiscriminator().equals(discrim)) continue;
+      if (discrim != null && !u.getDiscriminator().equals(discrim)) {
+        continue;
+      }
 
-      if (u.getName().equals(query)) exact.add(u);
-      else if (exact.isEmpty() && u.getName().equalsIgnoreCase(query)) wrongcase.add(u);
-      else if (wrongcase.isEmpty() && u.getName().toLowerCase().startsWith(lowerQuery))
+      if (u.getName().equals(query)) {
+        exact.add(u);
+      } else if (exact.isEmpty() && u.getName().equalsIgnoreCase(query)) {
+        wrongcase.add(u);
+      } else if (wrongcase.isEmpty() && u.getName().toLowerCase().startsWith(lowerQuery)) {
         startswith.add(u);
-      else if (startswith.isEmpty() && u.getName().toLowerCase().contains(lowerQuery))
+      } else if (startswith.isEmpty() && u.getName().toLowerCase().contains(lowerQuery)) {
         contains.add(u);
+      }
     }
-    if (!exact.isEmpty()) return Collections.unmodifiableList(exact);
-    if (!wrongcase.isEmpty()) return Collections.unmodifiableList(wrongcase);
-    if (!startswith.isEmpty()) return Collections.unmodifiableList(startswith);
+    if (!exact.isEmpty()) {
+      return Collections.unmodifiableList(exact);
+    }
+    if (!wrongcase.isEmpty()) {
+      return Collections.unmodifiableList(wrongcase);
+    }
+    if (!startswith.isEmpty()) {
+      return Collections.unmodifiableList(startswith);
+    }
     return Collections.unmodifiableList(contains);
   }
 
@@ -302,7 +325,9 @@ public final class FinderUtil {
     Matcher fullRefMatch = FULL_USER_REF.matcher(query);
     if (userMention.matches()) {
       Member member = guild.getMemberById(userMention.group(1));
-      if (member != null) return Collections.singletonList(member);
+      if (member != null) {
+        return Collections.singletonList(member);
+      }
     } else if (fullRefMatch.matches()) {
       String lowerName = fullRefMatch.group(1).toLowerCase();
       String discrim = fullRefMatch.group(2);
@@ -312,16 +337,20 @@ public final class FinderUtil {
                   member ->
                       member.getUser().getName().toLowerCase().equals(lowerName)
                           && member.getUser().getDiscriminator().equals(discrim))
-              .collect(Collectors.toList());
-      if (!members.isEmpty()) return members;
+              .toList();
+      if (!members.isEmpty()) {
+        return members;
+      }
     } else if (DISCORD_ID.matcher(query).matches()) {
       Member member = guild.getMemberById(query);
-      if (member != null) return Collections.singletonList(member);
+      if (member != null) {
+        return Collections.singletonList(member);
+      }
     }
-    ArrayList<Member> exact = new ArrayList<>();
-    ArrayList<Member> wrongcase = new ArrayList<>();
-    ArrayList<Member> startswith = new ArrayList<>();
-    ArrayList<Member> contains = new ArrayList<>();
+    List<Member> exact = new ArrayList<>();
+    List<Member> wrongcase = new ArrayList<>();
+    List<Member> startswith = new ArrayList<>();
+    List<Member> contains = new ArrayList<>();
     String lowerquery = query.toLowerCase();
     guild
         .getMemberCache()
@@ -329,19 +358,30 @@ public final class FinderUtil {
             member -> {
               String name = member.getUser().getName();
               String effName = member.getEffectiveName();
-              if (name.equals(query) || effName.equals(query)) exact.add(member);
-              else if ((name.equalsIgnoreCase(query) || effName.equalsIgnoreCase(query))
-                  && exact.isEmpty()) wrongcase.add(member);
-              else if ((name.toLowerCase().startsWith(lowerquery)
+              if (name.equals(query) || effName.equals(query)) {
+                exact.add(member);
+              } else if ((name.equalsIgnoreCase(query) || effName.equalsIgnoreCase(query))
+                  && exact.isEmpty()) {
+                wrongcase.add(member);
+              } else if ((name.toLowerCase().startsWith(lowerquery)
                       || effName.toLowerCase().startsWith(lowerquery))
-                  && wrongcase.isEmpty()) startswith.add(member);
-              else if ((name.toLowerCase().contains(lowerquery)
+                  && wrongcase.isEmpty()) {
+                startswith.add(member);
+              } else if ((name.toLowerCase().contains(lowerquery)
                       || effName.toLowerCase().contains(lowerquery))
-                  && startswith.isEmpty()) contains.add(member);
+                  && startswith.isEmpty()) {
+                contains.add(member);
+              }
             });
-    if (!exact.isEmpty()) return Collections.unmodifiableList(exact);
-    if (!wrongcase.isEmpty()) return Collections.unmodifiableList(wrongcase);
-    if (!startswith.isEmpty()) return Collections.unmodifiableList(startswith);
+    if (!exact.isEmpty()) {
+      return Collections.unmodifiableList(exact);
+    }
+    if (!wrongcase.isEmpty()) {
+      return Collections.unmodifiableList(wrongcase);
+    }
+    if (!startswith.isEmpty()) {
+      return Collections.unmodifiableList(startswith);
+    }
     return Collections.unmodifiableList(contains);
   }
 
@@ -411,10 +451,14 @@ public final class FinderUtil {
     Matcher channelMention = CHANNEL_MENTION.matcher(query);
     if (channelMention.matches()) {
       TextChannel tc = guild.getTextChannelById(channelMention.group(1));
-      if (tc != null) return Collections.singletonList(tc);
+      if (tc != null) {
+        return Collections.singletonList(tc);
+      }
     } else if (DISCORD_ID.matcher(query).matches()) {
       TextChannel tc = guild.getTextChannelById(query);
-      if (tc != null) return Collections.singletonList(tc);
+      if (tc != null) {
+        return Collections.singletonList(tc);
+      }
     }
 
     return genericTextChannelSearch(query, guild.getTextChannelCache());
@@ -431,11 +475,15 @@ public final class FinderUtil {
           manager != null
               ? manager.getTextChannelById(channelMention.group(1))
               : jda.getTextChannelById(channelMention.group(1));
-      if (tc != null) return Collections.singletonList(tc);
+      if (tc != null) {
+        return Collections.singletonList(tc);
+      }
     } else if (DISCORD_ID.matcher(query).matches()) {
       TextChannel tc =
           manager != null ? manager.getTextChannelById(query) : jda.getTextChannelById(query);
-      if (tc != null) return Collections.singletonList(tc);
+      if (tc != null) {
+        return Collections.singletonList(tc);
+      }
     }
 
     return genericTextChannelSearch(
@@ -444,24 +492,33 @@ public final class FinderUtil {
 
   private static List<TextChannel> genericTextChannelSearch(
       String query, SnowflakeCacheView<TextChannel> cache) {
-    ArrayList<TextChannel> exact = new ArrayList<>();
-    ArrayList<TextChannel> wrongcase = new ArrayList<>();
-    ArrayList<TextChannel> startswith = new ArrayList<>();
-    ArrayList<TextChannel> contains = new ArrayList<>();
+    List<TextChannel> exact = new ArrayList<>();
+    List<TextChannel> wrongcase = new ArrayList<>();
+    List<TextChannel> startswith = new ArrayList<>();
+    List<TextChannel> contains = new ArrayList<>();
     String lowerquery = query.toLowerCase();
     cache.forEach(
-        (tc) -> {
+        tc -> {
           String name = tc.getName();
-          if (name.equals(query)) exact.add(tc);
-          else if (name.equalsIgnoreCase(query) && exact.isEmpty()) wrongcase.add(tc);
-          else if (name.toLowerCase().startsWith(lowerquery) && wrongcase.isEmpty())
+          if (name.equals(query)) {
+            exact.add(tc);
+          } else if (name.equalsIgnoreCase(query) && exact.isEmpty()) {
+            wrongcase.add(tc);
+          } else if (name.toLowerCase().startsWith(lowerquery) && wrongcase.isEmpty()) {
             startswith.add(tc);
-          else if (name.toLowerCase().contains(lowerquery) && startswith.isEmpty())
+          } else if (name.toLowerCase().contains(lowerquery) && startswith.isEmpty()) {
             contains.add(tc);
+          }
         });
-    if (!exact.isEmpty()) return Collections.unmodifiableList(exact);
-    if (!wrongcase.isEmpty()) return Collections.unmodifiableList(wrongcase);
-    if (!startswith.isEmpty()) return Collections.unmodifiableList(startswith);
+    if (!exact.isEmpty()) {
+      return Collections.unmodifiableList(exact);
+    }
+    if (!wrongcase.isEmpty()) {
+      return Collections.unmodifiableList(wrongcase);
+    }
+    if (!startswith.isEmpty()) {
+      return Collections.unmodifiableList(startswith);
+    }
     return Collections.unmodifiableList(contains);
   }
 
@@ -515,7 +572,9 @@ public final class FinderUtil {
   public static List<VoiceChannel> findVoiceChannels(String query, Guild guild) {
     if (DISCORD_ID.matcher(query).matches()) {
       VoiceChannel vc = guild.getVoiceChannelById(query);
-      if (vc != null) return Collections.singletonList(vc);
+      if (vc != null) {
+        return Collections.singletonList(vc);
+      }
     }
     return genericVoiceChannelSearch(query, guild.getVoiceChannelCache());
   }
@@ -527,7 +586,9 @@ public final class FinderUtil {
     if (DISCORD_ID.matcher(query).matches()) {
       VoiceChannel vc =
           manager != null ? manager.getVoiceChannelById(query) : jda.getVoiceChannelById(query);
-      if (vc != null) return Collections.singletonList(vc);
+      if (vc != null) {
+        return Collections.singletonList(vc);
+      }
     }
 
     return genericVoiceChannelSearch(
@@ -536,24 +597,33 @@ public final class FinderUtil {
 
   private static List<VoiceChannel> genericVoiceChannelSearch(
       String query, SnowflakeCacheView<VoiceChannel> cache) {
-    ArrayList<VoiceChannel> exact = new ArrayList<>();
-    ArrayList<VoiceChannel> wrongcase = new ArrayList<>();
-    ArrayList<VoiceChannel> startswith = new ArrayList<>();
-    ArrayList<VoiceChannel> contains = new ArrayList<>();
+    List<VoiceChannel> exact = new ArrayList<>();
+    List<VoiceChannel> wrongcase = new ArrayList<>();
+    List<VoiceChannel> startswith = new ArrayList<>();
+    List<VoiceChannel> contains = new ArrayList<>();
     String lowerquery = query.toLowerCase();
     cache.forEach(
-        (vc) -> {
+        vc -> {
           String name = vc.getName();
-          if (name.equals(query)) exact.add(vc);
-          else if (name.equalsIgnoreCase(query) && exact.isEmpty()) wrongcase.add(vc);
-          else if (name.toLowerCase().startsWith(lowerquery) && wrongcase.isEmpty())
+          if (name.equals(query)) {
+            exact.add(vc);
+          } else if (name.equalsIgnoreCase(query) && exact.isEmpty()) {
+            wrongcase.add(vc);
+          } else if (name.toLowerCase().startsWith(lowerquery) && wrongcase.isEmpty()) {
             startswith.add(vc);
-          else if (name.toLowerCase().contains(lowerquery) && startswith.isEmpty())
+          } else if (name.toLowerCase().contains(lowerquery) && startswith.isEmpty()) {
             contains.add(vc);
+          }
         });
-    if (!exact.isEmpty()) return Collections.unmodifiableList(exact);
-    if (!wrongcase.isEmpty()) return Collections.unmodifiableList(wrongcase);
-    if (!startswith.isEmpty()) return Collections.unmodifiableList(startswith);
+    if (!exact.isEmpty()) {
+      return Collections.unmodifiableList(exact);
+    }
+    if (!wrongcase.isEmpty()) {
+      return Collections.unmodifiableList(wrongcase);
+    }
+    if (!startswith.isEmpty()) {
+      return Collections.unmodifiableList(startswith);
+    }
     return Collections.unmodifiableList(contains);
   }
 
@@ -607,7 +677,9 @@ public final class FinderUtil {
   public static List<Category> findCategories(String query, Guild guild) {
     if (DISCORD_ID.matcher(query).matches()) {
       Category cat = guild.getCategoryById(query);
-      if (cat != null) return Collections.singletonList(cat);
+      if (cat != null) {
+        return Collections.singletonList(cat);
+      }
     }
 
     return genericCategorySearch(query, guild.getCategoryCache());
@@ -618,7 +690,9 @@ public final class FinderUtil {
 
     if (DISCORD_ID.matcher(query).matches()) {
       Category cat = manager != null ? manager.getCategoryById(query) : jda.getCategoryById(query);
-      if (cat != null) return Collections.singletonList(cat);
+      if (cat != null) {
+        return Collections.singletonList(cat);
+      }
     }
 
     return genericCategorySearch(query, jda.getCategoryCache());
@@ -626,24 +700,33 @@ public final class FinderUtil {
 
   private static List<Category> genericCategorySearch(
       String query, SnowflakeCacheView<Category> cache) {
-    ArrayList<Category> exact = new ArrayList<>();
-    ArrayList<Category> wrongcase = new ArrayList<>();
-    ArrayList<Category> startswith = new ArrayList<>();
-    ArrayList<Category> contains = new ArrayList<>();
+    List<Category> exact = new ArrayList<>();
+    List<Category> wrongcase = new ArrayList<>();
+    List<Category> startswith = new ArrayList<>();
+    List<Category> contains = new ArrayList<>();
     String lowerquery = query.toLowerCase();
     cache.forEach(
         cat -> {
           String name = cat.getName();
-          if (name.equals(query)) exact.add(cat);
-          else if (name.equalsIgnoreCase(query) && exact.isEmpty()) wrongcase.add(cat);
-          else if (name.toLowerCase().startsWith(lowerquery) && wrongcase.isEmpty())
+          if (name.equals(query)) {
+            exact.add(cat);
+          } else if (name.equalsIgnoreCase(query) && exact.isEmpty()) {
+            wrongcase.add(cat);
+          } else if (name.toLowerCase().startsWith(lowerquery) && wrongcase.isEmpty()) {
             startswith.add(cat);
-          else if (name.toLowerCase().contains(lowerquery) && startswith.isEmpty())
+          } else if (name.toLowerCase().contains(lowerquery) && startswith.isEmpty()) {
             contains.add(cat);
+          }
         });
-    if (!exact.isEmpty()) return Collections.unmodifiableList(exact);
-    if (!wrongcase.isEmpty()) return Collections.unmodifiableList(wrongcase);
-    if (!startswith.isEmpty()) return Collections.unmodifiableList(startswith);
+    if (!exact.isEmpty()) {
+      return Collections.unmodifiableList(exact);
+    }
+    if (!wrongcase.isEmpty()) {
+      return Collections.unmodifiableList(wrongcase);
+    }
+    if (!startswith.isEmpty()) {
+      return Collections.unmodifiableList(startswith);
+    }
     return Collections.unmodifiableList(contains);
   }
 
@@ -664,34 +747,47 @@ public final class FinderUtil {
    *     provided Guild.
    */
   public static List<Role> findRoles(String query, Guild guild) {
-    Matcher roleMention = ROLE_MENTION.matcher(query);
+    final Matcher roleMention = ROLE_MENTION.matcher(query);
     if (roleMention.matches()) {
-      Role role = guild.getRoleById(roleMention.group(1));
-      if (role != null) return Collections.singletonList(role);
+      final Role role = guild.getRoleById(roleMention.group(1));
+      if (role != null) {
+        return Collections.singletonList(role);
+      }
     } else if (DISCORD_ID.matcher(query).matches()) {
-      Role role = guild.getRoleById(query);
-      if (role != null) return Collections.singletonList(role);
+      final Role role = guild.getRoleById(query);
+      if (role != null) {
+        return Collections.singletonList(role);
+      }
     }
-    ArrayList<Role> exact = new ArrayList<>();
-    ArrayList<Role> wrongcase = new ArrayList<>();
-    ArrayList<Role> startswith = new ArrayList<>();
-    ArrayList<Role> contains = new ArrayList<>();
-    String lowerquery = query.toLowerCase();
+    final List<Role> exact = new ArrayList<>();
+    final List<Role> wrongcase = new ArrayList<>();
+    final List<Role> startswith = new ArrayList<>();
+    final List<Role> contains = new ArrayList<>();
+    final String lowerquery = query.toLowerCase();
     guild
         .getRoleCache()
         .forEach(
-            (role) -> {
+            role -> {
               String name = role.getName();
-              if (name.equals(query)) exact.add(role);
-              else if (name.equalsIgnoreCase(query) && exact.isEmpty()) wrongcase.add(role);
-              else if (name.toLowerCase().startsWith(lowerquery) && wrongcase.isEmpty())
+              if (name.equals(query)) {
+                exact.add(role);
+              } else if (name.equalsIgnoreCase(query) && exact.isEmpty()) {
+                wrongcase.add(role);
+              } else if (name.toLowerCase().startsWith(lowerquery) && wrongcase.isEmpty()) {
                 startswith.add(role);
-              else if (name.toLowerCase().contains(lowerquery) && startswith.isEmpty())
+              } else if (name.toLowerCase().contains(lowerquery) && startswith.isEmpty()) {
                 contains.add(role);
+              }
             });
-    if (!exact.isEmpty()) return Collections.unmodifiableList(exact);
-    if (!wrongcase.isEmpty()) return Collections.unmodifiableList(wrongcase);
-    if (!startswith.isEmpty()) return Collections.unmodifiableList(startswith);
+    if (!exact.isEmpty()) {
+      return Collections.unmodifiableList(exact);
+    }
+    if (!wrongcase.isEmpty()) {
+      return Collections.unmodifiableList(wrongcase);
+    }
+    if (!startswith.isEmpty()) {
+      return Collections.unmodifiableList(startswith);
+    }
     return Collections.unmodifiableList(contains);
   }
 
@@ -773,13 +869,16 @@ public final class FinderUtil {
     Matcher mentionMatcher = EMOTE_MENTION.matcher(query);
     if (DISCORD_ID.matcher(query).matches()) {
       Emote emote = guild.getEmoteById(query);
-      if (emote != null) return Collections.singletonList(emote);
+      if (emote != null) {
+        return Collections.singletonList(emote);
+      }
     } else if (mentionMatcher.matches()) {
       String emoteName = mentionMatcher.group(1);
       String emoteId = mentionMatcher.group(2);
       Emote emote = guild.getEmoteById(emoteId);
-      if (emote != null && emote.getName().equals(emoteName))
+      if (emote != null && emote.getName().equals(emoteName)) {
         return Collections.singletonList(emote);
+      }
     }
 
     return genericEmoteSearch(query, guild.getEmoteCache());
@@ -792,37 +891,49 @@ public final class FinderUtil {
 
     if (DISCORD_ID.matcher(query).matches()) {
       Emote emote = manager != null ? manager.getEmoteById(query) : jda.getEmoteById(query);
-      if (emote != null) return Collections.singletonList(emote);
+      if (emote != null) {
+        return Collections.singletonList(emote);
+      }
     } else if (mentionMatcher.matches()) {
       String emoteName = mentionMatcher.group(1);
       String emoteId = mentionMatcher.group(2);
       Emote emote = manager != null ? manager.getEmoteById(emoteId) : jda.getEmoteById(emoteId);
-      if (emote != null && emote.getName().equals(emoteName))
+      if (emote != null && emote.getName().equals(emoteName)) {
         return Collections.singletonList(emote);
+      }
     }
 
     return genericEmoteSearch(query, jda.getEmoteCache());
   }
 
   private static List<Emote> genericEmoteSearch(String query, SnowflakeCacheView<Emote> cache) {
-    ArrayList<Emote> exact = new ArrayList<>();
-    ArrayList<Emote> wrongcase = new ArrayList<>();
-    ArrayList<Emote> startswith = new ArrayList<>();
-    ArrayList<Emote> contains = new ArrayList<>();
+    List<Emote> exact = new ArrayList<>();
+    List<Emote> wrongcase = new ArrayList<>();
+    List<Emote> startswith = new ArrayList<>();
+    List<Emote> contains = new ArrayList<>();
     String lowerquery = query.toLowerCase();
     cache.forEach(
         emote -> {
           String name = emote.getName();
-          if (name.equals(query)) exact.add(emote);
-          else if (name.equalsIgnoreCase(query) && exact.isEmpty()) wrongcase.add(emote);
-          else if (name.toLowerCase().startsWith(lowerquery) && wrongcase.isEmpty())
+          if (name.equals(query)) {
+            exact.add(emote);
+          } else if (name.equalsIgnoreCase(query) && exact.isEmpty()) {
+            wrongcase.add(emote);
+          } else if (name.toLowerCase().startsWith(lowerquery) && wrongcase.isEmpty()) {
             startswith.add(emote);
-          else if (name.toLowerCase().contains(lowerquery) && startswith.isEmpty())
+          } else if (name.toLowerCase().contains(lowerquery) && startswith.isEmpty()) {
             contains.add(emote);
+          }
         });
-    if (!exact.isEmpty()) return Collections.unmodifiableList(exact);
-    if (!wrongcase.isEmpty()) return Collections.unmodifiableList(wrongcase);
-    if (!startswith.isEmpty()) return Collections.unmodifiableList(startswith);
+    if (!exact.isEmpty()) {
+      return Collections.unmodifiableList(exact);
+    }
+    if (!wrongcase.isEmpty()) {
+      return Collections.unmodifiableList(wrongcase);
+    }
+    if (!startswith.isEmpty()) {
+      return Collections.unmodifiableList(startswith);
+    }
     return Collections.unmodifiableList(contains);
   }
 

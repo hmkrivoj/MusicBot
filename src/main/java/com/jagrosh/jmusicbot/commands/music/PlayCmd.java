@@ -183,10 +183,11 @@ public class PlayCmd extends MusicCommand {
                   else m.editMessage(addMsg).queue();
                 })
             .setFinalAction(
-                m -> {
+                msg -> {
                   try {
-                    m.clearReactions().queue();
+                    msg.clearReactions().queue();
                   } catch (PermissionException ignore) {
+                    // do nothing
                   }
                 })
             .build()

@@ -47,5 +47,4 @@ public class JMusicBot {
     //     .setLevel(Level.toLevel(config.getLogLevel(), Level.INFO));
     SpringApplication.run(JMusicBot.class, args);
   }
-
 }

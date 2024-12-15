@@ -18,6 +18,7 @@ package com.jagrosh.jmusicbot.queue;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author Wolfgang Schwendtbauer
@@ -77,13 +78,14 @@ public abstract class AbstractQueue<T extends Queueable> {
   }
 
   public int shuffle(long identifier) {
+    Random random = new Random();
     List<Integer> iset = new ArrayList<>();
     for (int i = 0; i < list.size(); i++) {
       if (list.get(i).getIdentifier() == identifier) iset.add(i);
     }
     for (int j = 0; j < iset.size(); j++) {
       int first = iset.get(j);
-      int second = iset.get((int) (Math.random() * iset.size()));
+      int second = random.nextInt(iset.size());
       T temp = list.get(first);
       list.set(first, list.get(second));
       list.set(second, temp);

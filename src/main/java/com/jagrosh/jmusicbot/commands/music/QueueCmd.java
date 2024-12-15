@@ -58,6 +58,7 @@ public class QueueCmd extends MusicCommand {
                   try {
                     m.clearReactions().queue();
                   } catch (PermissionException ignore) {
+                    // do nothing
                   }
                 })
             .setItemsPerPage(10)
@@ -75,6 +76,7 @@ public class QueueCmd extends MusicCommand {
     try {
       pagenum = Integer.parseInt(event.getArgs());
     } catch (NumberFormatException ignore) {
+      // do nothing
     }
     AudioHandler ah = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
     List<QueuedTrack> list = ah.getQueue().getList();

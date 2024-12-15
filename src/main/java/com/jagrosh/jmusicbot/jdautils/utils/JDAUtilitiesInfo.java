@@ -32,22 +32,8 @@ public final class JDAUtilitiesInfo {
       VERSION_MAJOR.startsWith("@")
           ? "DEV"
           : VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_REVISION;
-  public static final String GITHUB = "https://github.com/JDA-Applications/JDA-Utilities";
-  public static final String AUTHOR = "JDA-Applications";
 
-  // Removed in favor of a token replacement.
-  /*
-  // Version init block
-  static
-  {
-      Package pkg = JDAUtilitiesInfo.class.getPackage();
-
-      String version = pkg.getImplementationVersion();
-      VERSION = version == null? "DEV" : version;
-
-      String[] parts = VERSION.split("\\.", 2);
-      VERSION_MAJOR = version == null? "2" : parts[0]; // This should only be updated every version major!
-      VERSION_MINOR = version == null? "X" : parts[1];
+  private JDAUtilitiesInfo() {
+    // hidden default constructor
   }
-  */
 }

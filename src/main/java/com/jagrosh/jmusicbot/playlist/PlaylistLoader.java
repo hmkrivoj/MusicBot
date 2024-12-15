@@ -22,7 +22,6 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,8 +30,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * @author John Grosh (john.a.grosh@gmail.com)
@@ -50,7 +49,7 @@ public class PlaylistLoader {
       return Arrays.asList(folder.listFiles((pathname) -> pathname.getName().endsWith(".txt")))
           .stream()
           .map(f -> f.getName().substring(0, f.getName().length() - 4))
-          .collect(Collectors.toList());
+          .toList();
     } else {
       createFolder();
       return Collections.emptyList();
@@ -61,6 +60,7 @@ public class PlaylistLoader {
     try {
       Files.createDirectory(OtherUtil.getPath(config.getPlaylistsfolder()));
     } catch (IOException ignore) {
+      // do nothing
     }
   }
 
@@ -113,8 +113,9 @@ public class PlaylistLoader {
   }
 
   private static <T> void shuffle(List<T> list) {
+    final var random = new Random();
     for (int first = 0; first < list.size(); first++) {
-      int second = (int) (Math.random() * list.size());
+      int second = random.nextInt(list.size());
       T tmp = list.get(first);
       list.set(first, list.get(second));
       list.set(second, tmp);
@@ -176,18 +177,20 @@ public class PlaylistLoader {
                 } else if (ap.getSelectedTrack() != null) {
                   trackLoaded(ap.getSelectedTrack());
                 } else {
-                  List<AudioTrack> loaded = new ArrayList<>(ap.getTracks());
-                  if (shuffle)
-                    for (int first = 0; first < loaded.size(); first++) {
-                      int second = (int) (Math.random() * loaded.size());
-                      AudioTrack tmp = loaded.get(first);
-                      loaded.set(first, loaded.get(second));
-                      loaded.set(second, tmp);
+                  final var random = new Random();
+                  List<AudioTrack> loadedTracks = new ArrayList<>(ap.getTracks());
+                  if (shuffle) {
+                    for (int first = 0; first < loadedTracks.size(); first++) {
+                      int second = random.nextInt(loadedTracks.size());
+                      AudioTrack tmp = loadedTracks.get(first);
+                      loadedTracks.set(first, loadedTracks.get(second));
+                      loadedTracks.set(second, tmp);
                     }
-                  loaded.removeIf(config::calcIsTooLong);
-                  loaded.forEach(at -> at.setUserData(0L));
-                  tracks.addAll(loaded);
-                  loaded.forEach(at -> consumer.accept(at));
+                  }
+                  loadedTracks.removeIf(config::calcIsTooLong);
+                  loadedTracks.forEach(at -> at.setUserData(0L));
+                  tracks.addAll(loadedTracks);
+                  loadedTracks.forEach(consumer::accept);
                 }
                 done();
               }

@@ -8,6 +8,8 @@ import com.jagrosh.jmusicbot.spring.exceptions.ConnectErrorException;
 import com.jagrosh.jmusicbot.spring.exceptions.TokenException;
 import com.jagrosh.jmusicbot.spring.exceptions.UnsupportedBotException;
 import com.jagrosh.jmusicbot.utils.OtherUtil;
+import java.util.Arrays;
+import javax.security.auth.login.LoginException;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -18,9 +20,6 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.security.auth.login.LoginException;
-import java.util.Arrays;
 
 @Slf4j
 @Configuration

@@ -18,9 +18,8 @@ package com.jagrosh.jmusicbot.commands.music;
 import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.commands.MusicCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
+import org.springframework.stereotype.Component;
 
 /**
  * @author John Grosh <john.a.grosh@gmail.com>

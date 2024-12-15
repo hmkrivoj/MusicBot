@@ -116,4 +116,8 @@ public class TimeUtil {
       this.relative = relative;
     }
   }
+
+  private TimeUtil() {
+    // hidden default constructor
+  }
 }

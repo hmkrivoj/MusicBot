@@ -22,7 +22,6 @@ import com.jagrosh.jmusicbot.queue.QueueSupplier;
 import com.jagrosh.jmusicbot.queue.Queueable;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Wolfgang Schwendtbauer
@@ -42,9 +41,7 @@ public enum QueueType {
   }
 
   public static List<String> getNames() {
-    return Arrays.stream(QueueType.values())
-        .map(type -> type.name().toLowerCase())
-        .collect(Collectors.toList());
+    return Arrays.stream(QueueType.values()).map(type -> type.name().toLowerCase()).toList();
   }
 
   public <T extends Queueable> AbstractQueue<T> createInstance(AbstractQueue<T> previous) {

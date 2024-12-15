@@ -46,7 +46,7 @@ public class SettingsManager implements GuildSettingsManager<Settings> {
       loadedSettings
           .keySet()
           .forEach(
-              (id) -> {
+              id -> {
                 JSONObject o = loadedSettings.getJSONObject(id);
 
                 // Legacy version support: On versions 0.3.3 and older, the repeat mode was
@@ -76,21 +76,21 @@ public class SettingsManager implements GuildSettingsManager<Settings> {
       // create an empty json file
       try {
         LOG.info(
-            "serversettings.json will be created in "
-                + OtherUtil.getPath("serversettings.json").toAbsolutePath());
+            "serversettings.json will be created in {}",
+            OtherUtil.getPath("serversettings.json").toAbsolutePath());
         Files.write(
             OtherUtil.getPath("serversettings.json"), new JSONObject().toString(4).getBytes());
       } catch (IOException ex) {
-        LOG.warn("Failed to create new settings file: " + ex);
+        LOG.warn("Failed to create new settings file", ex);
       }
       return;
     } catch (IOException | JSONException e) {
-      LOG.warn("Failed to load server settings: " + e);
+      LOG.warn("Failed to load server settings", e);
     }
 
     LOG.info(
-        "serversettings.json loaded from "
-            + OtherUtil.getPath("serversettings.json").toAbsolutePath());
+        "serversettings.json loaded from {}",
+        OtherUtil.getPath("serversettings.json").toAbsolutePath());
   }
 
   /**
