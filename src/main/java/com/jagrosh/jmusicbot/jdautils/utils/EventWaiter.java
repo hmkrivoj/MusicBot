@@ -140,31 +140,6 @@ public class EventWaiter implements EventListener {
   }
 
   /**
-   * Waits an indefinite amount of time for an {@link net.dv8tion.jda.api.events.Event Event} that
-   * returns {@code true} when tested with the provided {@link java.util.function.Predicate
-   * Predicate}.
-   *
-   * <p>When this occurs, the provided {@link java.util.function.Consumer Consumer} will accept and
-   * execute using the same Event.
-   *
-   * @param  <T> The type of Event to wait for.
-   * @param classType The {@link java.lang.Class} of the Event to wait for. Never null.
-   * @param condition The Predicate to test when Events of the provided type are thrown. Never null.
-   * @param action The Consumer to perform an action when the condition Predicate returns {@code
-   *     true}. Never null.
-   * @throws IllegalArgumentException One of two reasons:
-   *     <ul>
-   *       <li>1) Either the {@code classType}, {@code condition}, or {@code action} was {@code
-   *           null}.
-   *       <li>2) The internal threadpool is shut down, meaning that no more tasks can be submitted.
-   *     </ul>
-   */
-  public <T extends Event> void waitForEvent(
-      Class<T> classType, Predicate<T> condition, Consumer<T> action) {
-    waitForEvent(classType, condition, action, -1, null, null);
-  }
-
-  /**
    * Waits a predetermined amount of time for an {@link net.dv8tion.jda.api.events.Event Event} that
    * returns {@code true} when tested with the provided {@link java.util.function.Predicate
    * Predicate}.
@@ -252,23 +227,6 @@ public class EventWaiter implements EventListener {
       }
       c = c.getSuperclass();
     }
-  }
-
-  /**
-   * Closes this EventWaiter if it doesn't normally shutdown automatically.
-   *
-   * <p><b>IF YOU USED THE DEFAULT CONSTRUCTOR WITH NO ARGUMENTS DO NOT CALL THIS!</b> <br>
-   * Calling this method on an EventWaiter that does shutdown automatically will result in an {@link
-   * java.lang.UnsupportedOperationException UnsupportedOperationException} being thrown.
-   *
-   * @throws UnsupportedOperationException The EventWaiter is supposed to close automatically.
-   */
-  public void shutdown() {
-    if (shutdownAutomatically)
-      throw new UnsupportedOperationException(
-          "Shutting down EventWaiters that are set to automatically close is unsupported!");
-
-    threadpool.shutdown();
   }
 
   private class WaitingEvent<T extends GenericEvent> {

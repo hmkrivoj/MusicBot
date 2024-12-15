@@ -222,21 +222,6 @@ public class CommandClientImpl implements CommandClient {
   }
 
   @Override
-  public List<Command> getCommands() {
-    return commands;
-  }
-
-  @Override
-  public OffsetDateTime getStartTime() {
-    return start;
-  }
-
-  @Override
-  public OffsetDateTime getCooldown(String name) {
-    return cooldowns.get(name);
-  }
-
-  @Override
   public int getRemainingCooldown(String name) {
     if (cooldowns.containsKey(name)) {
       int time =
@@ -256,31 +241,15 @@ public class CommandClientImpl implements CommandClient {
     cooldowns.put(name, OffsetDateTime.now().plusSeconds(seconds));
   }
 
-  @Override
-  public void cleanCooldowns() {
-    OffsetDateTime now = OffsetDateTime.now();
-    cooldowns.keySet().stream()
-        .filter(str -> (cooldowns.get(str).isBefore(now)))
-        .forEach(cooldowns::remove);
-  }
-
-  @Override
-  public int getCommandUses(Command command) {
-    return getCommandUses(command.getName());
-  }
-
-  @Override
-  public int getCommandUses(String name) {
+  private int getCommandUses(String name) {
     return uses.getOrDefault(name, 0);
   }
 
-  @Override
-  public void addCommand(Command command) {
+  private void addCommand(Command command) {
     addCommand(command, commands.size());
   }
 
-  @Override
-  public void addCommand(Command command, int index) {
+  private void addCommand(Command command, int index) {
     if (index > commands.size() || index < 0)
       throw new ArrayIndexOutOfBoundsException(
           "Index specified is invalid: [" + index + "/" + commands.size() + "]");
@@ -311,45 +280,13 @@ public class CommandClientImpl implements CommandClient {
   }
 
   @Override
-  public void removeCommand(String name) {
-    synchronized (commandIndex) {
-      if (!commandIndex.containsKey(name.toLowerCase()))
-        throw new IllegalArgumentException("Name provided is not indexed: \"" + name + "\"!");
-      int targetIndex = commandIndex.remove(name.toLowerCase());
-      Command removedCommand = commands.remove(targetIndex);
-      for (String alias : removedCommand.getAliases()) {
-        commandIndex.remove(alias.toLowerCase());
-      }
-      commandIndex.entrySet().stream()
-          .filter(entry -> entry.getValue() > targetIndex)
-          .forEach(entry -> commandIndex.put(entry.getKey(), entry.getValue() - 1));
-    }
-  }
-
-  @Override
   public String getOwnerId() {
     return ownerId;
   }
 
   @Override
-  public long getOwnerIdLong() {
-    return Long.parseLong(ownerId);
-  }
-
-  @Override
   public String[] getCoOwnerIds() {
     return coOwnerIds;
-  }
-
-  @Override
-  public long[] getCoOwnerIdsLong() {
-    // Thought about using java.util.Arrays#setAll(T[], IntFunction<T>)
-    // here, but as it turns out it's actually the same thing as this but
-    // it throws an error if null. Go figure.
-    if (coOwnerIds == null) return new long[0];
-    long[] ids = new long[coOwnerIds.length];
-    for (int i = 0; i < ids.length; i++) ids[i] = Long.parseLong(coOwnerIds[i]);
-    return ids;
   }
 
   @Override
@@ -373,18 +310,8 @@ public class CommandClientImpl implements CommandClient {
   }
 
   @Override
-  public String getServerInvite() {
-    return serverInvite;
-  }
-
-  @Override
   public String getPrefix() {
     return prefix;
-  }
-
-  @Override
-  public String getAltPrefix() {
-    return altprefix;
   }
 
   @Override
@@ -397,8 +324,7 @@ public class CommandClientImpl implements CommandClient {
     return helpWord;
   }
 
-  @Override
-  public boolean usesLinkedDeletion() {
+  private boolean usesLinkedDeletion() {
     return linkMap != null;
   }
 
@@ -410,13 +336,11 @@ public class CommandClientImpl implements CommandClient {
   }
 
   @SuppressWarnings("unchecked")
-  @Override
-  public <M extends GuildSettingsManager> M getSettingsManager() {
+  private <M extends GuildSettingsManager> M getSettingsManager() {
     return (M) manager;
   }
 
-  @Override
-  public void shutdown() {
+  private void shutdown() {
     GuildSettingsManager<?> manager = getSettingsManager();
     if (manager != null) manager.shutdown();
     executor.shutdown();

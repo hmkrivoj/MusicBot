@@ -25,7 +25,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageReaction.ReactionEmote;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
@@ -70,23 +69,11 @@ public class ButtonMenu extends Menu {
   }
 
   /**
-   * Shows the ButtonMenu as a new {@link net.dv8tion.jda.api.entities.Message Message} in the
-   * provided {@link net.dv8tion.jda.api.entities.MessageChannel MessageChannel}.
-   *
-   * @param channel The MessageChannel to send the new Message to
-   */
-  @Override
-  public void display(MessageChannel channel) {
-    initialize(channel.sendMessage(getMessage()));
-  }
-
-  /**
    * Displays this ButtonMenu by editing the provided {@link net.dv8tion.jda.api.entities.Message
    * Message}.
    *
    * @param message The Message to display the Menu in
    */
-  @Override
   public void display(Message message) {
     initialize(message.editMessage(getMessage()));
   }
@@ -190,7 +177,6 @@ public class ButtonMenu extends Menu {
      *       <li>Neither text nor description were set.
      *     </ul>
      */
-    @Override
     public ButtonMenu build() {
       Checks.check(waiter != null, "Must set an EventWaiter");
       Checks.check(!choices.isEmpty(), "Must have at least one choice");
@@ -212,18 +198,6 @@ public class ButtonMenu extends Menu {
     }
 
     /**
-     * Sets the {@link java.awt.Color Color} of the {@link net.dv8tion.jda.api.entities.MessageEmbed
-     * MessageEmbed}.
-     *
-     * @param color The Color of the MessageEmbed
-     * @return This builder
-     */
-    public Builder setColor(Color color) {
-      this.color = color;
-      return this;
-    }
-
-    /**
      * Sets the text of the {@link net.dv8tion.jda.api.entities.Message Message} to be displayed
      * when the {@link com.jagrosh.jdautilities.menu.ButtonMenu ButtonMenu} is built.
      *
@@ -234,19 +208,6 @@ public class ButtonMenu extends Menu {
      */
     public Builder setText(String text) {
       this.text = text;
-      return this;
-    }
-
-    /**
-     * Sets the description to be placed in an {@link net.dv8tion.jda.api.entities.MessageEmbed
-     * MessageEmbed}. <br>
-     * If this is {@code null}, no MessageEmbed will be displayed
-     *
-     * @param description The content of the MessageEmbed's description
-     * @return This builder
-     */
-    public Builder setDescription(String description) {
-      this.description = description;
       return this;
     }
 
@@ -346,18 +307,5 @@ public class ButtonMenu extends Menu {
       return addChoices(emojis);
     }
 
-    /**
-     * Sets the {@link net.dv8tion.jda.api.entities.Emote Emote}s as button choices.
-     *
-     * <p>Any regular unicode emojis should be set using {@link
-     * ButtonMenu.Builder#setChoices(String...) ButtonMenu.Builder#setChoices(String...)}.
-     *
-     * @param emotes The Emote objects to set
-     * @return This builder
-     */
-    public Builder setChoices(Emote... emotes) {
-      this.choices.clear();
-      return addChoices(emotes);
-    }
   }
 }

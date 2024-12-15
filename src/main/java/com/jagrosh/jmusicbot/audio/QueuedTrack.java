@@ -44,10 +44,6 @@ public class QueuedTrack implements Queueable {
     return track;
   }
 
-  public RequestMetadata getRequestMetadata() {
-    return requestMetadata;
-  }
-
   @Override
   public String toString() {
     String entry = "`[" + TimeUtil.formatTime(track.getDuration()) + "]` ";

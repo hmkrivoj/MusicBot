@@ -104,19 +104,6 @@ public class CommandClientBuilder {
   }
 
   /**
-   * Sets the one or more CoOwners of the bot. <br>
-   * Make sure to verify that all of the IDs provided are ISnowflake compatible when setting this.
-   * If it is not, this will warn the developer which ones are not.
-   *
-   * @param coOwnerIds The ID(s) of the CoOwners
-   * @return This builder
-   */
-  public CommandClientBuilder setCoOwnerIds(String... coOwnerIds) {
-    this.coOwnerIds = coOwnerIds;
-    return this;
-  }
-
-  /**
    * Sets the bot's prefix. <br>
    * If set null, empty, or not set at all, the bot will use a mention {@literal @Botname} as a
    * prefix.
@@ -142,34 +129,6 @@ public class CommandClientBuilder {
   }
 
   /**
-   * Sets whether the {@link com.jagrosh.jmusicbot.jdautils.CommandClient CommandClient} will use
-   * the builder to automatically create a help command or not.
-   *
-   * @param useHelp {@code false} to disable the help command builder, otherwise the CommandClient
-   *     will use either the default or one provided via {@link
-   *     com.jagrosh.jmusicbot.jdautils.CommandClientBuilder#setHelpConsumer(Consumer)}}.
-   * @return This builder
-   */
-  public CommandClientBuilder useHelpBuilder(boolean useHelp) {
-    this.useHelp = useHelp;
-    return this;
-  }
-
-  /**
-   * Sets the consumer to run as the bot's help command. <br>
-   * Setting it to {@code null} or not setting this at all will cause the bot to use the default
-   * help builder.
-   *
-   * @param helpConsumer A consumer to accept a {@link com.jagrosh.jmusicbot.jdautils.CommandEvent
-   *     CommandEvent} when a help command is called.
-   * @return This builder
-   */
-  public CommandClientBuilder setHelpConsumer(Consumer<CommandEvent> helpConsumer) {
-    this.helpConsumer = helpConsumer;
-    return this;
-  }
-
-  /**
    * Sets the word used to trigger the command list. <br>
    * Setting this to {@code null} or not setting this at all will set the help word to {@code
    * "help"}.
@@ -179,17 +138,6 @@ public class CommandClientBuilder {
    */
   public CommandClientBuilder setHelpWord(String helpWord) {
     this.helpWord = helpWord;
-    return this;
-  }
-
-  /**
-   * Sets the bot's support server invite.
-   *
-   * @param serverInvite The support server invite
-   * @return This builder
-   */
-  public CommandClientBuilder setServerInvite(String serverInvite) {
-    this.serverInvite = serverInvite;
     return this;
   }
 
@@ -267,43 +215,6 @@ public class CommandClientBuilder {
    */
   public CommandClientBuilder addCommands(Collection<Command> commands) {
     for (Command command : commands) this.addCommand(command);
-    return this;
-  }
-
-  /**
-   * Sets the {@link com.jagrosh.jmusicbot.jdautils.CommandListener CommandListener} for the {@link
-   * com.jagrosh.jmusicbot.jdautils.impl.CommandClientImpl CommandClientImpl}.
-   *
-   * @param listener The CommandListener for the CommandClientImpl
-   * @return This builder
-   */
-  public CommandClientBuilder setListener(CommandListener listener) {
-    this.listener = listener;
-    return this;
-  }
-
-  /**
-   * Sets the {@link java.util.concurrent.ScheduledExecutorService ScheduledExecutorService} for the
-   * {@link com.jagrosh.jmusicbot.jdautils.impl.CommandClientImpl CommandClientImpl}.
-   *
-   * @param executor The ScheduledExecutorService for the CommandClientImpl
-   * @return This builder
-   */
-  public CommandClientBuilder setScheduleExecutor(ScheduledExecutorService executor) {
-    this.executor = executor;
-    return this;
-  }
-
-  /**
-   * Sets the Command Client to shut down internals automatically when a {@link
-   * net.dv8tion.jda.api.events.ShutdownEvent ShutdownEvent} is received.
-   *
-   * @param shutdownAutomatically {@code false} to disable calling the shutdown method when a
-   *     ShutdownEvent is received
-   * @return This builder
-   */
-  public CommandClientBuilder setShutdownAutomatically(boolean shutdownAutomatically) {
-    this.shutdownAutomatically = shutdownAutomatically;
     return this;
   }
 

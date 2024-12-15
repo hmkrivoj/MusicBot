@@ -53,17 +53,13 @@ public class RequestMetadata {
   }
 
   public static class RequestInfo {
-    public final String query;
-    public final String url;
     public final long startTimestamp;
 
     public RequestInfo(String query, String url) {
-      this(query, url, tryGetTimestamp(query));
+      this(url, tryGetTimestamp(query));
     }
 
-    private RequestInfo(String query, String url, long startTimestamp) {
-      this.url = url;
-      this.query = query;
+    private RequestInfo(String url, long startTimestamp) {
       this.startTimestamp = startTimestamp;
     }
 

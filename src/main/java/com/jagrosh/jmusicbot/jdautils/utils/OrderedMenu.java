@@ -131,7 +131,6 @@ public class OrderedMenu extends Menu {
    *           Permission.MESSAGE_ADD_REACTION} in the channel this menu is being sent to.
    *     </ul>
    */
-  @Override
   public void display(MessageChannel channel) {
     // This check is basically for whether or not the menu can even display.
     // Is from text channel
@@ -161,7 +160,6 @@ public class OrderedMenu extends Menu {
    *           Permission.MESSAGE_ADD_REACTION} in the channel this menu is being sent to.
    *     </ul>
    */
-  @Override
   public void display(Message message) {
     // This check is basically for whether or not the menu can even display.
     // Is from text channel
@@ -297,7 +295,7 @@ public class OrderedMenu extends Menu {
     mbuilder.setEmbeds(
         new EmbedBuilder()
             .setColor(color)
-            .setDescription(description == null ? sb.toString() : description + sb.toString())
+            .setDescription(description == null ? sb.toString() : description + sb)
             .build());
     return mbuilder.build();
   }
@@ -384,7 +382,6 @@ public class OrderedMenu extends Menu {
      *       <li>Neither text nor description were set.
      *     </ul>
      */
-    @Override
     public OrderedMenu build() {
       Checks.check(waiter != null, "Must set an EventWaiter");
       Checks.check(!choices.isEmpty(), "Must have at least one choice");
@@ -417,18 +414,6 @@ public class OrderedMenu extends Menu {
      */
     public Builder setColor(Color color) {
       this.color = color;
-      return this;
-    }
-
-    /**
-     * Sets the builder to build an {@link com.jagrosh.jmusicbot.jdautils.utils.OrderedMenu
-     * OrderedMenu} using letters for ordering and reactions (IE: A, B, C, etc.). <br>
-     * As a note - by default the builder will use <b>numbers</b> not letters.
-     *
-     * @return This builder
-     */
-    public Builder useLetters() {
-      this.useLetters = true;
       return this;
     }
 
@@ -477,19 +462,6 @@ public class OrderedMenu extends Menu {
      */
     public Builder setText(String text) {
       this.text = text;
-      return this;
-    }
-
-    /**
-     * Sets the description to be placed in an {@link net.dv8tion.jda.api.entities.MessageEmbed
-     * MessageEmbed}. <br>
-     * If this is {@code null}, no MessageEmbed will be displayed
-     *
-     * @param description The content of the MessageEmbed's description
-     * @return This builder
-     */
-    public Builder setDescription(String description) {
-      this.description = description;
       return this;
     }
 

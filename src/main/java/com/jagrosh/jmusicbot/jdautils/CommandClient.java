@@ -15,8 +15,6 @@
  */
 package com.jagrosh.jmusicbot.jdautils;
 
-import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.hooks.EventListener;
@@ -75,13 +73,6 @@ public interface CommandClient extends EventListener {
   String getPrefix();
 
   /**
-   * Gets the Client's alternate prefix.
-   *
-   * @return A possibly-null alternate prefix
-   */
-  String getAltPrefix();
-
-  /**
    * Returns the visual representation of the bot's prefix.
    *
    * <p>This is the same as {@link com.jagrosh.jmusicbot.jdautils.CommandClient#getPrefix() } unless
@@ -90,89 +81,6 @@ public interface CommandClient extends EventListener {
    * @return A never-null prefix
    */
   String getTextualPrefix();
-
-  /**
-   * Adds a single {@link com.jagrosh.jmusicbot.jdautils.Command Command} to this CommandClient's
-   * registered Commands.
-   *
-   * <p>For CommandClient's containing 20 commands or less, command calls by users will have the bot
-   * iterate through the entire {@link java.util.ArrayList ArrayList} to find the command called. As
-   * expected, this can get fairly hefty if a bot has a lot of Commands registered to it.
-   *
-   * <p>To prevent delay a CommandClient that has more that 20 Commands registered to it will begin
-   * to use <b>indexed calls</b>. <br>
-   * Indexed calls use a {@link java.util.HashMap HashMap} which links their {@link
-   * com.jagrosh.jmusicbot.jdautils.Command#name name} and their {@link
-   * com.jagrosh.jmusicbot.jdautils.Command#aliases aliases} to the index that which they are
-   * located at in the ArrayList they are stored.
-   *
-   * <p>This means that all insertion and removal of Commands must reorganize the index maintained
-   * by the HashMap. <br>
-   * For this particular insertion, the Command provided is inserted at the end of the index,
-   * meaning it will become the "rightmost" Command in the ArrayList.
-   *
-   * @param command The Command to add
-   * @throws java.lang.IllegalArgumentException If the Command provided has a name or alias that has
-   *     already been registered
-   */
-  void addCommand(Command command);
-
-  /**
-   * Adds a single {@link com.jagrosh.jmusicbot.jdautils.Command Command} to this CommandClient's
-   * registered Commands at the specified index.
-   *
-   * <p>For CommandClient's containing 20 commands or less, command calls by users will have the bot
-   * iterate through the entire {@link java.util.ArrayList ArrayList} to find the command called. As
-   * expected, this can get fairly hefty if a bot has a lot of Commands registered to it.
-   *
-   * <p>To prevent delay a CommandClient that has more that 20 Commands registered to it will begin
-   * to use <b>indexed calls</b>. <br>
-   * Indexed calls use a {@link java.util.HashMap HashMap} which links their {@link
-   * com.jagrosh.jmusicbot.jdautils.Command#name name} and their {@link
-   * com.jagrosh.jmusicbot.jdautils.Command#aliases aliases} to the index that which they are
-   * located at in the ArrayList they are stored.
-   *
-   * <p>This means that all insertion and removal of Commands must reorganize the index maintained
-   * by the HashMap. <br>
-   * For this particular insertion, the Command provided is inserted at the index specified, meaning
-   * it will become the Command located at that index in the ArrayList. This will shift the Command
-   * previously located at that index as well as any located at greater indices, right one index
-   * ({@code size()+1}).
-   *
-   * @param command The Command to add
-   * @param index The index to add the Command at (must follow the specifications {@code
-   *     0<=index<=size()})
-   * @throws java.lang.ArrayIndexOutOfBoundsException If {@code index < 0} or {@code index > size()}
-   * @throws java.lang.IllegalArgumentException If the Command provided has a name or alias that has
-   *     already been registered to an index
-   */
-  void addCommand(Command command, int index);
-
-  /**
-   * Removes a single {@link com.jagrosh.jmusicbot.jdautils.Command Command} from this
-   * CommandClient's registered Commands at the index linked to the provided name/alias.
-   *
-   * <p>For CommandClient's containing 20 commands or less, command calls by users will have the bot
-   * iterate through the entire {@link java.util.ArrayList ArrayList} to find the command called. As
-   * expected, this can get fairly hefty if a bot has a lot of Commands registered to it.
-   *
-   * <p>To prevent delay a CommandClient that has more that 20 Commands registered to it will begin
-   * to use <b>indexed calls</b>. <br>
-   * Indexed calls use a {@link java.util.HashMap HashMap} which links their {@link
-   * com.jagrosh.jmusicbot.jdautils.Command#name name} and their {@link
-   * com.jagrosh.jmusicbot.jdautils.Command#aliases aliases} to the index that which they are
-   * located at in the ArrayList they are stored.
-   *
-   * <p>This means that all insertion and removal of Commands must reorganize the index maintained
-   * by the HashMap. <br>
-   * For this particular removal, the Command removed is that of the corresponding index retrieved
-   * by the name provided. This will shift any Commands located at greater indices, left one index
-   * ({@code size()-1}).
-   *
-   * @param name The name or an alias of the Command to remove
-   * @throws java.lang.IllegalArgumentException If the name provided was not registered to an index
-   */
-  void removeCommand(String name);
 
   /**
    * Sets the {@link com.jagrosh.jmusicbot.jdautils.CommandListener CommandListener} to catch
@@ -191,30 +99,6 @@ public interface CommandClient extends EventListener {
   CommandListener getListener();
 
   /**
-   * Returns the list of registered {@link com.jagrosh.jmusicbot.jdautils.Command Command}s during
-   * this session.
-   *
-   * @return A never-null List of Commands registered during this session
-   */
-  List<Command> getCommands();
-
-  /**
-   * Gets the time this {@link com.jagrosh.jmusicbot.jdautils.CommandClient CommandClient}
-   * implementation was created.
-   *
-   * @return The start time of this CommandClient implementation
-   */
-  OffsetDateTime getStartTime();
-
-  /**
-   * Gets the {@link java.time.OffsetDateTime OffsetDateTime} that the specified cooldown expires.
-   *
-   * @param name The cooldown name
-   * @return The expiration time, or null if the cooldown does not exist
-   */
-  OffsetDateTime getCooldown(String name);
-
-  /**
    * Gets the remaining number of seconds on the specified cooldown.
    *
    * @param name The cooldown name
@@ -230,34 +114,6 @@ public interface CommandClient extends EventListener {
    */
   void applyCooldown(String name, int seconds);
 
-  /** Cleans up expired cooldowns to reduce memory. */
-  void cleanCooldowns();
-
-  /**
-   * Gets the number of uses for the provide {@link com.jagrosh.jmusicbot.jdautils.Command Command}
-   * during this session, or {@code 0} if the command is not registered to this CommandClient.
-   *
-   * @param command The Command
-   * @return The number of uses for the Command
-   */
-  int getCommandUses(Command command);
-
-  /**
-   * Gets the number of uses for a {@link com.jagrosh.jmusicbot.jdautils.Command Command} during
-   * this session matching the provided String name, or {@code 0} if there is no Command with the
-   * name.
-   *
-   * <p><b>NOTE:</b> this method <b>WILL NOT</b> get uses for a command if an {@link
-   * com.jagrosh.jmusicbot.jdautils.Command#aliases alias} is provided! Also note that {@link
-   * com.jagrosh.jmusicbot.jdautils.Command#children child commands} <b>ARE NOT</b> tracked and
-   * providing names or effective names of child commands will return {@code 0}.
-   *
-   * @param name The name of the Command
-   * @return The number of uses for the Command, or {@code 0} if the name does not match with a
-   *     Command
-   */
-  int getCommandUses(String name);
-
   /**
    * Gets the ID of the owner of this bot as a String.
    *
@@ -266,25 +122,11 @@ public interface CommandClient extends EventListener {
   String getOwnerId();
 
   /**
-   * Gets the ID of the owner of this bot as a {@code long}.
-   *
-   * @return The {@code long} ID of the owner of the bot
-   */
-  long getOwnerIdLong();
-
-  /**
    * Gets the ID(s) of any CoOwners of this bot as a String Array.
    *
    * @return The String ID(s) of any CoOwners of this bot
    */
   String[] getCoOwnerIds();
-
-  /**
-   * Gets the ID(s) of any CoOwners of this bot as a {@code long} Array.
-   *
-   * @return The {@code long} ID(s) of any CoOwners of this bot
-   */
-  long[] getCoOwnerIdsLong();
 
   /**
    * Gets the success emoji.
@@ -320,32 +162,11 @@ public interface CommandClient extends EventListener {
   ScheduledExecutorService getScheduleExecutor();
 
   /**
-   * Gets the invite to the bot's support server.
-   *
-   * @return A possibly-null server invite
-   */
-  String getServerInvite();
-
-  /**
    * Gets the word used to invoke a help DM.
    *
    * @return The help word
    */
   String getHelpWord();
-
-  /**
-   * Gets whether this CommandClient uses linked deletion.
-   *
-   * <p>Linking calls is the basic principle of pairing bot responses with their calling {@link
-   * net.dv8tion.jda.api.entities.Message Message}s. <br>
-   * Using this with a basic function such as deletion, this causes bots to delete their Messages as
-   * a response to the calling Message being deleted.
-   *
-   * @return {@code true} if the bot uses linked deletion, {@code false} otherwise.
-   * @see com.jagrosh.jmusicbot.jdautils.CommandClientBuilder#setLinkedCacheSize(int)
-   *     CommandClientBuilder#setLinkedCacheSize(int)
-   */
-  boolean usesLinkedDeletion();
 
   /**
    * Returns an Object of the type parameter that should contain settings relating to the specified
@@ -367,21 +188,4 @@ public interface CommandClient extends EventListener {
    */
   <S> S getSettingsFor(Guild guild);
 
-  /**
-   * Returns the type of {@link com.jagrosh.jmusicbot.jdautils.GuildSettingsManager
-   * GuildSettingsManager}, the same type of one provided when building this CommandClient, or
-   * {@code null} if one was not provided there.
-   *
-   * <p>This is good if you want to use non-abstract methods specific to your implementation.
-   *
-   * @param  <M> The type of the GuildSettingsManager
-   * @return The GuildSettingsManager, or {@code null} if one was not provided when building this
-   *     CommandClient.
-   */
-  <M extends GuildSettingsManager> M getSettingsManager();
-
-  /**
-   * Shuts down internals of the Command Client, such as the threadpool and guild settings manager
-   */
-  void shutdown();
 }

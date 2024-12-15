@@ -169,11 +169,6 @@ public class Settings implements GuildSettingsProvider {
     this.manager.writeSettings();
   }
 
-  public void setPrefix(String prefix) {
-    this.prefix = prefix;
-    this.manager.writeSettings();
-  }
-
   public void setSkipRatio(double skipRatio) {
     this.skipRatio = skipRatio;
     this.manager.writeSettings();

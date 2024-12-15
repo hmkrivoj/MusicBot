@@ -64,38 +64,6 @@ public abstract class Menu {
   }
 
   /**
-   * Displays this Menu in a {@link net.dv8tion.jda.api.entities.MessageChannel MessageChannel}.
-   *
-   * @param channel The MessageChannel to display this Menu in
-   */
-  public abstract void display(MessageChannel channel);
-
-  /**
-   * Displays this Menu as a designated {@link net.dv8tion.jda.api.entities.Message Message}. <br>
-   * The Message provided must be one sent by the bot! Trying to provided a Message authored by
-   * another {@link net.dv8tion.jda.api.entities.User User} will prevent the Menu from being
-   * displayed!
-   *
-   * @param message The Message to display this Menu as
-   */
-  public abstract void display(Message message);
-
-  /**
-   * Checks to see if the provided {@link net.dv8tion.jda.api.entities.User User} is valid to
-   * interact with this Menu.
-   *
-   * <p>This is a shortcut for {@link Menu#isValidUser(User, Guild)} where the Guild is {@code
-   * null}.
-   *
-   * @param user The User to validate.
-   * @return {@code true} if the User is valid, {@code false} otherwise.
-   * @see Menu#isValidUser(User, Guild)
-   */
-  protected boolean isValidUser(User user) {
-    return isValidUser(user, null);
-  }
-
-  /**
    * Checks to see if the provided {@link net.dv8tion.jda.api.entities.User User} is valid to
    * interact with this Menu.
    *
@@ -166,16 +134,6 @@ public abstract class Menu {
     protected TimeUnit unit = TimeUnit.MINUTES;
 
     /**
-     * Builds the {@link com.jagrosh.jdautilities.menu.Menu Menu} corresponding to this {@link
-     * com.jagrosh.jdautilities.menu.Menu.Builder Menu.Builder}. <br>
-     * After doing this, no modifications of the displayed Menu can be made.
-     *
-     * @return The built Menu of corresponding type to this {@link
-     *     com.jagrosh.jdautilities.menu.Menu.Builder}.
-     */
-    public abstract V build();
-
-    /**
      * Sets the {@link com.jagrosh.jdautilities.commons.waiter.EventWaiter EventWaiter} that will do
      * {@link com.jagrosh.jdautilities.menu.Menu Menu} operations.
      *
@@ -191,18 +149,6 @@ public abstract class Menu {
     }
 
     /**
-     * Adds {@link net.dv8tion.jda.api.entities.User User}s that are allowed to use the {@link
-     * com.jagrosh.jdautilities.menu.Menu Menu} that will be built.
-     *
-     * @param users The Users allowed to use the Menu
-     * @return This builder
-     */
-    public final T addUsers(User... users) {
-      this.users.addAll(Arrays.asList(users));
-      return (T) this;
-    }
-
-    /**
      * Sets {@link net.dv8tion.jda.api.entities.User User}s that are allowed to use the {@link
      * com.jagrosh.jdautilities.menu.Menu Menu} that will be built. <br>
      * This clears any Users already registered before adding the ones specified.
@@ -213,32 +159,6 @@ public abstract class Menu {
     public final T setUsers(User... users) {
       this.users.clear();
       this.users.addAll(Arrays.asList(users));
-      return (T) this;
-    }
-
-    /**
-     * Adds {@link net.dv8tion.jda.api.entities.Role Role}s that are allowed to use the {@link
-     * com.jagrosh.jdautilities.menu.Menu Menu} that will be built.
-     *
-     * @param roles The Roles allowed to use the Menu
-     * @return This builder
-     */
-    public final T addRoles(Role... roles) {
-      this.roles.addAll(Arrays.asList(roles));
-      return (T) this;
-    }
-
-    /**
-     * Sets {@link net.dv8tion.jda.api.entities.Role Role}s that are allowed to use the {@link
-     * com.jagrosh.jdautilities.menu.Menu Menu} that will be built. <br>
-     * This clears any Roles already registered before adding the ones specified.
-     *
-     * @param roles The Roles allowed to use the Menu
-     * @return This builder
-     */
-    public final T setRoles(Role... roles) {
-      this.roles.clear();
-      this.roles.addAll(Arrays.asList(roles));
       return (T) this;
     }
 

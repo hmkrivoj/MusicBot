@@ -117,34 +117,6 @@ public class Paginator extends Menu {
   }
 
   /**
-   * Begins pagination on page 1 as a new {@link net.dv8tion.jda.api.entities.Message Message} in
-   * the provided {@link net.dv8tion.jda.api.entities.MessageChannel MessageChannel}.
-   *
-   * <p>Starting on another page is available via {@link Paginator#paginate(MessageChannel, int)
-   * Paginator#paginate(MessageChannel, int)}.
-   *
-   * @param channel The MessageChannel to send the new Message to
-   */
-  @Override
-  public void display(MessageChannel channel) {
-    paginate(channel, 1);
-  }
-
-  /**
-   * Begins pagination on page 1 displaying this Pagination by editing the provided {@link
-   * net.dv8tion.jda.api.entities.Message Message}.
-   *
-   * <p>Starting on another page is available via {@link Paginator#paginate(Message, int)
-   * Paginator#paginate(Message, int)}.
-   *
-   * @param message The Message to display the Menu in
-   */
-  @Override
-  public void display(Message message) {
-    paginate(message, 1);
-  }
-
-  /**
    * Begins pagination as a new {@link net.dv8tion.jda.api.entities.Message Message} in the provided
    * {@link net.dv8tion.jda.api.entities.MessageChannel MessageChannel}, starting on whatever page
    * number is provided.
@@ -239,13 +211,9 @@ public class Paginator extends Menu {
 
             final int targetPage;
 
-            if (leftText != null
-                && rawContent.equalsIgnoreCase(leftText)
-                && (1 < pageNum || wrapPageEnds))
+            if (rawContent.equalsIgnoreCase(leftText) && (1 < pageNum || wrapPageEnds))
               targetPage = pageNum - 1 < 1 && wrapPageEnds ? pages : pageNum - 1;
-            else if (rightText != null
-                && rawContent.equalsIgnoreCase(rightText)
-                && (pageNum < pages || wrapPageEnds))
+            else if (rawContent.equalsIgnoreCase(rightText) && (pageNum < pages || wrapPageEnds))
               targetPage = pageNum + 1 > pages && wrapPageEnds ? 1 : pageNum + 1;
             else {
               // This will run without fail because we know the above conditions don't apply but our
@@ -401,7 +369,6 @@ public class Paginator extends Menu {
      *       <li>No items were set to paginate.
      *     </ul>
      */
-    @Override
     public Paginator build() {
       Checks.check(waiter != null, "Must set an EventWaiter");
       Checks.check(!strings.isEmpty(), "Must include at least one item to paginate");
@@ -437,36 +404,6 @@ public class Paginator extends Menu {
      */
     public Builder setColor(Color color) {
       this.color = (i0, i1) -> color;
-      return this;
-    }
-
-    /**
-     * Sets the {@link java.awt.Color Color} of the {@link net.dv8tion.jda.api.entities.MessageEmbed
-     * MessageEmbed}, relative to the total page number and the current page as determined by the
-     * provided {@link java.util.function.BiFunction BiFunction}. <br>
-     * As the page changes, the BiFunction will re-process the current page number and the total
-     * page number, allowing for the color of the embed to change depending on the page number.
-     *
-     * @param colorBiFunction A BiFunction that uses both current and total page numbers to get a
-     *     Color for the MessageEmbed
-     * @return This builder
-     */
-    public Builder setColor(BiFunction<Integer, Integer, Color> colorBiFunction) {
-      this.color = colorBiFunction;
-      return this;
-    }
-
-    /**
-     * Sets the text of the {@link net.dv8tion.jda.api.entities.Message Message} to be displayed
-     * when the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator} is built.
-     *
-     * <p>This is displayed directly above the embed.
-     *
-     * @param text The Message content to be displayed above the embed when the Paginator is built
-     * @return This builder
-     */
-    public Builder setText(String text) {
-      this.text = (i0, i1) -> text;
       return this;
     }
 
@@ -562,27 +499,6 @@ public class Paginator extends Menu {
     }
 
     /**
-     * Clears the list of String items to paginate.
-     *
-     * @return This builder
-     */
-    public Builder clearItems() {
-      strings.clear();
-      return this;
-    }
-
-    /**
-     * Adds String items to the list of items to paginate.
-     *
-     * @param items The String list of items to add
-     * @return This builder
-     */
-    public Builder addItems(String... items) {
-      strings.addAll(Arrays.asList(items));
-      return this;
-    }
-
-    /**
      * Sets the String list of items to paginate. <br>
      * This method clears all previously set items before setting.
      *
@@ -592,18 +508,6 @@ public class Paginator extends Menu {
     public Builder setItems(String... items) {
       strings.clear();
       strings.addAll(Arrays.asList(items));
-      return this;
-    }
-
-    /**
-     * Sets the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator}'s bulk-skip
-     * function to skip multiple pages using alternate forward and backwards
-     *
-     * @param bulkSkipNumber The number of pages to skip when the bulk-skip reactions are used.
-     * @return This builder
-     */
-    public Builder setBulkSkipNumber(int bulkSkipNumber) {
-      this.bulkSkipNumber = Math.max(bulkSkipNumber, 1);
       return this;
     }
 
@@ -619,44 +523,5 @@ public class Paginator extends Menu {
       return this;
     }
 
-    /**
-     * Sets the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator} to allow a page
-     * number to be specified by a user via text.
-     *
-     * <p>Note that setting this doesn't mean that left and right text inputs provided via {@link
-     * Paginator.Builder#setLeftRightText(String, String)} will be invalidated if they were set
-     * previously! To invalidate those, provide {@code null} for one or both of the parameters of
-     * that method.
-     *
-     * @param allowTextInput {@code true} if the Paginator will allow page-number text input
-     * @return This builder
-     */
-    public Builder allowTextInput(boolean allowTextInput) {
-      this.allowTextInput = allowTextInput;
-      return this;
-    }
-
-    /**
-     * Sets the {@link com.jagrosh.jmusicbot.jdautils.utils.Paginator Paginator} to traverse left or
-     * right when a provided text input is sent in the form of a Message to the {@link
-     * net.dv8tion.jda.api.entities.GuildChannel GuildChannel} the menu is displayed in.
-     *
-     * <p>If one or both these parameters are provided {@code null} this resets both of them and
-     * they will no longer be available when the Paginator is built.
-     *
-     * @param left The left text input, causes the Paginator to traverse one page left
-     * @param right The right text input, causes the Paginator to traverse one page right
-     * @return This builder
-     */
-    public Builder setLeftRightText(String left, String right) {
-      if (left == null || right == null) {
-        textToLeft = null;
-        textToRight = null;
-      } else {
-        textToLeft = left;
-        textToRight = right;
-      }
-      return this;
-    }
   }
 }

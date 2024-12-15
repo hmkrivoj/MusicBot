@@ -409,56 +409,6 @@ public abstract class Command {
   }
 
   /**
-   * Checks if this Command can only be used in a {@link net.dv8tion.jda.api.entities.Guild Guild}.
-   *
-   * @return {@code true} if this Command can only be used in a Guild, else {@code false} if it can
-   *     be used outside of one
-   */
-  public boolean isGuildOnly() {
-    return guildOnly;
-  }
-
-  /**
-   * Gets the {@link com.jagrosh.jmusicbot.jdautils.Command#requiredRole Command.requiredRole} for
-   * the Command.
-   *
-   * @return The requiredRole for the Command
-   */
-  public String getRequiredRole() {
-    return requiredRole;
-  }
-
-  /**
-   * Gets the {@link com.jagrosh.jmusicbot.jdautils.Command#cooldown Command.cooldown} for the
-   * Command.
-   *
-   * @return The cooldown for the Command
-   */
-  public int getCooldown() {
-    return cooldown;
-  }
-
-  /**
-   * Gets the {@link com.jagrosh.jmusicbot.jdautils.Command#userPermissions Command.userPermissions}
-   * for the Command.
-   *
-   * @return The userPermissions for the Command
-   */
-  public Permission[] getUserPermissions() {
-    return userPermissions;
-  }
-
-  /**
-   * Gets the {@link com.jagrosh.jmusicbot.jdautils.Command#botPermissions Command.botPermissions}
-   * for the Command.
-   *
-   * @return The botPermissions for the Command
-   */
-  public Permission[] getBotPermissions() {
-    return botPermissions;
-  }
-
-  /**
    * Gets the {@link com.jagrosh.jmusicbot.jdautils.Command#aliases Command.aliases} for the
    * Command.
    *
@@ -469,16 +419,6 @@ public abstract class Command {
       return Collections.emptyList();
     }
     return aliases;
-  }
-
-  /**
-   * Gets the {@link com.jagrosh.jmusicbot.jdautils.Command#children Command.children} for the
-   * Command.
-   *
-   * @return The children for the Command
-   */
-  public Command[] getChildren() {
-    return children;
   }
 
   /**
@@ -610,24 +550,6 @@ public abstract class Command {
     }
 
     /**
-     * A Command Category containing a name, a {@link java.util.function.Predicate}, and a failure
-     * response.
-     *
-     * <p>The command will be terminated if {@link
-     * com.jagrosh.jmusicbot.jdautils.Command.Category#test(com.jagrosh.jmusicbot.jdautils.CommandEvent)}
-     * returns {@code false}, and the failure response will be sent.
-     *
-     * @param name The name of the Category
-     * @param failResponse The response if the test fails
-     * @param predicate The Category predicate to test
-     */
-    public Category(String name, String failResponse, Predicate<CommandEvent> predicate) {
-      this.name = name;
-      this.failResponse = failResponse;
-      this.predicate = predicate;
-    }
-
-    /**
      * Gets the name of the Category.
      *
      * @return The name of the Category
@@ -659,8 +581,7 @@ public abstract class Command {
 
     @Override
     public boolean equals(Object obj) {
-      if (!(obj instanceof Category)) return false;
-      Category other = (Category) obj;
+      if (!(obj instanceof Category other)) return false;
       return Objects.equals(name, other.name)
           && Objects.equals(predicate, other.predicate)
           && Objects.equals(failResponse, other.failResponse);
