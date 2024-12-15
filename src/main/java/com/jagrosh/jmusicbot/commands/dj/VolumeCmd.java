@@ -21,10 +21,12 @@ import com.jagrosh.jmusicbot.commands.DJCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.settings.Settings;
 import com.jagrosh.jmusicbot.utils.FormatUtil;
+import org.springframework.stereotype.Component;
 
 /**
  * @author John Grosh <john.a.grosh@gmail.com>
  */
+@Component
 public class VolumeCmd extends DJCommand {
   public VolumeCmd(Bot bot) {
     super(bot);

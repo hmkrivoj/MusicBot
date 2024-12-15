@@ -21,10 +21,12 @@ import com.jagrosh.jmusicbot.commands.MusicCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
+import org.springframework.stereotype.Component;
 
 /**
  * @author John Grosh <john.a.grosh@gmail.com>
  */
+@Component
 public class NowplayingCmd extends MusicCommand {
   public NowplayingCmd(Bot bot) {
     super(bot);

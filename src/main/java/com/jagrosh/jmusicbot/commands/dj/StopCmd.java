@@ -19,10 +19,12 @@ import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.audio.AudioHandler;
 import com.jagrosh.jmusicbot.commands.DJCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
+import org.springframework.stereotype.Component;
 
 /**
  * @author John Grosh <john.a.grosh@gmail.com>
  */
+@Component
 public class StopCmd extends DJCommand {
   public StopCmd(Bot bot) {
     super(bot);

@@ -19,10 +19,12 @@ import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.audio.AudioHandler;
 import com.jagrosh.jmusicbot.commands.MusicCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
+import org.springframework.stereotype.Component;
 
 /**
  * @author John Grosh <john.a.grosh@gmail.com>
  */
+@Component
 public class ShuffleCmd extends MusicCommand {
   public ShuffleCmd(Bot bot) {
     super(bot);

@@ -23,10 +23,12 @@ import com.sedmelluq.discord.lavaplayer.tools.PlayerLibrary;
 import net.dv8tion.jda.api.JDAInfo;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ChannelType;
+import org.springframework.stereotype.Component;
 
 /**
  * @author John Grosh (john.a.grosh@gmail.com)
  */
+@Component
 public class DebugCmd extends OwnerCommand {
   private static final String[] PROPERTIES = {
     "java.version",

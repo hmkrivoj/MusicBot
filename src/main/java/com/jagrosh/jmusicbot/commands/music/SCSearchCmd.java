@@ -16,10 +16,12 @@
 package com.jagrosh.jmusicbot.commands.music;
 
 import com.jagrosh.jmusicbot.Bot;
+import org.springframework.stereotype.Component;
 
 /**
  * @author John Grosh <john.a.grosh@gmail.com>
  */
+@Component
 public class SCSearchCmd extends SearchCmd {
   public SCSearchCmd(Bot bot) {
     super(bot);

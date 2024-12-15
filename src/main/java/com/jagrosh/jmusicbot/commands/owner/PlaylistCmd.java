@@ -20,12 +20,15 @@ import com.jagrosh.jmusicbot.commands.OwnerCommand;
 import com.jagrosh.jmusicbot.jdautils.Command;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.playlist.PlaylistLoader.Playlist;
+import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.util.List;
 
 /**
  * @author John Grosh <john.a.grosh@gmail.com>
  */
+@Component
 public class PlaylistCmd extends OwnerCommand {
   private final Bot bot;
 

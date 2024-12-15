@@ -23,10 +23,12 @@ import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.settings.Settings;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.User;
+import org.springframework.stereotype.Component;
 
 /**
  * @author John Grosh <john.a.grosh@gmail.com>
  */
+@Component
 public class RemoveCmd extends MusicCommand {
   public RemoveCmd(Bot bot) {
     super(bot);

@@ -19,10 +19,12 @@ import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.commands.OwnerCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.settings.Settings;
+import org.springframework.stereotype.Component;
 
 /**
  * @author John Grosh <john.a.grosh@gmail.com>
  */
+@Component
 public class AutoplaylistCmd extends OwnerCommand {
   private final Bot bot;
 

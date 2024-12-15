@@ -18,11 +18,14 @@ package com.jagrosh.jmusicbot.commands.music;
 import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.commands.MusicCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 
 /**
  * @author John Grosh <john.a.grosh@gmail.com>
  */
+@Component
 public class PlaylistsCmd extends MusicCommand {
   public PlaylistsCmd(Bot bot) {
     super(bot);

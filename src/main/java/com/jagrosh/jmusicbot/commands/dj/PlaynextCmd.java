@@ -28,10 +28,12 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.Message;
+import org.springframework.stereotype.Component;
 
 /**
  * @author John Grosh (john.a.grosh@gmail.com)
  */
+@Component
 public class PlaynextCmd extends DJCommand {
   private final String loadingEmoji;
 

@@ -17,6 +17,7 @@ package com.jagrosh.jmusicbot.jdautils;
 
 import com.jagrosh.jmusicbot.jdautils.impl.CommandClientImpl;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
@@ -262,7 +263,7 @@ public class CommandClientBuilder {
    * @param commands The Commands to add
    * @return This builder
    */
-  public CommandClientBuilder addCommands(Command... commands) {
+  public CommandClientBuilder addCommands(Collection<Command> commands) {
     for (Command command : commands) this.addCommand(command);
     return this;
   }

@@ -25,10 +25,12 @@ import com.jagrosh.jmusicbot.utils.TimeUtil;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Whew., Inc.
  */
+@Component
 public class SeekCmd extends MusicCommand {
   private static final Logger LOG = LoggerFactory.getLogger("Seeking");
 

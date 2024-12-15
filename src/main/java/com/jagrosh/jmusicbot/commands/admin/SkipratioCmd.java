@@ -19,10 +19,12 @@ import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.commands.AdminCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.settings.Settings;
+import org.springframework.stereotype.Component;
 
 /**
  * @author John Grosh (john.a.grosh@gmail.com)
  */
+@Component
 public class SkipratioCmd extends AdminCommand {
   public SkipratioCmd(Bot bot) {
     this.name = "setskip";

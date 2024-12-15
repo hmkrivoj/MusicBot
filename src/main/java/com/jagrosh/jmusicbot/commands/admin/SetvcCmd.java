@@ -23,10 +23,12 @@ import com.jagrosh.jmusicbot.settings.Settings;
 import com.jagrosh.jmusicbot.utils.FormatUtil;
 import java.util.List;
 import net.dv8tion.jda.api.entities.VoiceChannel;
+import org.springframework.stereotype.Component;
 
 /**
  * @author John Grosh <john.a.grosh@gmail.com>
  */
+@Component
 public class SetvcCmd extends AdminCommand {
   public SetvcCmd(Bot bot) {
     this.name = "setvc";

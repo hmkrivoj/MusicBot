@@ -32,10 +32,12 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
+import org.springframework.stereotype.Component;
 
 /**
  * @author John Grosh <john.a.grosh@gmail.com>
  */
+@Component
 public class SearchCmd extends MusicCommand {
   protected String searchPrefix = "ytsearch:";
   private final OrderedMenu.Builder builder;
@@ -125,7 +127,7 @@ public class SearchCmd extends MusicCommand {
                       + " Search results for `"
                       + event.getArgs()
                       + "`:"))
-          .setChoices(new String[0])
+          .setChoices()
           .setSelection(
               (msg, i) -> {
                 AudioTrack track = playlist.getTracks().get(i - 1);
@@ -154,7 +156,7 @@ public class SearchCmd extends MusicCommand {
                         + "`) "
                         + (pos == 0 ? "to begin playing" : " to the queue at position " + pos));
               })
-          .setCancel((msg) -> {})
+          .setCancel(msg -> {})
           .setUsers(event.getAuthor());
       for (int i = 0; i < 4 && i < playlist.getTracks().size(); i++) {
         AudioTrack track = playlist.getTracks().get(i);

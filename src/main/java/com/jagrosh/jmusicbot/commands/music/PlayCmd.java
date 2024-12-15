@@ -36,10 +36,12 @@ import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.exceptions.PermissionException;
+import org.springframework.stereotype.Component;
 
 /**
  * @author John Grosh <john.a.grosh@gmail.com>
  */
+@Component
 public class PlayCmd extends MusicCommand {
   private static final String LOAD = "\uD83D\uDCE5"; // 📥
   private static final String CANCEL = "\uD83D\uDEAB"; // 🚫
@@ -196,7 +198,7 @@ public class PlayCmd extends MusicCommand {
       int[] count = {0};
       playlist.getTracks().stream()
           .forEach(
-              (track) -> {
+              track -> {
                 if (!bot.getConfig().calcIsTooLong(track) && !track.equals(exclude)) {
                   AudioHandler handler =
                       (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
@@ -226,7 +228,7 @@ public class PlayCmd extends MusicCommand {
         loadSingle(single, playlist);
       } else {
         int count = loadPlaylist(playlist, null);
-        if (playlist.getTracks().size() == 0) {
+        if (playlist.getTracks().isEmpty()) {
           m.editMessage(
                   FormatUtil.filter(
                       event.getClient().getWarning()
@@ -329,7 +331,7 @@ public class PlayCmd extends MusicCommand {
                     (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
                 playlist.loadTracks(
                     bot.getPlayerManager(),
-                    (at) ->
+                    at ->
                         handler.addTrack(
                             new QueuedTrack(at, RequestMetadata.fromResultHandler(at, event))),
                     () -> {

@@ -21,10 +21,12 @@ import com.jagrosh.jmusicbot.commands.AdminCommand;
 import com.jagrosh.jmusicbot.jdautils.CommandEvent;
 import com.jagrosh.jmusicbot.settings.QueueType;
 import com.jagrosh.jmusicbot.settings.Settings;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Wolfgang Schwendtbauer
  */
+@Component
 public class QueueTypeCmd extends AdminCommand {
   public QueueTypeCmd(Bot bot) {
     super();

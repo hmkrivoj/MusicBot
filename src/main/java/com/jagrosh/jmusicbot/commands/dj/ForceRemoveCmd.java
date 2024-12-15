@@ -27,10 +27,12 @@ import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Michaili K.
  */
+@Component
 public class ForceRemoveCmd extends DJCommand {
   public ForceRemoveCmd(Bot bot) {
     super(bot);
@@ -77,7 +79,7 @@ public class ForceRemoveCmd extends DJCommand {
           .useNumbers()
           .setUsers(event.getAuthor())
           .useCancelButton(true)
-          .setCancel((msg) -> {})
+          .setCancel(msg -> {})
           .setEventWaiter(bot.getWaiter())
           .setTimeout(1, TimeUnit.MINUTES)
           .build()
