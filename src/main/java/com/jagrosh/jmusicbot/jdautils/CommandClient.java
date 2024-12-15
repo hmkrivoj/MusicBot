@@ -15,7 +15,6 @@
  */
 package com.jagrosh.jmusicbot.jdautils;
 
-import java.util.concurrent.ScheduledExecutorService;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.hooks.EventListener;
 
@@ -148,18 +147,6 @@ public interface CommandClient extends EventListener {
    * @return The error emoji
    */
   String getError();
-
-  /**
-   * Gets the {@link java.util.concurrent.ScheduledExecutorService ScheduledExecutorService} held by
-   * this client.
-   *
-   * <p>This is used for methods such as {@link
-   * com.jagrosh.jmusicbot.jdautils.CommandEvent#async(Runnable) CommandEvent#async(Runnable)} run
-   * code asynchronously.
-   *
-   * @return The ScheduledExecutorService held by this client.
-   */
-  ScheduledExecutorService getScheduleExecutor();
 
   /**
    * Gets the word used to invoke a help DM.

@@ -71,14 +71,12 @@ public class CommandClientImpl implements CommandClient {
   private static final Logger LOG = LoggerFactory.getLogger(CommandClientImpl.class);
   private static final String DEFAULT_PREFIX = "@mention";
 
-  private final OffsetDateTime start;
   private final Activity activity;
   private final OnlineStatus status;
   private final String ownerId;
   private final String[] coOwnerIds;
   private final String prefix;
   private final String altprefix;
-  private final String serverInvite;
   private final HashMap<String, Integer> commandIndex;
   private final ArrayList<Command> commands;
   private final String success;
@@ -136,8 +134,6 @@ public class CommandClientImpl implements CommandClient {
       }
     }
 
-    this.start = OffsetDateTime.now();
-
     this.ownerId = ownerId;
     this.coOwnerIds = coOwnerIds;
     this.prefix = prefix == null || prefix.isEmpty() ? DEFAULT_PREFIX : prefix;
@@ -145,7 +141,6 @@ public class CommandClientImpl implements CommandClient {
     this.textPrefix = prefix;
     this.activity = activity;
     this.status = status;
-    this.serverInvite = serverInvite;
     this.success = success == null ? "" : success;
     this.warning = warning == null ? "" : warning;
     this.error = error == null ? "" : error;
@@ -241,10 +236,6 @@ public class CommandClientImpl implements CommandClient {
     cooldowns.put(name, OffsetDateTime.now().plusSeconds(seconds));
   }
 
-  private int getCommandUses(String name) {
-    return uses.getOrDefault(name, 0);
-  }
-
   private void addCommand(Command command) {
     addCommand(command, commands.size());
   }
@@ -302,11 +293,6 @@ public class CommandClientImpl implements CommandClient {
   @Override
   public String getError() {
     return error;
-  }
-
-  @Override
-  public ScheduledExecutorService getScheduleExecutor() {
-    return executor;
   }
 
   @Override

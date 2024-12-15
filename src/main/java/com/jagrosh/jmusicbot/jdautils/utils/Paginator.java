@@ -131,20 +131,6 @@ public class Paginator extends Menu {
     initialize(channel.sendMessage(msg), pageNum);
   }
 
-  /**
-   * Begins pagination displaying this Pagination by editing the provided {@link
-   * net.dv8tion.jda.api.entities.Message Message}, starting on whatever page number is provided.
-   *
-   * @param message The MessageChannel to send the new Message to
-   * @param pageNum The page number to begin on
-   */
-  public void paginate(Message message, int pageNum) {
-    if (pageNum < 1) pageNum = 1;
-    else if (pageNum > pages) pageNum = pages;
-    Message msg = renderPage(pageNum);
-    initialize(message.editMessage(msg), pageNum);
-  }
-
   private void initialize(RestAction<Message> action, int pageNum) {
     action.queue(
         m -> {

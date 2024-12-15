@@ -16,7 +16,7 @@
 package com.jagrosh.jmusicbot.jdautils;
 
 import com.jagrosh.jmusicbot.jdautils.impl.CommandClientImpl;
-import java.io.File;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -26,8 +26,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -184,25 +182,6 @@ public class CommandEvent {
   }
 
   /**
-   * Replies with a {@link net.dv8tion.jda.api.entities.MessageEmbed MessageEmbed}.
-   *
-   * <p>The {@link net.dv8tion.jda.api.requests.RestAction RestAction} returned by sending the
-   * response as a {@link net.dv8tion.jda.api.entities.Message Message} automatically does {@link
-   * net.dv8tion.jda.api.requests.RestAction#queue() RestAction#queue()}.
-   *
-   * @param embed The MessageEmbed to reply with
-   */
-  public void reply(MessageEmbed embed) {
-    event
-        .getChannel()
-        .sendMessageEmbeds(embed)
-        .queue(
-            m -> {
-              if (event.isFromType(ChannelType.TEXT)) linkId(m);
-            });
-  }
-
-  /**
    * Replies with a {@link net.dv8tion.jda.api.entities.Message Message}.
    *
    * <p>The {@link net.dv8tion.jda.api.requests.RestAction RestAction} returned by sending the
@@ -242,27 +221,6 @@ public class CommandEvent {
               if (event.isFromType(ChannelType.TEXT)) linkId(m);
               success.accept(m);
             });
-  }
-
-  /**
-   * Replies with a String message and a {@link java.io.File} with the provided name, or a default
-   * name if left null.
-   *
-   * <p>The {@link net.dv8tion.jda.api.requests.RestAction RestAction} returned by sending the
-   * response as a {@link net.dv8tion.jda.api.entities.Message Message} automatically does {@link
-   * net.dv8tion.jda.api.requests.RestAction#queue() RestAction#queue()}.
-   *
-   * <p>This method uses {@link net.dv8tion.jda.api.entities.MessageChannel#sendFile(File, String,
-   * net.dv8tion.jda.api.utils.AttachmentOption...) MessageChannel#sendFile(File, String,
-   * AttachmentOption...)} to send the File. For more information on what a bot may send using this,
-   * you may find the info in that method.
-   *
-   * @param message A String message to reply with
-   * @param file The File to reply with
-   * @param filename The filename that Discord should display (null for default).
-   */
-  public void reply(String message, File file, String filename) {
-    event.getChannel().sendFile(file, filename).content(message).queue();
   }
 
   /**
@@ -572,17 +530,6 @@ public class CommandEvent {
    */
   public Message getMessage() {
     return event.getMessage();
-  }
-
-  /**
-   * Gets the {@link net.dv8tion.jda.api.entities.PrivateChannel PrivateChannel} that this
-   * CommandEvent may have taken place on, or {@code null} if it didn't happen on a PrivateChannel.
-   *
-   * @return The PrivateChannel that this CommandEvent may have taken place on, or null if it did
-   *     not happen on a PrivateChannel.
-   */
-  public PrivateChannel getPrivateChannel() {
-    return event.getPrivateChannel();
   }
 
   /**

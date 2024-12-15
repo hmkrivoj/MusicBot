@@ -280,20 +280,6 @@ public class ButtonMenu extends Menu {
     }
 
     /**
-     * Adds custom {@link net.dv8tion.jda.api.entities.Emote Emote}s as button choices.
-     *
-     * <p>Any regular unicode emojis should be added using {@link
-     * ButtonMenu.Builder#addChoices(String...) ButtonMenu.Builder#addChoices(String...)}.
-     *
-     * @param emotes The Emote objects to add
-     * @return This builder
-     */
-    public Builder addChoices(Emote... emotes) {
-      for (Emote emote : emotes) addChoice(emote);
-      return this;
-    }
-
-    /**
      * Sets the String unicode emojis as button choices.
      *
      * <p>Any non-unicode {@link net.dv8tion.jda.api.entities.Emote Emote}s should be set using
