@@ -61,7 +61,7 @@ public class Listener extends ListenerAdapter {
               } catch (Exception ignore) {
               }
             });
-    User owner = bot.getJDA().retrieveUserById(bot.getConfig().getOwnerId()).complete();
+    User owner = bot.getJDA().retrieveUserById(bot.getConfig().getOwner()).complete();
     if (owner != null) {
       final var msg = "JMusicBot is running";
       owner.openPrivateChannel().queue(pc -> pc.sendMessage(msg).queue());
@@ -82,5 +82,4 @@ public class Listener extends ListenerAdapter {
   public void onShutdown(ShutdownEvent event) {
     bot.shutdown();
   }
-
 }

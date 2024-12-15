@@ -32,7 +32,7 @@ public class SetvcCmd extends AdminCommand {
     this.name = "setvc";
     this.help = "sets the voice channel for playing music";
     this.arguments = "<channel|NONE>";
-    this.aliases = bot.getConfig().getAliases(this.name);
+    this.aliases = bot.getConfig().getAliases().get(this.name);
   }
 
   @Override

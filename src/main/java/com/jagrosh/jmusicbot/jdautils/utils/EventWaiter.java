@@ -33,6 +33,7 @@ import net.dv8tion.jda.api.hooks.SubscribeEvent;
 import net.dv8tion.jda.internal.utils.Checks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * The EventWaiter is capable of handling specialized forms of {@link
@@ -54,6 +55,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author John Grosh (jagrosh)
  */
+@Component
 public class EventWaiter implements EventListener {
   private static final Logger LOG = LoggerFactory.getLogger(EventWaiter.class);
   private final HashMap<Class<?>, Set<WaitingEvent>> waitingEvents;
@@ -70,7 +72,7 @@ public class EventWaiter implements EventListener {
    * java.util.concurrent.ScheduledExecutorService Executor} as it's threadpool.
    *
    * <p>A developer might choose to use this constructor over the {@link
-   * com.jagrosh.jdautilities.commons.waiter.EventWaiter#EventWaiter() default}, for using a
+   * com.jagrosh.jmusicbot.jdautils.utils.EventWaiter#EventWaiter() default}, for using a
    * alternate form of threadpool, as opposed to a {@link
    * java.util.concurrent.Executors#newSingleThreadExecutor() single thread executor}. <br>
    * A developer might also favor this over the default as they use the same waiter for multiple
@@ -91,7 +93,7 @@ public class EventWaiter implements EventListener {
    * </ul>
    *
    * It's worth noting that this EventWaiter can serve as a delegate to invoke the threadpool's
-   * shutdown via a call to {@link com.jagrosh.jdautilities.commons.waiter.EventWaiter#shutdown()
+   * shutdown via a call to {@link com.jagrosh.jmusicbot.jdautils.utils.EventWaiter#shutdown()
    * EventWaiter#shutdown()}. However, this operation is only supported for EventWaiters that are
    * not supposed to shutdown automatically, otherwise invocation of {@code EventWaiter#shutdown()}
    * will result in an {@link java.lang.UnsupportedOperationException
@@ -102,7 +104,7 @@ public class EventWaiter implements EventListener {
    *     when a {@link net.dv8tion.jda.api.events.ShutdownEvent ShutdownEvent} is fired.
    * @throws java.lang.IllegalArgumentException If the threadpool provided is {@code null} or {@link
    *     java.util.concurrent.ScheduledExecutorService#isShutdown() is shutdown}
-   * @see com.jagrosh.jdautilities.commons.waiter.EventWaiter#shutdown() EventWaiter#shutdown()
+   * @see com.jagrosh.jmusicbot.jdautils.utils.EventWaiter#shutdown() EventWaiter#shutdown()
    */
   public EventWaiter(ScheduledExecutorService threadpool, boolean shutdownAutomatically) {
     Checks.notNull(threadpool, "ScheduledExecutorService");

@@ -29,7 +29,7 @@ public class VolumeCmd extends DJCommand {
   public VolumeCmd(Bot bot) {
     super(bot);
     this.name = "volume";
-    this.aliases = bot.getConfig().getAliases(this.name);
+    this.aliases = bot.getConfig().getAliases().get(this.name);
     this.help = "sets or shows volume";
     this.arguments = "[0-150]";
   }

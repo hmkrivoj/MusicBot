@@ -15,7 +15,10 @@
  */
 package com.jagrosh.jmusicbot.jdautils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
@@ -128,7 +131,7 @@ public abstract class Command {
    * The aliases of the command, when calling a command these function identically to calling the
    * {@link com.jagrosh.jmusicbot.jdautils.Command#name Command.name}.
    */
-  protected String[] aliases = new String[0];
+  protected List<String> aliases = new ArrayList<>();
 
   /**
    * The child commands of the command. These are used in the format {@code [prefix]<parent name>
@@ -328,7 +331,7 @@ public abstract class Command {
    */
   public boolean isCommandFor(String input) {
     if (name.equalsIgnoreCase(input)) return true;
-    for (String alias : aliases) if (alias.equalsIgnoreCase(input)) return true;
+    for (String alias : getAliases()) if (alias.equalsIgnoreCase(input)) return true;
     return false;
   }
 
@@ -461,7 +464,10 @@ public abstract class Command {
    *
    * @return The aliases for the Command
    */
-  public String[] getAliases() {
+  public List<String> getAliases() {
+    if (aliases == null) {
+      return Collections.emptyList();
+    }
     return aliases;
   }
 

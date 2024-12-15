@@ -15,17 +15,22 @@
  */
 package com.jagrosh.jmusicbot.playlist;
 
-import com.jagrosh.jmusicbot.BotConfig;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import com.jagrosh.jmusicbot.utils.OtherUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -33,15 +38,15 @@ import java.util.stream.Collectors;
  * @author John Grosh (john.a.grosh@gmail.com)
  */
 public class PlaylistLoader {
-  private final BotConfig config;
+  private final AppConfiguration config;
 
-  public PlaylistLoader(BotConfig config) {
+  public PlaylistLoader(AppConfiguration config) {
     this.config = config;
   }
 
   public List<String> getPlaylistNames() {
     if (folderExists()) {
-      File folder = new File(OtherUtil.getPath(config.getPlaylistsFolder()).toString());
+      File folder = new File(OtherUtil.getPath(config.getPlaylistsfolder()).toString());
       return Arrays.asList(folder.listFiles((pathname) -> pathname.getName().endsWith(".txt")))
           .stream()
           .map(f -> f.getName().substring(0, f.getName().length() - 4))
@@ -54,27 +59,27 @@ public class PlaylistLoader {
 
   public void createFolder() {
     try {
-      Files.createDirectory(OtherUtil.getPath(config.getPlaylistsFolder()));
+      Files.createDirectory(OtherUtil.getPath(config.getPlaylistsfolder()));
     } catch (IOException ignore) {
     }
   }
 
   public boolean folderExists() {
-    return Files.exists(OtherUtil.getPath(config.getPlaylistsFolder()));
+    return Files.exists(OtherUtil.getPath(config.getPlaylistsfolder()));
   }
 
   public void createPlaylist(String name) throws IOException {
     Files.createFile(
-        OtherUtil.getPath(config.getPlaylistsFolder() + File.separator + name + ".txt"));
+        OtherUtil.getPath(config.getPlaylistsfolder() + File.separator + name + ".txt"));
   }
 
   public void deletePlaylist(String name) throws IOException {
-    Files.delete(OtherUtil.getPath(config.getPlaylistsFolder() + File.separator + name + ".txt"));
+    Files.delete(OtherUtil.getPath(config.getPlaylistsfolder() + File.separator + name + ".txt"));
   }
 
   public void writePlaylist(String name, String text) throws IOException {
     Files.write(
-        OtherUtil.getPath(config.getPlaylistsFolder() + File.separator + name + ".txt"),
+        OtherUtil.getPath(config.getPlaylistsfolder() + File.separator + name + ".txt"),
         text.trim().getBytes());
   }
 
@@ -85,7 +90,7 @@ public class PlaylistLoader {
         boolean[] shuffle = {false};
         List<String> list = new ArrayList<>();
         Files.readAllLines(
-                OtherUtil.getPath(config.getPlaylistsFolder() + File.separator + name + ".txt"))
+                OtherUtil.getPath(config.getPlaylistsfolder() + File.separator + name + ".txt"))
             .forEach(
                 str -> {
                   String s = str.trim();
@@ -150,7 +155,7 @@ public class PlaylistLoader {
 
               @Override
               public void trackLoaded(AudioTrack at) {
-                if (config.isTooLong(at))
+                if (config.calcIsTooLong(at))
                   errors.add(
                       new PlaylistLoadError(
                           index,
@@ -179,7 +184,7 @@ public class PlaylistLoader {
                       loaded.set(first, loaded.get(second));
                       loaded.set(second, tmp);
                     }
-                  loaded.removeIf(track -> config.isTooLong(track));
+                  loaded.removeIf(config::calcIsTooLong);
                   loaded.forEach(at -> at.setUserData(0L));
                   tracks.addAll(loaded);
                   loaded.forEach(at -> consumer.accept(at));

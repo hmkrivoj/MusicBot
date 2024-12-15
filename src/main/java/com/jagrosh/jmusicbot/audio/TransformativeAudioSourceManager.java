@@ -15,39 +15,54 @@
  */
 package com.jagrosh.jmusicbot.audio;
 
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioItem;
 import com.sedmelluq.discord.lavaplayer.track.AudioReference;
-import com.typesafe.config.Config;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.PatternSyntaxException;
-import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 
 /**
  * @author John Grosh (john.a.grosh@gmail.com)
  */
 public class TransformativeAudioSourceManager extends YoutubeAudioSourceManager {
   private static final Logger log = LoggerFactory.getLogger(TransformativeAudioSourceManager.class);
-  private final String name, regex, replacement, selector, format;
+  private final String name;
+  private final String regex;
+  private final String replacement;
+  private final String selector;
+  private final String format;
 
-  public TransformativeAudioSourceManager(String name, Config object) {
+  public TransformativeAudioSourceManager(
+      String name,
+      AppConfiguration.TransformativeAudioSourceManagerConfig object
+  ) {
     this(
         name,
-        object.getString("regex"),
-        object.getString("replacement"),
-        object.getString("selector"),
-        object.getString("format"));
+        object.getRegex(),
+        object.getReplacement(),
+        object.getSelector(),
+        object.getFormat()
+    );
   }
 
   public TransformativeAudioSourceManager(
-      String name, String regex, String replacement, String selector, String format) {
+      String name,
+      String regex,
+      String replacement,
+      String selector,
+      String format
+  ) {
     this.name = name;
     this.regex = regex;
     this.replacement = replacement;
@@ -79,13 +94,13 @@ public class TransformativeAudioSourceManager extends YoutubeAudioSourceManager 
     return null;
   }
 
-  public static List<TransformativeAudioSourceManager> createTransforms(Config transforms) {
+  public static List<TransformativeAudioSourceManager> createTransforms(Map<String, AppConfiguration.TransformativeAudioSourceManagerConfig> transforms) {
     try {
-      return transforms.root().entrySet().stream()
+      return transforms.entrySet().stream()
           .map(
               e ->
                   new TransformativeAudioSourceManager(
-                      e.getKey(), transforms.getConfig(e.getKey())))
+                      e.getKey(), e.getValue()))
           .collect(Collectors.toList());
     } catch (Exception ex) {
       log.warn("Invalid transform ", ex);

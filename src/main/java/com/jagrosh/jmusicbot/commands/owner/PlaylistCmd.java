@@ -35,7 +35,7 @@ public class PlaylistCmd extends OwnerCommand {
     this.name = "playlist";
     this.arguments = "<append|delete|make|setdefault>";
     this.help = "playlist management";
-    this.aliases = bot.getConfig().getAliases(this.name);
+    this.aliases = bot.getConfig().getAliases().get(this.name);
     this.children =
         new OwnerCommand[] {
           new ListCmd(),
@@ -67,7 +67,7 @@ public class PlaylistCmd extends OwnerCommand {
   public class MakelistCmd extends OwnerCommand {
     public MakelistCmd() {
       this.name = "make";
-      this.aliases = new String[] {"create"};
+      this.aliases = bot.getConfig().getAliases().get(this.name);
       this.help = "makes a new playlist";
       this.arguments = "<name>";
       this.guildOnly = false;
@@ -98,7 +98,7 @@ public class PlaylistCmd extends OwnerCommand {
   public class DeletelistCmd extends OwnerCommand {
     public DeletelistCmd() {
       this.name = "delete";
-      this.aliases = new String[] {"remove"};
+      this.aliases = bot.getConfig().getAliases().get(this.name);
       this.help = "deletes an existing playlist";
       this.arguments = "<name>";
       this.guildOnly = false;
@@ -127,7 +127,7 @@ public class PlaylistCmd extends OwnerCommand {
   public class AppendlistCmd extends OwnerCommand {
     public AppendlistCmd() {
       this.name = "append";
-      this.aliases = new String[] {"add"};
+      this.aliases = bot.getConfig().getAliases().get(this.name);
       this.help = "appends songs to an existing playlist";
       this.arguments = "<name> <URL> | <URL> | ...";
       this.guildOnly = false;
@@ -177,7 +177,7 @@ public class PlaylistCmd extends OwnerCommand {
     public DefaultlistCmd(Bot bot) {
       super(bot);
       this.name = "setdefault";
-      this.aliases = new String[] {"default"};
+      this.aliases = bot.getConfig().getAliases().get(this.name);
       this.arguments = "<playlistname|NONE>";
       this.guildOnly = true;
     }
@@ -186,7 +186,7 @@ public class PlaylistCmd extends OwnerCommand {
   public class ListCmd extends OwnerCommand {
     public ListCmd() {
       this.name = "all";
-      this.aliases = new String[] {"available", "list"};
+      this.aliases = bot.getConfig().getAliases().get(this.name);
       this.help = "lists all available playlists";
       this.guildOnly = true;
     }

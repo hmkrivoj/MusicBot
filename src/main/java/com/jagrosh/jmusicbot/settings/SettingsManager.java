@@ -26,10 +26,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * @author John Grosh (john.a.grosh@gmail.com)
  */
+@Component
 public class SettingsManager implements GuildSettingsManager<Settings> {
   private static final Logger LOG = LoggerFactory.getLogger("Settings");
   private static final String SETTINGS_FILE = "serversettings.json";

@@ -45,7 +45,7 @@ public class DebugCmd extends OwnerCommand {
     this.bot = bot;
     this.name = "debug";
     this.help = "shows debug info";
-    this.aliases = bot.getConfig().getAliases(this.name);
+    this.aliases = bot.getConfig().getAliases().get(this.name);
     this.guildOnly = false;
   }
 
@@ -57,19 +57,19 @@ public class DebugCmd extends OwnerCommand {
       sb.append("\n  ").append(key).append(" = ").append(System.getProperty(key));
     sb.append("\n\nJMusicBot Information:")
         .append("\n  Owner = ")
-        .append(bot.getConfig().getOwnerId())
+        .append(bot.getConfig().getOwner())
         .append("\n  Prefix = ")
         .append(bot.getConfig().getPrefix())
         .append("\n  AltPrefix = ")
-        .append(bot.getConfig().getAltPrefix())
+        .append(bot.getConfig().parseAltPrefix())
         .append("\n  MaxSeconds = ")
-        .append(bot.getConfig().getMaxSeconds())
+        .append(bot.getConfig().getMaxtime())
         .append("\n  NPImages = ")
-        .append(bot.getConfig().useNPImages())
+        .append(bot.getConfig().isNpimages())
         .append("\n  SongInStatus = ")
-        .append(bot.getConfig().getSongInStatus())
+        .append(bot.getConfig().isSonginstatus())
         .append("\n  StayInChannel = ")
-        .append(bot.getConfig().getStay());
+        .append(bot.getConfig().isStayinchannel());
     sb.append("\n\nDependency Information:")
         .append("\n  JDA Version = ")
         .append(JDAInfo.VERSION)

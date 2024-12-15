@@ -41,7 +41,7 @@ public class PlaynextCmd extends DJCommand {
     this.name = "playnext";
     this.arguments = "<title|URL>";
     this.help = "plays a single song next";
-    this.aliases = bot.getConfig().getAliases(this.name);
+    this.aliases = bot.getConfig().getAliases().get(this.name);
     this.beListening = true;
     this.bePlaying = false;
   }
@@ -77,7 +77,7 @@ public class PlaynextCmd extends DJCommand {
     }
 
     private void loadSingle(AudioTrack track) {
-      if (bot.getConfig().isTooLong(track)) {
+      if (bot.getConfig().calcIsTooLong(track)) {
         m.editMessage(
                 FormatUtil.filter(
                     event.getClient().getWarning()
@@ -86,7 +86,7 @@ public class PlaynextCmd extends DJCommand {
                         + "**) is longer than the allowed maximum: `"
                         + TimeUtil.formatTime(track.getDuration())
                         + "` > `"
-                        + TimeUtil.formatTime(bot.getConfig().getMaxSeconds() * 1000)
+                        + TimeUtil.formatTime(bot.getConfig().getMaxtime() * 1000)
                         + "`"))
             .queue();
         return;

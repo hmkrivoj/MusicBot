@@ -30,7 +30,7 @@ public class SkipCmd extends MusicCommand {
     super(bot);
     this.name = "skip";
     this.help = "votes to skip the current song";
-    this.aliases = bot.getConfig().getAliases(this.name);
+    this.aliases = bot.getConfig().getAliases().get(this.name);
     this.beListening = true;
     this.bePlaying = true;
   }
@@ -41,7 +41,7 @@ public class SkipCmd extends MusicCommand {
     RequestMetadata rm = handler.getRequestMetadata();
     double skipRatio = bot.getSettingsManager().getSettings(event.getGuild()).getSkipRatio();
     if (skipRatio == -1) {
-      skipRatio = bot.getConfig().getSkipRatio();
+      skipRatio = bot.getConfig().getSkipratio();
     }
     if (event.getAuthor().getIdLong() == rm.getOwner() || skipRatio == 0) {
       event.reply(

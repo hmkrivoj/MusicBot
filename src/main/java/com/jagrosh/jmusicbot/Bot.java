@@ -22,30 +22,37 @@ import com.jagrosh.jmusicbot.audio.PlayerManager;
 import com.jagrosh.jmusicbot.jdautils.utils.EventWaiter;
 import com.jagrosh.jmusicbot.playlist.PlaylistLoader;
 import com.jagrosh.jmusicbot.settings.SettingsManager;
-import java.util.Objects;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import com.jagrosh.jmusicbot.spring.AppConfiguration;
+import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * @author John Grosh <john.a.grosh@gmail.com>
  */
+@Component
 public class Bot {
-  private final EventWaiter waiter;
-  private final ScheduledExecutorService threadpool;
-  private final BotConfig config;
+  @Getter private final EventWaiter waiter;
+  @Getter private final ScheduledExecutorService threadpool;
+  @Getter private final AppConfiguration config;
   private final SettingsManager settings;
   private final PlayerManager players;
   private final PlaylistLoader playlists;
   private final NowplayingHandler nowplaying;
-  private final AloneInVoiceHandler aloneInVoiceHandler;
+  @Getter private final AloneInVoiceHandler aloneInVoiceHandler;
 
   private boolean shuttingDown = false;
   private JDA jda;
 
-  public Bot(EventWaiter waiter, BotConfig config, SettingsManager settings) {
+  @Autowired
+  public Bot(EventWaiter waiter, AppConfiguration config, SettingsManager settings) {
     this.waiter = waiter;
     this.config = config;
     this.settings = settings;
@@ -59,20 +66,8 @@ public class Bot {
     this.aloneInVoiceHandler.init();
   }
 
-  public BotConfig getConfig() {
-    return config;
-  }
-
   public SettingsManager getSettingsManager() {
     return settings;
-  }
-
-  public EventWaiter getWaiter() {
-    return waiter;
-  }
-
-  public ScheduledExecutorService getThreadpool() {
-    return threadpool;
   }
 
   public PlayerManager getPlayerManager() {
@@ -87,10 +82,6 @@ public class Bot {
     return nowplaying;
   }
 
-  public AloneInVoiceHandler getAloneInVoiceHandler() {
-    return aloneInVoiceHandler;
-  }
-
   public JDA getJDA() {
     return jda;
   }
@@ -102,9 +93,9 @@ public class Bot {
 
   public void resetGame() {
     Activity game =
-        config.getGame() == null || config.getGame().getName().equalsIgnoreCase("none")
+        config.parseGame() == null || config.parseGame().getName().equalsIgnoreCase("none")
             ? null
-            : config.getGame();
+            : config.parseGame();
     if (!Objects.equals(jda.getPresence().getActivity(), game)) jda.getPresence().setActivity(game);
   }
 

@@ -16,15 +16,9 @@
 package com.jagrosh.jmusicbot.utils;
 
 import com.jagrosh.jmusicbot.JMusicBot;
-import com.jagrosh.jmusicbot.entities.Prompt;
-import java.io.BufferedReader;
+import com.jagrosh.jmusicbot.spring.exceptions.UnsupportedBotException;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import net.dv8tion.jda.api.JDA;
@@ -106,33 +100,21 @@ public class OtherUtil {
     return st == null ? OnlineStatus.ONLINE : st;
   }
 
-  public static void checkJavaVersion(Prompt prompt) {
-    if (!System.getProperty("java.vm.name").contains("64"))
-      prompt.alert(
-          Prompt.Level.WARNING,
-          "Java Version",
-          "It appears that you may not be using a supported Java version. Please use 64-bit java.");
-  }
-
-  /**
-   * Checks if the bot JMusicBot is being run on is supported & returns the reason if it is not.
-   *
-   * @return A string with the reason, or null if it is supported.
-   */
-  public static String getUnsupportedBotReason(JDA jda) {
+  /** Checks if the bot JMusicBot is being run on is supported & throws the reason if it is not. */
+  public static void checkIfBotSupported(JDA jda) throws UnsupportedBotException {
     if (jda.getSelfUser().getFlags().contains(User.UserFlag.VERIFIED_BOT))
-      return "The bot is verified. Using JMusicBot in a verified bot is not supported.";
+      throw new UnsupportedBotException(
+          "The bot is verified. Using JMusicBot in a verified bot is not supported.");
 
     ApplicationInfo info = jda.retrieveApplicationInfo().complete();
     if (info.isBotPublic())
-      return "\"Public Bot\" is enabled. Using JMusicBot as a public bot is not supported. Please disable it in the "
-          + "Developer Dashboard at https://discord.com/developers/applications/"
-          + jda.getSelfUser().getId()
-          + "/bot ."
-          + "You may also need to disable all Installation Contexts at https://discord.com/developers/applications/"
-          + jda.getSelfUser().getId()
-          + "/installation .";
-
-    return null;
+      throw new UnsupportedBotException(
+          "\"Public Bot\" is enabled. Using JMusicBot as a public bot is not supported. Please disable it in the "
+              + "Developer Dashboard at https://discord.com/developers/applications/"
+              + jda.getSelfUser().getId()
+              + "/bot ."
+              + "You may also need to disable all Installation Contexts at https://discord.com/developers/applications/"
+              + jda.getSelfUser().getId()
+              + "/installation .");
   }
 }

@@ -33,7 +33,7 @@ public class RemoveCmd extends MusicCommand {
     this.name = "remove";
     this.help = "removes a song from the queue";
     this.arguments = "<position|ALL>";
-    this.aliases = bot.getConfig().getAliases(this.name);
+    this.aliases = bot.getConfig().getAliases().get(this.name);
     this.beListening = true;
     this.bePlaying = true;
   }

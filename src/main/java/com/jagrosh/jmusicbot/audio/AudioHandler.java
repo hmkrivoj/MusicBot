@@ -137,7 +137,7 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
           else defaultQueue.add(at);
         },
         () -> {
-          if (pl.getTracks().isEmpty() && !manager.getBot().getConfig().getStay())
+          if (pl.getTracks().isEmpty() && !manager.getBot().getConfig().isStayinchannel())
             manager.getBot().closeAudioConnection(guildId);
         });
     return true;
@@ -159,7 +159,7 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
     if (queue.isEmpty()) {
       if (!playFromDefault()) {
         manager.getBot().getNowplayingHandler().onTrackUpdate(null);
-        if (!manager.getBot().getConfig().getStay()) manager.getBot().closeAudioConnection(guildId);
+        if (!manager.getBot().getConfig().isStayinchannel()) manager.getBot().closeAudioConnection(guildId);
         // unpause, in the case when the player was paused and the track has been skipped.
         // this is to prevent the player being paused next time it's being used.
         player.setPaused(false);
@@ -209,7 +209,7 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
         eb.setTitle(track.getInfo().title);
       }
 
-      if (track instanceof YoutubeAudioTrack && manager.getBot().getConfig().useNPImages()) {
+      if (track instanceof YoutubeAudioTrack && manager.getBot().getConfig().isNpimages()) {
         eb.setThumbnail("https://img.youtube.com/vi/" + track.getIdentifier() + "/mqdefault.jpg");
       }
 

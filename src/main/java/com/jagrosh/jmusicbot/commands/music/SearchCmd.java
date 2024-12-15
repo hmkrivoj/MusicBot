@@ -45,7 +45,7 @@ public class SearchCmd extends MusicCommand {
     super(bot);
     this.searchingEmoji = bot.getConfig().getSearching();
     this.name = "search";
-    this.aliases = bot.getConfig().getAliases(this.name);
+    this.aliases = bot.getConfig().getAliases().get(this.name);
     this.arguments = "<query>";
     this.help = "searches Youtube for a provided query";
     this.beListening = true;
@@ -85,7 +85,7 @@ public class SearchCmd extends MusicCommand {
 
     @Override
     public void trackLoaded(AudioTrack track) {
-      if (bot.getConfig().isTooLong(track)) {
+      if (bot.getConfig().calcIsTooLong(track)) {
         m.editMessage(
                 FormatUtil.filter(
                     event.getClient().getWarning()
@@ -94,7 +94,7 @@ public class SearchCmd extends MusicCommand {
                         + "**) is longer than the allowed maximum: `"
                         + TimeUtil.formatTime(track.getDuration())
                         + "` > `"
-                        + bot.getConfig().getMaxTime()
+                        + bot.getConfig().getMaxtime()
                         + "`"))
             .queue();
         return;
@@ -129,14 +129,14 @@ public class SearchCmd extends MusicCommand {
           .setSelection(
               (msg, i) -> {
                 AudioTrack track = playlist.getTracks().get(i - 1);
-                if (bot.getConfig().isTooLong(track)) {
+                if (bot.getConfig().calcIsTooLong(track)) {
                   event.replyWarning(
                       "This track (**"
                           + track.getInfo().title
                           + "**) is longer than the allowed maximum: `"
                           + TimeUtil.formatTime(track.getDuration())
                           + "` > `"
-                          + bot.getConfig().getMaxTime()
+                          + bot.getConfig().getMaxtime()
                           + "`");
                   return;
                 }

@@ -40,7 +40,7 @@ public class NowplayingHandler {
   }
 
   public void init() {
-    if (!bot.getConfig().useNPImages())
+    if (!bot.getConfig().isNpimages())
       bot.getThreadpool().scheduleWithFixedDelay(() -> updateAll(), 0, 5, TimeUnit.SECONDS);
   }
 
@@ -84,7 +84,7 @@ public class NowplayingHandler {
   // "event"-based methods
   public void onTrackUpdate(AudioTrack track) {
     // update bot status if applicable
-    if (bot.getConfig().getSongInStatus()) {
+    if (bot.getConfig().isSonginstatus()) {
       if (track != null
           && bot.getJDA().getGuilds().stream()
                   .filter(g -> g.getSelfMember().getVoiceState().inVoiceChannel())

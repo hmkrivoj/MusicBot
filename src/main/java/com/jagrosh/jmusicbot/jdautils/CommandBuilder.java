@@ -17,6 +17,7 @@ package com.jagrosh.jmusicbot.jdautils;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import net.dv8tion.jda.api.Permission;
@@ -405,7 +406,7 @@ public class CommandBuilder {
         cooldown,
         userPermissions,
         botPermissions,
-        aliases.toArray(new String[aliases.size()]),
+        aliases,
         children.toArray(new Command[children.size()]),
         helpBiConsumer,
         usesTopicTags,
@@ -430,7 +431,7 @@ public class CommandBuilder {
         int cooldown,
         Permission[] userPermissions,
         Permission[] botPermissions,
-        String[] aliases,
+        List<String> aliases,
         Command[] children,
         BiConsumer<CommandEvent, Command> helpBiConsumer,
         boolean usesTopicTags,
