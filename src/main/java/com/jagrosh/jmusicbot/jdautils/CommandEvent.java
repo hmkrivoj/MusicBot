@@ -16,7 +16,6 @@
 package com.jagrosh.jmusicbot.jdautils;
 
 import com.jagrosh.jmusicbot.jdautils.impl.CommandClientImpl;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;

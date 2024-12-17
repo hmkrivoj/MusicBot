@@ -508,6 +508,5 @@ public class Paginator extends Menu {
       this.wrapPageEnds = wrapPageEnds;
       return this;
     }
-
   }
 }

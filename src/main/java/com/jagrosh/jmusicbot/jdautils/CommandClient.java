@@ -174,5 +174,4 @@ public interface CommandClient extends EventListener {
    *     it.
    */
   <S> S getSettingsFor(Guild guild);
-
 }
